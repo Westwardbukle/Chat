@@ -5,10 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="User" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Chat.Common\Chat.Common.csproj" />
       <ProjectReference Include="..\Chat.Database\Chat.Database.csproj" />
     </ItemGroup>

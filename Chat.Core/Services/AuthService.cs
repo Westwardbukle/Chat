@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto;
+using Chat.Common.Error;
 using Chat.Common.Result;
+using Chat.Core.Validating;
 using Chat.Database.Model;
 using Chat.Database.Repository.User;
 
@@ -22,15 +24,23 @@ namespace Chat.Core.Services
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        
-        public Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto)
+
+        public async Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto)
         {
             var result = new ResultContainer<UserResponseDto>();
-            Guid id = new Guid();
+            
+            var id = Guid.NewGuid();
 
+            var email = registerUserDto.Email;
 
+            if (!EmailValidator.IsEmailValid(email))
+            {
+                result = result.ErrorType == ErrorType.BadRequest;
+            }
 
-
+            EmailValidator.IsEmailValid(email)
+            
+            
             var user = new UserModel
             {
                 Id = id,
@@ -40,16 +50,12 @@ namespace Chat.Core.Services
                 Email = null,
                 Password = null
             };
-            result=
+            result = 
             return result;
         }
 
         public Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto)
         {
-            
-            
-            
         }
-
     }
 }
