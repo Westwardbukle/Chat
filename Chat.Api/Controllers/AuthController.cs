@@ -18,11 +18,22 @@ namespace Chat.Controllers
         {
             _authService = authService;
         }
-        
+
+        /// <summary>
+        /// Add file
+        /// </summary>
+        /// <param name="registerUserDto"></param>
+        /// <response code="200">Return bearer</response>
+        /// <response code="415">Return bearer</response>
         public async Task<ActionResult> Registration(RegisterUserDto registerUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Registration(registerUserDto));
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loginUserDto"></param>
+        /// <returns></returns>
         public async Task<ActionResult> Login(LoginUserDto loginUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Login(loginUserDto));
