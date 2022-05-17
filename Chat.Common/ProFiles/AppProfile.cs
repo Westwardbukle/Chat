@@ -2,6 +2,7 @@
 using AutoMapper;
 using Chat.Common.Dto;
 using Chat.Common.Result;
+using Chat.Database.Model;
 
 namespace Chat.Common.ProFiles
 {
@@ -9,7 +10,8 @@ namespace Chat.Common.ProFiles
     {
         public AppProfile()
         {
-            CreateMap<UserResponseDto, ResultContainer<UserResponseDto>>()
+            CreateMap<UserModel, RegisterResponseDto>();
+            CreateMap<UserModel, ResultContainer<RegisterResponseDto>>()
                 .ForMember("Data", opt =>
                     opt.MapFrom(f => f));
         }

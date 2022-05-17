@@ -2,10 +2,16 @@
 using Chat.Common.Dto;
 using Chat.Common.Result;
 using Chat.Core.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Controllers
 {
+    [ApiVersion("1.0")]
+    [ApiController]
+    //[Authorize]
+    [Route("/api/v{version:apiVersion}/[controller]")]
     public class AuthController : BaseController
     {
         
@@ -25,17 +31,19 @@ namespace Chat.Controllers
         /// <param name="registerUserDto"></param>
         /// <response code="200">Return bearer</response>
         /// <response code="415">Return bearer</response>
-        public async Task<ActionResult> Registration(RegisterUserDto registerUserDto)
-            => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
+        [HttpPost("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> Registration([FromForm]RegisterUserDto registerUserDto)
+            => await ReturnResult<ResultContainer<RegisterResponseDto>, RegisterResponseDto>
                 (_authService.Registration(registerUserDto));
         
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="loginUserDto"></param>
-        /// <returns></returns>
+        
+         /*[HttpPost("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Login(LoginUserDto loginUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
-                (_authService.Login(loginUserDto));
+                (_authService.Login(loginUserDto));*/
     }
 }

@@ -4,6 +4,7 @@ using AutoMapper;
 using Chat.Common.Dto;
 using Chat.Common.Error;
 using Chat.Common.Result;
+using Chat.Core.Auth;
 using Chat.Core.Hashing;
 using Chat.Core.Validating;
 using Chat.Database.Model;
@@ -11,16 +12,16 @@ using Chat.Database.Repository.User;
 
 namespace Chat.Core.Services
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _hasher;
 
         public AuthService
         (
             IUserRepository userRepository,
-            Mapper mapper,
+            IMapper mapper,
             IPasswordHasher hasher
         )
         {
@@ -29,11 +30,17 @@ namespace Chat.Core.Services
             _hasher = hasher;
         }
 
-        public async Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto)
+        public async Task<ResultContainer<RegisterResponseDto>> Registration(RegisterUserDto registerUserDto)
         {
-            var result = new ResultContainer<UserResponseDto>();
+            var result = new ResultContainer<RegisterResponseDto>();
 
             var id = Guid.NewGuid();
+
+            if (registerUserDto.Email==null)
+            {
+                result.ErrorType = ErrorType.NotFound;
+                return result;
+            }
 
             var email = registerUserDto.Email;
 
@@ -54,7 +61,7 @@ namespace Chat.Core.Services
                 Email = email,
                 Password = _hasher.HashPassword(password)
             };
-            result = _mapper.Map<ResultContainer<UserResponseDto>>(await _userRepository.Create(user));
+            result = _mapper.Map<ResultContainer<RegisterResponseDto>>(await _userRepository.Create(user));
             return result;
         }
 
