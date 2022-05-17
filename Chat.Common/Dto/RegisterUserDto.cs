@@ -1,6 +1,6 @@
-﻿namespace Chat.Database.Model
+﻿namespace Chat.Common.Dto
 {
-    public class User
+    public class RegisterUserDto
     {
         public string Nickname { get; set; }
         public string Age { get; set; }

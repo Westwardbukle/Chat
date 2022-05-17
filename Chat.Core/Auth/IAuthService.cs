@@ -6,6 +6,7 @@ namespace Chat.Core.Auth
 {
     public interface IAuthService
     {
-        public Task<ResultContainer<UserResponseDto>> Registration(UserDto userDto);
+        public Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto);
+        public Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto);
     }
 }

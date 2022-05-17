@@ -5,11 +5,14 @@ using System.Text;
 using AutoMapper;
 using Chat.Common.ProFiles;
 using Chat.Core.Options;
+using Chat.Database;
+using Chat.Database.Repository.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,11 +39,16 @@ namespace Chat
             services.AddSingleton(appOptions);
             
             services.AddControllers();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Chat.Api", Version = "v1" }); });
+           
             
             ConfigureAuthentication(services);
             
             ConfigureSwagger(services);
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            
+            var con = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
             
             
             var mapperConfig = new MapperConfiguration(mc =>

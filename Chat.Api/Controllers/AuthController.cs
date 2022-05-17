@@ -19,8 +19,12 @@ namespace Chat.Controllers
             _authService = authService;
         }
         
-        public async Task<ActionResult> Registration(UserDto userDto)
+        public async Task<ActionResult> Registration(RegisterUserDto registerUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
-                (_authService.Registration(userDto));
+                (_authService.Registration(registerUserDto));
+
+        public async Task<ActionResult> Login(LoginUserDto loginUserDto)
+            => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
+                (_authService.Login(loginUserDto));
     }
 }
