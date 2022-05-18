@@ -15,11 +15,6 @@ namespace Chat.Common.ProFiles
             CreateMap<UserModel, ResultContainer<UserResponseDto>>()
                 .ForMember("Data", opt =>
                     opt.MapFrom(f => f));
-            CreateMap<UserModel, LoginUserDto>();
-            CreateMap<UserModel, ResultContainer<LoginUserDto>>()
-                .ForMember("Data", opt =>
-                    opt.MapFrom(f => f));
-            CreateMap<ResultContainer<LoginUserDto>, ResultContainer<UserResponseDto>>();
         }
     }
 }

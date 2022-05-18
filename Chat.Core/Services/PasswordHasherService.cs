@@ -10,10 +10,6 @@ namespace Chat.Core.Services
         {
             byte[] salt;
             byte[] buffer2;
-            /*if (password == null)
-            {
-                throw new ArgumentNullException("password");
-            }*/
             using (Rfc2898DeriveBytes bytes = new Rfc2898DeriveBytes(password, 0x10, 0x3e8))
             {
                 salt = bytes.Salt;
@@ -28,14 +24,6 @@ namespace Chat.Core.Services
         public bool VerifyHashedPassword(string hashedPassword, string password)
         {
             byte[] buffer4;
-            /*if (hashedPassword == null)
-            {
-                return false;
-            }
-            if (password == null)
-            {
-                throw new ArgumentNullException("password");
-            }*/
             byte[] src = Convert.FromBase64String(hashedPassword);
             if ((src.Length != 0x31) || (src[0] != 0))
             {

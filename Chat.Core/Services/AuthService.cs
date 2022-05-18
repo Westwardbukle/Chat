@@ -60,7 +60,7 @@ namespace Chat.Core.Services
             return result;
         }
 
-        /*public async Task<ResultContainer<LoginUserDto>> Login(LoginUserDto loginUserDto)
+        public async Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto)
         {
             var result = new ResultContainer<UserResponseDto>();
 
@@ -69,15 +69,22 @@ namespace Chat.Core.Services
                 result.ErrorType = ErrorType.BadRequest;
                 return result;
             }
-
-
-            if (_hasher.VerifyHashedPassword(user.Password, loginUserDto.Password))
+            
+            var trueUser =  _userRepository.GetOne(u => u.Nickname == loginUserDto.Nickname);
+            if (trueUser==null)
             {
+                result.ErrorType = ErrorType.BadRequest;
+                return result;
+            }
+            
+            if (!_hasher.VerifyHashedPassword(trueUser.Password, loginUserDto.Password))
+            {
+                result.ErrorType = ErrorType.BadRequest;
+                return result;
             }
 
 
-            //result = _mapper.Map<ResultContainer<UserResponseDto>>(user);
-            return result;
-        }*/
+            result = _mapper.Map<ResultContainer<UserResponseDto>>(user);
+        }
     }
 }
