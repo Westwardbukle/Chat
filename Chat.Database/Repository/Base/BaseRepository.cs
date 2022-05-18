@@ -29,7 +29,7 @@ namespace Chat.Database.Repository.Base
 
         public async Task<TModel> GetById(Guid id)
             => await _context.Set<TModel>().FindAsync(id);
-
+        
         public async Task<TModel> Delete(Guid id)
         {
             var item = await _context.Set<TModel>().FindAsync(id);

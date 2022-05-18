@@ -2,7 +2,7 @@
 
 namespace Chat.Common.Dto
 {
-    public class RegisterResponseDto
+    public class UserResponseDto
     {
         public TokenModelDto Token { get; set; }
     }

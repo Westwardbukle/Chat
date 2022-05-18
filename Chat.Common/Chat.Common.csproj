@@ -12,8 +12,4 @@
       <ProjectReference Include="..\Chat.Database\Chat.Database.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Dto\Login" />
-    </ItemGroup>
-
 </Project>

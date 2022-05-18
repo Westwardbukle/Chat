@@ -26,7 +26,7 @@ namespace Chat.Controllers
         }
 
         /// <summary>
-        /// Add file
+        /// User registrarion
         /// </summary>
         /// <param name="registerUserDto"></param>
         /// <response code="200">Return bearer</response>
@@ -35,7 +35,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Registration([FromForm]RegisterUserDto registerUserDto)
-            => await ReturnResult<ResultContainer<RegisterResponseDto>, RegisterResponseDto>
+            => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Registration(registerUserDto));
         
         

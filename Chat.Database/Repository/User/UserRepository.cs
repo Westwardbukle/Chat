@@ -1,4 +1,5 @@
-﻿using Chat.Database.Model;
+﻿using System.Threading.Tasks;
+using Chat.Database.Model;
 using Chat.Database.Repository.Base;
 
 namespace Chat.Database.Repository.User
@@ -8,5 +9,6 @@ namespace Chat.Database.Repository.User
         public UserRepository(AppDbContext context) : base(context)
         {
         }
+        
     }
 }
