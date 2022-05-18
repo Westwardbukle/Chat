@@ -60,7 +60,7 @@ namespace Chat.Core.Services
             return result;
         }
 
-        public async Task<ResultContainer<LoginUserDto>> Login(LoginUserDto loginUserDto)
+        /*public async Task<ResultContainer<LoginUserDto>> Login(LoginUserDto loginUserDto)
         {
             var result = new ResultContainer<UserResponseDto>();
 
@@ -78,6 +78,6 @@ namespace Chat.Core.Services
 
             //result = _mapper.Map<ResultContainer<UserResponseDto>>(user);
             return result;
-        }
+        }*/
     }
 }

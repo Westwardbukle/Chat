@@ -17,37 +17,35 @@ namespace Chat.Core.Validating
         {
             _userRepository = userRepository;
         }
-        
-        public bool Validate (RegisterUserDto registerUserDto)
+
+        public bool Validate(RegisterUserDto registerUserDto)
         {
             if (!EmailValidator.IsEmailValid(registerUserDto.Email))
             {
                 return false;
             }
-            
-            if (registerUserDto.Nickname==null)
+
+            if (registerUserDto.Nickname == null)
             {
                 return false;
             }
-            
+
             var trueUser = _userRepository.GetOne(u => u.Nickname == registerUserDto.Nickname);
-            
-            if (trueUser==null)
+
+            if (trueUser != null)
+            {
+                if (trueUser.Nickname == registerUserDto.Nickname)
+                {
+                    return false;
+                }
+            }
+
+            if (registerUserDto.Password == null)
             {
                 return false;
             }
 
-            if (trueUser.Nickname == registerUserDto.Nickname)
-            {
-                return false;
-            }
-
-            if (registerUserDto.Password==null)
-            {
-                return false;
-            }
-
-            if (registerUserDto.Age==null)
+            if (registerUserDto.Age == null)
             {
                 return false;
             }

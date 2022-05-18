@@ -8,6 +8,8 @@ using Chat.Core.Auth;
 using Chat.Core.Hashing;
 using Chat.Core.Options;
 using Chat.Core.Services;
+using Chat.Core.User;
+using Chat.Core.Validating;
 using Chat.Database;
 using Chat.Database.Repository.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -51,6 +53,7 @@ namespace Chat
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
+            services.AddScoped<IUserValidator, UserValidator>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
