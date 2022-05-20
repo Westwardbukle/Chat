@@ -19,6 +19,7 @@ namespace Chat.Controllers
                     ErrorType.NotFound => NotFound(),
                     ErrorType.BadRequest => BadRequest(),
                     ErrorType.Unauthorized => Unauthorized(),
+                    ErrorType.Create => StatusCode(201),
                     _ => throw new ArgumentOutOfRangeException()
                 };
             }

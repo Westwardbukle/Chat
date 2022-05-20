@@ -1,6 +1,6 @@
 ﻿namespace Chat.Common.Dto.Token
 {
-    public class TokenModelDto
+    public class TokenModel
     {
         public string Token { get; set; }
     }

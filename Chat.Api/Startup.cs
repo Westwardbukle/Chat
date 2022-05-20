@@ -8,8 +8,6 @@ using Chat.Core.Auth;
 using Chat.Core.Hashing;
 using Chat.Core.Options;
 using Chat.Core.Services;
-using Chat.Core.User;
-using Chat.Core.Validating;
 using Chat.Database;
 using Chat.Database.Repository.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,6 +26,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Chat
 {
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -44,7 +43,6 @@ namespace Chat
             var appOptions = Configuration.GetSection(AppOptions.App).Get<AppOptions>();
             services.AddSingleton(appOptions);
             
-           
             
             ConfigureAuthentication(services);
             
@@ -53,7 +51,7 @@ namespace Chat
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
-            services.AddScoped<IUserValidator, UserValidator>();
+            //services.AddScoped<IUserValidator, UserValidator>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
@@ -67,7 +65,7 @@ namespace Chat
             services.AddSingleton(mapper);
             
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);  
-            services.AddControllers();
+            services.AddControllers( options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             services.AddHttpContextAccessor();
             
         }

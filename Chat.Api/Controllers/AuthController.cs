@@ -34,7 +34,8 @@ namespace Chat.Controllers
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Registration([FromForm]RegisterUserDto registerUserDto)
+        //[ServiceFilter(typeof(ValidationFilter))]
+        public async Task<ActionResult> Registration([FromBody] RegisterUserDto registerUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Registration(registerUserDto));
         

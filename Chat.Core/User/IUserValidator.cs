@@ -2,8 +2,8 @@
 
 namespace Chat.Core.User
 {
-    public interface IUserValidator
+    /*public interface IUserValidator
     {
-        public bool Validate(RegisterUserDto registerUserDto);
-    }
+        //public bool Validate(RegisterUserDto registerUserDto);
+    }*/
 }

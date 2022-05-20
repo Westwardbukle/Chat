@@ -19,48 +19,44 @@ namespace Chat.Core.Services
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _hasher;
-        private readonly IUserValidator _userValidator;
 
         public AuthService
         (
             IUserRepository userRepository,
             IMapper mapper,
-            IPasswordHasher hasher,
-            IUserValidator validator
+            IPasswordHasher hasher
         )
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _hasher = hasher;
-            _userValidator = validator;
         }
+        //var trueUser = _userRepository.GetOne(u => u.Nickname == registerUserDto.Nickname);
 
         public async Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto)
         {
             var result = new ResultContainer<UserResponseDto>();
 
             var id = Guid.NewGuid();
-
-            if (!_userValidator.Validate(registerUserDto))
-            {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
-            }
             
+
             var user = new UserModel
             {
                 Id = id,
                 DateCreated = DateTime.Now,
                 Nickname = registerUserDto.Nickname,
-                Age = registerUserDto.Age,
+                DateofBirth = registerUserDto.DateOfBirth,
                 Email = registerUserDto.Email,
                 Password = _hasher.HashPassword(registerUserDto.Password)
             };
-            result = _mapper.Map<ResultContainer<UserResponseDto>>(await _userRepository.Create(user));
+            
+            await _userRepository.Create(user);
+
+            result.ErrorType = ErrorType.Create;
             return result;
         }
 
-        public async Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto)
+        /*public async Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto)
         {
             var result = new ResultContainer<UserResponseDto>();
 
@@ -85,6 +81,6 @@ namespace Chat.Core.Services
 
 
             result = _mapper.Map<ResultContainer<UserResponseDto>>(user);
-        }
+        }*/
     }
 }

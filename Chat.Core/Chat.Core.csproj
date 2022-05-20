@@ -9,4 +9,8 @@
       <ProjectReference Include="..\Chat.Database\Chat.Database.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.17" />
+    </ItemGroup>
+
 </Project>
