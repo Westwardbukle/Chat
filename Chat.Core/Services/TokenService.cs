@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Chat.Common.Dto.Token;
 using Chat.Core.Options;
@@ -37,6 +39,16 @@ namespace Chat.Core.Services
             var token = handler.WriteToken(securityToken);
 
             return 
+        }*/
+        /*private static IEnumerable<Claim> GetClaims(UserModelDto user)
+        {
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Email, user.Email),
+            };
+
+            return claims;
         }*/
     }
 }

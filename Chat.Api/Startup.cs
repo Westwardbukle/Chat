@@ -42,6 +42,8 @@ namespace Chat
             services.Configure<AppOptions>(Configuration.GetSection(AppOptions.App));
             var appOptions = Configuration.GetSection(AppOptions.App).Get<AppOptions>();
             services.AddSingleton(appOptions);
+
+            //services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
             
             
             ConfigureAuthentication(services);

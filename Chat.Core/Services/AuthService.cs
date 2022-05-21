@@ -31,15 +31,19 @@ namespace Chat.Core.Services
             _mapper = mapper;
             _hasher = hasher;
         }
-        //var trueUser = _userRepository.GetOne(u => u.Nickname == registerUserDto.Nickname);
 
         public async Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto)
         {
             var result = new ResultContainer<UserResponseDto>();
 
             var id = Guid.NewGuid();
+                
+            if (_userRepository.GetOne(u => u.Nickname == registerUserDto.Nickname) is not null)
+            {
+                result.ErrorType = ErrorType.BadRequest;
+                return result;
+            }
             
-
             var user = new UserModel
             {
                 Id = id,
@@ -60,27 +64,15 @@ namespace Chat.Core.Services
         {
             var result = new ResultContainer<UserResponseDto>();
 
-            if (loginUserDto.Nickname == null)
+            var trueUser = _userRepository.GetOne(u => u.Nickname == loginUserDto.Nickname);
+
+            if (trueUser.Password != loginUserDto.Password)
             {
                 result.ErrorType = ErrorType.BadRequest;
                 return result;
             }
             
-            var trueUser =  _userRepository.GetOne(u => u.Nickname == loginUserDto.Nickname);
-            if (trueUser==null)
-            {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
-            }
             
-            if (!_hasher.VerifyHashedPassword(trueUser.Password, loginUserDto.Password))
-            {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
-            }
-
-
-            result = _mapper.Map<ResultContainer<UserResponseDto>>(user);
         }*/
     }
 }

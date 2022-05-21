@@ -1,42 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using Chat.Core.Validating;
 using Chat.Database.Repository.User;
 
 namespace Chat.Common.Dto
 {
-    public class RegisterUserDto /*: IValidatableObject*/
+    public class RegisterUserDto : IValidatableObject
     {
-        private readonly IUserRepository _userRepository;
-
-        public RegisterUserDto
-        (
-            IUserRepository userRepository
-        )
-        {
-            _userRepository = userRepository;
-        }
-            
-        [Required]
+        [Required] 
         public string Nickname { get; set; }
-        
-        [Required]
+
+        [Required] 
         public DateTime DateOfBirth { get; set; }
-        
-        [EmailAddress]
+
+        [EmailAddress] 
         public string Email { get; set; }
-        
+
         [Required]
         public string Password { get; set; }
 
-        /*public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            var errerMessage = $"nickname exists{UserNickname.Exists}";
-            
+            var errors = new List<ValidationResult>();
 
+            if (DateOfBirth >= DateTime.Today)
+            {
+                errors.Add(new ValidationResult("Date of birth cannot be later than today"));
+            }
 
-            var trueUser = _userRepository.GetOne(u => u.Nickname == RegisterUserDto.Nickname);
-            
-        }*/
+            if (!Regex.IsMatch(Password, Consts.PasswordPattern))
+            {
+                errors.Add(new ValidationResult
+                ("Хотя бы одна цифра [0-9] " 
+                         + "Хотя бы один символ нижнего регистра [a-z] "
+                         + "Хотя бы один символ верхнего регистра [A-Z] "
+                         + "Хотя бы один специальный символ [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\] "
+                         + "Длина не менее 8 символов, но не более 32. "
+                 ));
+            }
+
+            return errors;
+        }
     }
 }

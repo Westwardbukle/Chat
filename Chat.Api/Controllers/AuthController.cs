@@ -30,11 +30,10 @@ namespace Chat.Controllers
         /// </summary>
         /// <param name="registerUserDto"></param>
         /// <response code="200">Return bearer</response>
-        /// <response code="415">Return bearer</response>
+        /// <response code="400">Validation Exception</response>
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ServiceFilter(typeof(ValidationFilter))]
         public async Task<ActionResult> Registration([FromBody] RegisterUserDto registerUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Registration(registerUserDto));
