@@ -1,7 +1,11 @@
-﻿namespace Chat.Core.Token
+﻿using Chat.Common.Dto;
+using Chat.Common.Dto.Token;
+using Chat.Common.Dto.User;
+
+namespace Chat.Core.Token
 {
     public interface ITokenService
     {
-        
+        TokenModel CreateToken(UserModelDto user);
     }
 }

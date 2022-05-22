@@ -8,6 +8,7 @@ using Chat.Core.Auth;
 using Chat.Core.Hashing;
 using Chat.Core.Options;
 using Chat.Core.Services;
+using Chat.Core.Token;
 using Chat.Database;
 using Chat.Database.Repository.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,8 +43,7 @@ namespace Chat
             services.Configure<AppOptions>(Configuration.GetSection(AppOptions.App));
             var appOptions = Configuration.GetSection(AppOptions.App).Get<AppOptions>();
             services.AddSingleton(appOptions);
-
-            //services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
+            
             
             
             ConfigureAuthentication(services);
@@ -53,6 +53,7 @@ namespace Chat
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
+            services.AddScoped<ITokenService, TokenService>();
             //services.AddScoped<IUserValidator, UserValidator>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
@@ -67,6 +68,9 @@ namespace Chat
             services.AddSingleton(mapper);
             
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);  
+            
+            //services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
+            
             services.AddControllers( options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             services.AddHttpContextAccessor();
             

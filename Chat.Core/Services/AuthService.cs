@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
+using Chat.Common.Dto.User;
 using Chat.Common.Error;
 using Chat.Common.Result;
 using Chat.Core.Auth;
 using Chat.Core.Hashing;
+using Chat.Core.Token;
 using Chat.Core.User;
 using Chat.Core.Validating;
 using Chat.Database.Model;
@@ -19,17 +21,20 @@ namespace Chat.Core.Services
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _hasher;
+        private readonly ITokenService _tokenService;
 
         public AuthService
         (
             IUserRepository userRepository,
             IMapper mapper,
-            IPasswordHasher hasher
+            IPasswordHasher hasher,
+            ITokenService tokenService
         )
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _hasher = hasher;
+            _tokenService = tokenService;
         }
 
         public async Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto)
@@ -60,19 +65,23 @@ namespace Chat.Core.Services
             return result;
         }
 
-        /*public async Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto)
+        public async Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto)
         {
             var result = new ResultContainer<UserResponseDto>();
 
             var trueUser = _userRepository.GetOne(u => u.Nickname == loginUserDto.Nickname);
-
-            if (trueUser.Password != loginUserDto.Password)
+            
+            if (!_hasher.VerifyHashedPassword(loginUserDto.Password, trueUser.Password))
             {
                 result.ErrorType = ErrorType.BadRequest;
                 return result;
             }
+
+            var user = _mapper.Map<UserModelDto>(trueUser);
+            result = _mapper.Map<ResultContainer<UserResponseDto>>(trueUser);
+            result.Data.Token = _tokenService.CreateToken(user);
             
-            
-        }*/
+            return result;
+        }
     }
 }

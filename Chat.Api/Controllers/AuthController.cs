@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Chat.Common.Dto;
+using Chat.Common.Dto.Login;
 using Chat.Common.Result;
 using Chat.Core.Auth;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,6 @@ namespace Chat.Controllers
     [Route("/api/v{version:apiVersion}/[controller]")]
     public class AuthController : BaseController
     {
-        
         private readonly IAuthService _authService;
 
         public AuthController
@@ -37,13 +37,18 @@ namespace Chat.Controllers
         public async Task<ActionResult> Registration([FromBody] RegisterUserDto registerUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Registration(registerUserDto));
-        
-        
-         /*[HttpPost("[action]")]
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loginUserDto"></param>
+        /// <returns></returns>
+        [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Login(LoginUserDto loginUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
-                (_authService.Login(loginUserDto));*/
+                (_authService.Login(loginUserDto));
     }
 }

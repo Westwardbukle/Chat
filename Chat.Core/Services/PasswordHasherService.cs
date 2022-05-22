@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Chat.Core.Hashing;
 
@@ -21,10 +23,18 @@ namespace Chat.Core.Services
             return Convert.ToBase64String(dst);
         }
         
-        public bool VerifyHashedPassword(string hashedPassword, string password)
+        public bool VerifyHashedPassword(string password, string passwordHash)
         {
             byte[] buffer4;
-            byte[] src = Convert.FromBase64String(hashedPassword);
+            if (passwordHash == null)
+            {
+                return false;
+            }
+            if (password == null)
+            {
+                throw new ArgumentNullException(nameof(password));
+            }
+            byte[] src = Convert.FromBase64String(passwordHash);
             if ((src.Length != 0x31) || (src[0] != 0))
             {
                 return false;
@@ -37,7 +47,28 @@ namespace Chat.Core.Services
             {
                 buffer4 = bytes.GetBytes(0x20);
             }
-            return Equals(buffer3, buffer4);
+            return ByteArraysEqual(buffer3, buffer4);
+        }
+        
+        [MethodImpl(MethodImplOptions.NoOptimization)]
+        private static bool ByteArraysEqual(IReadOnlyList<byte> a, IReadOnlyList<byte> b)
+        {
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            if (a == null || b == null || a.Count != b.Count)
+            {
+                return false;
+            }
+
+            var areSame = true;
+            for (var i = 0; i < a.Count; i++)
+            {
+                areSame &= (a[i] == b[i]);
+            }
+            return areSame;
         }
     }
 }
