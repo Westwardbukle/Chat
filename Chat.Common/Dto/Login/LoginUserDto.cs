@@ -11,6 +11,9 @@ namespace Chat.Common.Dto.Login
 
         [RegularExpression(Consts.PasswordPattern, ErrorMessage = Consts.ErrorPassword)]
         public string Password { get; set; }
+        
+        [Required]
+        public string LoginCode { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

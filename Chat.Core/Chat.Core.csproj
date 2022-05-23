@@ -10,7 +10,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="MailKit" Version="2.10.0" />
+      <PackageReference Include="MailKit-On-NETCore" Version="2.1.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.17" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="User" />
     </ItemGroup>
 
 </Project>

@@ -7,10 +7,10 @@ using Chat.Common.Dto.User;
 using Chat.Common.Error;
 using Chat.Common.Result;
 using Chat.Core.Auth;
+using Chat.Core.Code;
 using Chat.Core.Hashing;
+using Chat.Core.Smtp;
 using Chat.Core.Token;
-using Chat.Core.User;
-using Chat.Core.Validating;
 using Chat.Database.Model;
 using Chat.Database.Repository.User;
 
@@ -22,19 +22,25 @@ namespace Chat.Core.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _hasher;
         private readonly ITokenService _tokenService;
+        private readonly ISmtpService _smtpService;
+        private readonly ICodeService _code;
 
         public AuthService
         (
             IUserRepository userRepository,
             IMapper mapper,
             IPasswordHasher hasher,
-            ITokenService tokenService
+            ITokenService tokenService,
+            ISmtpService smtpService,
+            ICodeService code
         )
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _hasher = hasher;
             _tokenService = tokenService;
+            _smtpService = smtpService;
+            _code = code;
         }
 
         public async Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto)
@@ -48,6 +54,10 @@ namespace Chat.Core.Services
                 result.ErrorType = ErrorType.BadRequest;
                 return result;
             }
+
+            var mailCode = _code.GenerateRestoringCode();
+
+            //await _smtpService.SendEmailAsync(registerUserDto.Email, mailCode);
             
             var user = new UserModel
             {
@@ -56,10 +66,15 @@ namespace Chat.Core.Services
                 Nickname = registerUserDto.Nickname,
                 DateofBirth = registerUserDto.DateOfBirth,
                 Email = registerUserDto.Email,
-                Password = _hasher.HashPassword(registerUserDto.Password)
+                Password = _hasher.HashPassword(registerUserDto.Password),
+                Active = false,
+                Code = mailCode
             };
             
+            
             await _userRepository.Create(user);
+            
+            
 
             result.ErrorType = ErrorType.Create;
             return result;
@@ -76,7 +91,7 @@ namespace Chat.Core.Services
                 result.ErrorType = ErrorType.BadRequest;
                 return result;
             }
-
+            
             var user = _mapper.Map<UserModelDto>(trueUser);
             result = _mapper.Map<ResultContainer<UserResponseDto>>(trueUser);
             result.Data.Token = _tokenService.CreateToken(user);

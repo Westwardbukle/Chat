@@ -5,9 +5,11 @@ using System.Text;
 using AutoMapper;
 using Chat.Common.ProFiles;
 using Chat.Core.Auth;
+using Chat.Core.Code;
 using Chat.Core.Hashing;
 using Chat.Core.Options;
 using Chat.Core.Services;
+using Chat.Core.Smtp;
 using Chat.Core.Token;
 using Chat.Database;
 using Chat.Database.Repository.User;
@@ -55,6 +57,8 @@ namespace Chat
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ISmtpService, SmtpSevice>();
+            services.AddScoped<ICodeService, CodeService>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
@@ -114,13 +118,13 @@ namespace Chat
                     x.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false,
-                        ValidateLifetime = true,
+                        ValidateLifetime = false,
                         ValidateIssuer = false,
-                        RequireExpirationTime = false,
+                        RequireExpirationTime = true,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key)
                     };
-                    x.SaveToken = true;
+                    //x.SaveToken = true;
                 });
         }
         
