@@ -46,6 +46,7 @@ namespace Chat.Core.Services
                 claims: GetClaims(user) ,
                 expires: tokenExpiration,
                 notBefore: DateTime.Now,
+                
                 signingCredentials:
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             );

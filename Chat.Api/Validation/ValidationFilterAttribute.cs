@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Chat.Validation
 {
-    public class ValidationFilterAttribute /*: IActionFilter*/
+    public class ValidationFilterAttribute : IActionFilter
     {
         public void OnActionExecuting(ActionExecutingContext context)
         {
@@ -12,5 +12,6 @@ namespace Chat.Validation
                 context.Result = new UnprocessableEntityObjectResult(context.ModelState);
             }
         }
+        public void OnActionExecuted(ActionExecutedContext context) {}
     }
 }

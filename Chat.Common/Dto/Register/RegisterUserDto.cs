@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using Chat.Core.Validating;
-using Chat.Database.Model.Base;
-using Chat.Database.Repository.User;
 
 namespace Chat.Common.Dto
 {
@@ -13,11 +9,14 @@ namespace Chat.Common.Dto
     {
         [Required] 
         public string Nickname { get; set; }
+        
         [Required] 
         public DateTime DateOfBirth { get; set; }
+        
         [EmailAddress] 
         public string Email { get; set; }
-        [Required] 
+        
+        [RegularExpression(Consts.PasswordPattern, ErrorMessage = Consts.ErrorPassword)]
         public string Password { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -28,17 +27,7 @@ namespace Chat.Common.Dto
             {
                 errors.Add(new ValidationResult("Date of birth cannot be later than today"));
             }
-
-            if (!Regex.IsMatch(Password, Consts.PasswordPattern))
-            {
-                errors.Add(new ValidationResult
-                ("Хотя бы одна цифра [0-9] "
-                 + "Хотя бы один символ нижнего регистра [a-z] "
-                 + "Хотя бы один символ верхнего регистра [A-Z] "
-                 + "Длина не менее 8 символов"
-                ));
-            }
-
+            
             return errors;
         }
     }

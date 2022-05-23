@@ -11,6 +11,7 @@ using Chat.Core.Services;
 using Chat.Core.Token;
 using Chat.Database;
 using Chat.Database.Repository.User;
+using Chat.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,17 +45,16 @@ namespace Chat
             var appOptions = Configuration.GetSection(AppOptions.App).Get<AppOptions>();
             services.AddSingleton(appOptions);
             
-            
-            
             ConfigureAuthentication(services);
             
             ConfigureSwagger(services);
+
+            services.AddScoped<ValidationFilterAttribute>();
             
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
             services.AddScoped<ITokenService, TokenService>();
-            //services.AddScoped<IUserValidator, UserValidator>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
@@ -69,7 +69,7 @@ namespace Chat
             
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);  
             
-            //services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
+            services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
             
             services.AddControllers( options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             services.AddHttpContextAccessor();
@@ -142,7 +142,7 @@ namespace Chat
             
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Sixgramm.FileStorage.API", Version = "v1"});
+                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Chat.API", Version = "v1"});
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     In = ParameterLocation.Header,
