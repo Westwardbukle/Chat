@@ -57,7 +57,7 @@ namespace Chat.Core.Services
 
             var mailCode = _code.GenerateRestoringCode();
 
-            //await _smtpService.SendEmailAsync(registerUserDto.Email, mailCode);
+            await _smtpService.SendEmailAsync(registerUserDto.Email, mailCode);
             
             var user = new UserModel
             {
