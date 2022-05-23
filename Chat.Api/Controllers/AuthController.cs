@@ -53,5 +53,12 @@ namespace Chat.Controllers
         public async Task<ActionResult> Login(LoginUserDto loginUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Login(loginUserDto));
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> Verify()
+        {
+            return Ok();
+        }
     }
 }

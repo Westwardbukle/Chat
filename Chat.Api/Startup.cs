@@ -114,7 +114,7 @@ namespace Chat
                     x.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false,
-                        ValidateLifetime = false,
+                        ValidateLifetime = true,
                         ValidateIssuer = false,
                         RequireExpirationTime = false,
                         ValidateIssuerSigningKey = true,

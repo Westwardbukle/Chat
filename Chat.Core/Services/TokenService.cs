@@ -39,14 +39,13 @@ namespace Chat.Core.Services
         {
             var handler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_secretKey);
-            var tokenExpiration = DateTime.Now.AddDays(365);
+            var tokenExpiration = DateTime.Now.AddMinutes(1);
 
             var securityToken = new JwtSecurityToken
             (
-                claims: GetClaims(user) ,
+                claims: GetClaims(user),
                 expires: tokenExpiration,
                 notBefore: DateTime.Now,
-                
                 signingCredentials:
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             );
