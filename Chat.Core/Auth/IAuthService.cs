@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Code;
 using Chat.Common.Dto.Login;
 using Chat.Common.Result;
+using Chat.Common.User;
 
 namespace Chat.Core.Auth
 {

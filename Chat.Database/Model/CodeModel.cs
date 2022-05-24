@@ -16,11 +16,13 @@ namespace Chat.Database.Model
         
         public Guid UserModelId { get; set; }
         
-        [Column("Restore_Code")]
+        [Column("restore_code")]
         public string Code { get; set; }
         
+        [Column("date_expiration")]
         public DateTime DateExpiration { get; set; }
         
+        [Column("code_purpose")]
         public CodePurpose CodePurpose { get; set; }
         
         

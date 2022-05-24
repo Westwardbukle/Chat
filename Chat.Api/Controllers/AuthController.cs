@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Code;
 using Chat.Common.Dto.Login;
 using Chat.Common.Result;
+using Chat.Common.User;
 using Chat.Core.Auth;
+using Chat.Core.Restoring;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,13 +20,16 @@ namespace Chat.Controllers
     public class AuthController : BaseController
     {
         private readonly IAuthService _authService;
+        private readonly IRestoringCode _restoringCode;
 
         public AuthController
         (
-            IAuthService authService
+            IAuthService authService,
+            IRestoringCode restoringCode
         )
         {
             _authService = authService;
+            _restoringCode = restoringCode;
         }
 
         /// <summary>
@@ -55,14 +61,13 @@ namespace Chat.Controllers
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Login(loginUserDto));
 
-        /*[Authorize]
-        [HttpGet]
-        public async Task<ActionResult> Verify()
-        {
-            return Ok();
-        }*/
         
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codeDto"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -71,5 +76,20 @@ namespace Chat.Controllers
         public async Task<ActionResult> EmailConfirm(CodeDto codeDto)
             => await ReturnResult<ResultContainer<CodeResponseDto>, CodeResponseDto>
                 (_authService.CodeСonfirmation(codeDto));
+
+
+        /// <summary>
+        /// sending code
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userDto"></param>
+        /// <returns></returns>
+        [HttpPost("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> SendRestoringCode(UserDto userDto)
+            => await ReturnResult<ResultContainer<CodeResponseDto>, CodeResponseDto>
+                (_restoringCode.SendRestoringCode(userDto));
     }
 }

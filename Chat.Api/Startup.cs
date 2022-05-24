@@ -8,6 +8,7 @@ using Chat.Core.Code;
 using Chat.Core.Hashing;
 using Chat.Core.Options;
 using Chat.Core.ProFiles;
+using Chat.Core.Restoring;
 using Chat.Core.Services;
 using Chat.Core.Smtp;
 using Chat.Core.Token;
@@ -56,6 +57,7 @@ namespace Chat
             
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IRestoringCode, RestoringCodeService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ISmtpService, SmtpSevice>();
@@ -126,7 +128,7 @@ namespace Chat
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key)
                     };
-                    //x.SaveToken = true;
+                    x.SaveToken = true;
                 });
         }
         

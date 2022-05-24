@@ -9,6 +9,7 @@ using Chat.Common.Dto.Login;
 using Chat.Common.Dto.User;
 using Chat.Common.Error;
 using Chat.Common.Result;
+using Chat.Common.User;
 using Chat.Core.Auth;
 using Chat.Core.Code;
 using Chat.Core.Hashing;
@@ -62,11 +63,6 @@ namespace Chat.Core.Services
                 return result;
             }
 
-            var mailCode = _code.GenerateRestoringCode();
-
-            await _smtpService.SendEmailAsync(registerUserDto.Email, mailCode);
-
-
             var user = new UserModel
             {
                 Id = id,
@@ -78,25 +74,13 @@ namespace Chat.Core.Services
                 Active = false,
                 DateTimeActivation = null,
             };
-
-
-            var code = new CodeModel()
-            {
-                Id = id,
-                Code = mailCode,
-                CodePurpose = CodePurpose.ConfirmEmail,
-                DateCreated = DateTime.Now,
-                DateExpiration = DateTime.Now.AddHours(2),
-                UserModelId = user.Id
-            };
-
-
+            
             await _userRepository.Create(user);
-            await _codeRepository.Create(code);
 
             result.ErrorType = ErrorType.Create;
             return result;
         }
+        
 
         public async Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto)
         {
