@@ -13,5 +13,6 @@ namespace Chat.Database
         {
             Database.EnsureCreated();
         }
+        
     }
 }

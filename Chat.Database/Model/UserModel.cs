@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Chat.Database.Model.Base;
+using Chat.Common.Base;
 
 namespace Chat.Database.Model
 {
@@ -19,8 +20,15 @@ namespace Chat.Database.Model
         [Column("password")]
         public string Password { get; set; }
         
-        [Column("Confirmed")]
+        [Column("confirmed")]
         public bool Active { get; set; }
+        
+        [Column("date_Time_activation")]
+        public DateTime? DateTimeActivation { get; set; }
+        
+        
 
+        public ICollection<CodeModel> CodeModel { get; set; }
+        
     }
 }

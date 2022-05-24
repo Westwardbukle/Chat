@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Code;
 using Chat.Common.Dto;
+using Chat.Common.Dto.Code;
 using Chat.Common.Dto.Login;
 using Chat.Common.Dto.User;
 using Chat.Common.Error;
@@ -53,17 +55,18 @@ namespace Chat.Core.Services
             var result = new ResultContainer<UserResponseDto>();
 
             var id = Guid.NewGuid();
-                
+
             if (_userRepository.GetOne(u => u.Nickname == registerUserDto.Nickname) is not null)
             {
                 result.ErrorType = ErrorType.BadRequest;
                 return result;
             }
-            
+
             var mailCode = _code.GenerateRestoringCode();
 
             await _smtpService.SendEmailAsync(registerUserDto.Email, mailCode);
-            
+
+
             var user = new UserModel
             {
                 Id = id,
@@ -72,20 +75,25 @@ namespace Chat.Core.Services
                 DateofBirth = registerUserDto.DateOfBirth,
                 Email = registerUserDto.Email,
                 Password = _hasher.HashPassword(registerUserDto.Password),
-                Active = false
+                Active = false,
+                DateTimeActivation = null,
             };
+
+
             var code = new CodeModel()
             {
                 Id = id,
                 Code = mailCode,
-                CodePurpose = CodePurpose.Registrarion,
+                CodePurpose = CodePurpose.ConfirmEmail,
                 DateCreated = DateTime.Now,
-                UserModel = user
+                DateExpiration = DateTime.Now.AddHours(2),
+                UserModelId = user.Id
             };
-            
+
+
             await _userRepository.Create(user);
             await _codeRepository.Create(code);
-            
+
             result.ErrorType = ErrorType.Create;
             return result;
         }
@@ -95,17 +103,47 @@ namespace Chat.Core.Services
             var result = new ResultContainer<UserResponseDto>();
 
             var trueUser = _userRepository.GetOne(u => u.Nickname == loginUserDto.Nickname);
-            
+
             if (!_hasher.VerifyHashedPassword(loginUserDto.Password, trueUser.Password))
             {
                 result.ErrorType = ErrorType.BadRequest;
                 return result;
             }
-            
+
             var user = _mapper.Map<UserModelDto>(trueUser);
             result = _mapper.Map<ResultContainer<UserResponseDto>>(trueUser);
             result.Data.Token = _tokenService.CreateToken(user);
+
+            return result;
+        }
+
+        public async Task<ResultContainer<CodeResponseDto>> CodeСonfirmation(CodeDto codeDto)
+        {
+            var result = new ResultContainer<CodeResponseDto>();
+            var code = _codeRepository.GetOne(c => c.UserModelId == _tokenService.GetCurrentUserId());
+
+            if (code is null)
+            {
+                result.ErrorType = ErrorType.BadRequest;
+                return result;
+            }
+
+            if (code.CodePurpose != CodePurpose.ConfirmEmail && code.DateExpiration > DateTime.Now)
+            {
+                result.ErrorType = ErrorType.BadRequest;
+                return result;
+            }
             
+            var user = _userRepository.GetOne(u => u.Id == code.Id); 
+            user.Active = true;
+            user.DateTimeActivation = DateTime.Now;
+
+            await _userRepository.Update(user);
+            
+            await _codeRepository.Delete(code.Id);
+            
+            result.ErrorType = ErrorType.Create;
+
             return result;
         }
     }

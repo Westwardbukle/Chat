@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Chat.Core.Validating;
+using Chat.Common.Validating;
 
 namespace Chat.Common.Dto
 {

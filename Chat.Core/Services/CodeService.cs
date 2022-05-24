@@ -1,6 +1,5 @@
 ﻿using System;
 using Chat.Core.Code;
-using Chat.Database.Repository.User;
 
 namespace Chat.Core.Services
 {

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Chat.Common.Dto;
-using Chat.Common.Dto.Login;
 using Chat.Common.Dto.Token;
 using Chat.Common.Dto.User;
 using Chat.Core.Options;

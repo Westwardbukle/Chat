@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Chat.Core.Validating;
+using Chat.Common.Validating;
 
 namespace Chat.Common.Dto.Login
 {
-    public class LoginUserDto : IValidatableObject
+    public class LoginUserDto
     {
         [Required] 
         public string Nickname { get; set; }
@@ -12,14 +12,5 @@ namespace Chat.Common.Dto.Login
         [RegularExpression(Consts.PasswordPattern, ErrorMessage = Consts.ErrorPassword)]
         public string Password { get; set; }
         
-        [Required]
-        public string? LoginCode { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            var errors = new List<ValidationResult>();
-            
-            return errors;
-        }
     }
 }

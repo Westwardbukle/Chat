@@ -1,5 +1,5 @@
 ﻿using System;
-using Chat.Database.Model.Base;
+using Chat.Common.Base;
 
 namespace Chat.Common.Dto.User
 {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Chat.Common.Validating;
 using Chat.Core.Smtp;
-using Chat.Core.Validating;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;

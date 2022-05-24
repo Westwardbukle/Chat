@@ -1,7 +1,6 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Chat.Database.Model.Base
+namespace Chat.Common.Base
 {
     public class BaseModel
     {

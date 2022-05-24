@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Chat.Common.Dto;
+using Chat.Common.Dto.Code;
 using Chat.Common.Dto.Login;
 using Chat.Common.Result;
 using Chat.Core.Auth;
@@ -54,11 +55,21 @@ namespace Chat.Controllers
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Login(loginUserDto));
 
-        [Authorize]
+        /*[Authorize]
         [HttpGet]
         public async Task<ActionResult> Verify()
         {
             return Ok();
-        }
+        }*/
+        
+        
+        [Authorize]
+        [HttpPost("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> EmailConfirm(CodeDto codeDto)
+            => await ReturnResult<ResultContainer<CodeResponseDto>, CodeResponseDto>
+                (_authService.CodeСonfirmation(codeDto));
     }
 }

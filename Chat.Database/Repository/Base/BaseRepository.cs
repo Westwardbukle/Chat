@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Chat.Database.Model.Base;
+using Chat.Common.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Repository.Base
@@ -23,6 +23,13 @@ namespace Chat.Database.Repository.Base
         {
             item.DateCreated = DateTime.Now;
             await _context.Set<TModel>().AddAsync(item);
+            await _context.SaveChangesAsync();
+            return item;
+        }
+        
+        public async Task<TModel> Update(TModel item)
+        {
+            _context.Set<TModel>().Update(item);
             await _context.SaveChangesAsync();
             return item;
         }

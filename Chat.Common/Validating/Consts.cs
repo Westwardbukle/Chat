@@ -1,4 +1,4 @@
-﻿namespace Chat.Core.Validating
+﻿namespace Chat.Common.Validating
 {
     public class Consts
     {
