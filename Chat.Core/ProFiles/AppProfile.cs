@@ -1,12 +1,10 @@
-﻿using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Chat.Common.Dto;
-using Chat.Common.Dto.Login;
 using Chat.Common.Dto.User;
 using Chat.Common.Result;
 using Chat.Database.Model;
 
-namespace Chat.Common.ProFiles
+namespace Chat.Core.ProFiles
 {
     public class AppProfile : Profile
     {

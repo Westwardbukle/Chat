@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Chat.Common.Code;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
 using Chat.Common.Dto.User;
@@ -12,6 +13,7 @@ using Chat.Core.Hashing;
 using Chat.Core.Smtp;
 using Chat.Core.Token;
 using Chat.Database.Model;
+using Chat.Database.Repository.Code;
 using Chat.Database.Repository.User;
 
 namespace Chat.Core.Services
@@ -24,6 +26,7 @@ namespace Chat.Core.Services
         private readonly ITokenService _tokenService;
         private readonly ISmtpService _smtpService;
         private readonly ICodeService _code;
+        private readonly ICodeRepository _codeRepository;
 
         public AuthService
         (
@@ -32,7 +35,8 @@ namespace Chat.Core.Services
             IPasswordHasher hasher,
             ITokenService tokenService,
             ISmtpService smtpService,
-            ICodeService code
+            ICodeService code,
+            ICodeRepository codeRepository
         )
         {
             _userRepository = userRepository;
@@ -41,6 +45,7 @@ namespace Chat.Core.Services
             _tokenService = tokenService;
             _smtpService = smtpService;
             _code = code;
+            _codeRepository = codeRepository;
         }
 
         public async Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto)
@@ -54,7 +59,7 @@ namespace Chat.Core.Services
                 result.ErrorType = ErrorType.BadRequest;
                 return result;
             }
-
+            
             var mailCode = _code.GenerateRestoringCode();
 
             await _smtpService.SendEmailAsync(registerUserDto.Email, mailCode);
@@ -67,15 +72,20 @@ namespace Chat.Core.Services
                 DateofBirth = registerUserDto.DateOfBirth,
                 Email = registerUserDto.Email,
                 Password = _hasher.HashPassword(registerUserDto.Password),
-                Active = false,
-                Code = mailCode
+                Active = false
+            };
+            var code = new CodeModel()
+            {
+                Id = id,
+                Code = mailCode,
+                CodePurpose = CodePurpose.Registrarion,
+                DateCreated = DateTime.Now,
+                UserModel = user
             };
             
-            
             await _userRepository.Create(user);
+            await _codeRepository.Create(code);
             
-            
-
             result.ErrorType = ErrorType.Create;
             return result;
         }

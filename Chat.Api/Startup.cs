@@ -3,15 +3,16 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using AutoMapper;
-using Chat.Common.ProFiles;
 using Chat.Core.Auth;
 using Chat.Core.Code;
 using Chat.Core.Hashing;
 using Chat.Core.Options;
+using Chat.Core.ProFiles;
 using Chat.Core.Services;
 using Chat.Core.Smtp;
 using Chat.Core.Token;
 using Chat.Database;
+using Chat.Database.Repository.Code;
 using Chat.Database.Repository.User;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,6 +60,7 @@ namespace Chat
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ISmtpService, SmtpSevice>();
             services.AddScoped<ICodeService, CodeService>();
+            services.AddScoped<ICodeRepository, CodeRepository>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));

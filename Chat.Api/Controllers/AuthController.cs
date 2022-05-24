@@ -29,9 +29,9 @@ namespace Chat.Controllers
         /// User registrarion
         /// </summary>
         /// <param name="registerUserDto"></param>
-        /// <response code="200">Return bearer</response>
+        /// <response code="201">User added</response>
         /// <response code="422">Validation Exception</response>
-        /// <response code="400">user already registered </response>
+        /// <response code="400">User already registered </response>
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

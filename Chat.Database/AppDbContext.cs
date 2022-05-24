@@ -6,6 +6,8 @@ namespace Chat.Database
     public class AppDbContext : DbContext
     {
         public DbSet<UserModel> UserModels { get; set; }
+        
+        public DbSet<CodeModel> CodeModels { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {

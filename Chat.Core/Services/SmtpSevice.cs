@@ -36,11 +36,11 @@ namespace Chat.Core.Services
             {
                 Text = message
             };
-            using var client = new SmtpClient();
-             client.Connect(_configurationSmtp, _configurationPort, true);
-             client.Authenticate(_configurationEmail, _configurationPassword);
-             client.Send(emailMessage);
-             client.Disconnect(true);
+           using var client = new SmtpClient();
+             await client.ConnectAsync(_configurationSmtp, _configurationPort, true);
+             await  client.AuthenticateAsync(_configurationEmail, _configurationPassword);
+             await client.SendAsync(emailMessage);
+             await client.DisconnectAsync(true);
         }
         
     }
