@@ -5,7 +5,6 @@ using Chat.Common.Base;
 
 namespace Chat.Database.Model
 {
-    [Table("Users")]
     public class UserModel : BaseModel
     {
         
@@ -27,6 +26,11 @@ namespace Chat.Database.Model
         public DateTime? DateTimeActivation { get; set; }
         
         
+
+        
+        public ICollection<MessageModel> MessageModels { get; set; }
+        
+        public ICollection<UserChatModel> UserChatModel { get; set; }
 
         public ICollection<CodeModel> CodeModel { get; set; }
         

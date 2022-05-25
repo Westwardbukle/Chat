@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Model
 {
-    [Index(nameof(UserModelId), nameof(Code), nameof(CodePurpose), IsUnique = true)]
+    [Index(nameof(UserId), nameof(Code), nameof(CodePurpose), IsUnique = true)]
     public class CodeModel : BaseModel
     {
         
-        public Guid UserModelId { get; set; }
+        public Guid UserId { get; set; }
         
         public string Code { get; set; }
         
@@ -22,7 +22,7 @@ namespace Chat.Database.Model
         public CodePurpose CodePurpose { get; set; }
         
         
-        
+        [ForeignKey(nameof(Id))]
         public UserModel UserModel { get; set; }
     }
 }

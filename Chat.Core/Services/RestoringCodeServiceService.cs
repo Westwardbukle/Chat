@@ -68,7 +68,7 @@ namespace Chat.Core.Services
                     CodePurpose = CodePurpose.ConfirmEmail,
                     DateCreated = DateTime.Now,
                     DateExpiration = DateTime.Now.AddHours(2),
-                    UserModelId = user.Id
+                    UserId = user.Id
                 };
                 
                 await _codeRepository.Create(newCode);
@@ -90,7 +90,7 @@ namespace Chat.Core.Services
                 CodePurpose = CodePurpose.ConfirmEmail,
                 DateCreated = DateTime.Now,
                 DateExpiration = DateTime.Now.AddHours(2),
-                UserModelId = user.Id
+                UserId = user.Id
             };
             
             await _codeRepository.Create(code);
@@ -102,7 +102,7 @@ namespace Chat.Core.Services
         public async Task<ResultContainer<CodeResponseDto>> CodeСonfirmation(CodeDto codeDto)
         {
             var result = new ResultContainer<CodeResponseDto>();
-            var code = _codeRepository.GetOne(c => c.UserModelId == _tokenService.GetCurrentUserId());
+            var code = _codeRepository.GetOne(c => c.UserId == _tokenService.GetCurrentUserId());
 
             if (code is null)
             {

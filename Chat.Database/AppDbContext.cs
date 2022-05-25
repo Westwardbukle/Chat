@@ -8,9 +8,18 @@ namespace Chat.Database
         public DbSet<UserModel> UserModels { get; set; }
         
         public DbSet<CodeModel> CodeModels { get; set; }
+        
+        public DbSet<ChatModel> ChatModels { get; set; }
+        
+        public DbSet<MessageModel> MessageModels { get; set; }
+        
+        public DbSet<UserChatModel> UserChatModels { get; set; }
+        
+        
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
         
