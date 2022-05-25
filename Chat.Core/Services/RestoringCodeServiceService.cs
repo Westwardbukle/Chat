@@ -8,32 +8,36 @@ using Chat.Common.User;
 using Chat.Core.Code;
 using Chat.Core.Restoring;
 using Chat.Core.Smtp;
+using Chat.Core.Token;
 using Chat.Database.Model;
 using Chat.Database.Repository.Code;
 using Chat.Database.Repository.User;
 
 namespace Chat.Core.Services
 {
-    public class RestoringCodeService : IRestoringCode
+    public class RestoringCodeServiceService : IRestoringCodeService
     {
 
         private readonly IUserRepository _userRepository;
         private readonly ICodeService _code;
         private readonly ISmtpService _smtpService;
         private readonly ICodeRepository _codeRepository;
+        private readonly ITokenService _tokenService;
         
-        public RestoringCodeService
+        public RestoringCodeServiceService
         (
             IUserRepository userRepository,
             ICodeService code,
             ISmtpService smtpService,
-            ICodeRepository codeRepository
+            ICodeRepository codeRepository,
+            ITokenService tokenService
         )
         {
             _userRepository = userRepository;
             _code = code;
             _smtpService = smtpService;
             _codeRepository = codeRepository;
+            _tokenService = tokenService;
         }
         
         
@@ -92,6 +96,36 @@ namespace Chat.Core.Services
             await _codeRepository.Create(code);
 
             result.ErrorType = ErrorType.Create;
+            return result;
+        }
+        
+        public async Task<ResultContainer<CodeResponseDto>> CodeСonfirmation(CodeDto codeDto)
+        {
+            var result = new ResultContainer<CodeResponseDto>();
+            var code = _codeRepository.GetOne(c => c.UserModelId == _tokenService.GetCurrentUserId());
+
+            if (code is null)
+            {
+                result.ErrorType = ErrorType.BadRequest;
+                return result;
+            }
+
+            if (code.CodePurpose != CodePurpose.ConfirmEmail && code.DateExpiration > DateTime.Now)
+            {
+                result.ErrorType = ErrorType.BadRequest;
+                return result;
+            }
+            
+            var user = _userRepository.GetOne(u => u.Id == code.Id); 
+            user.Active = true;
+            user.DateTimeActivation = DateTime.Now;
+
+            await _userRepository.Update(user);
+            
+            await _codeRepository.Delete(code.Id);
+            
+            result.ErrorType = ErrorType.Create;
+
             return result;
         }
     }

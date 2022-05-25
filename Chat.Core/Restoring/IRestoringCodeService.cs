@@ -5,8 +5,9 @@ using Chat.Common.User;
 
 namespace Chat.Core.Restoring
 {
-    public interface IRestoringCode
+    public interface IRestoringCodeService
     {
         Task<ResultContainer<CodeResponseDto>> SendRestoringCode(UserDto userDto);
+        Task<ResultContainer<CodeResponseDto>> CodeСonfirmation(CodeDto codeDto);
     }
 }

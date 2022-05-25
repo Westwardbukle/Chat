@@ -100,35 +100,5 @@ namespace Chat.Core.Services
 
             return result;
         }
-
-        public async Task<ResultContainer<CodeResponseDto>> CodeСonfirmation(CodeDto codeDto)
-        {
-            var result = new ResultContainer<CodeResponseDto>();
-            var code = _codeRepository.GetOne(c => c.UserModelId == _tokenService.GetCurrentUserId());
-
-            if (code is null)
-            {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
-            }
-
-            if (code.CodePurpose != CodePurpose.ConfirmEmail && code.DateExpiration > DateTime.Now)
-            {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
-            }
-            
-            var user = _userRepository.GetOne(u => u.Id == code.Id); 
-            user.Active = true;
-            user.DateTimeActivation = DateTime.Now;
-
-            await _userRepository.Update(user);
-            
-            await _codeRepository.Delete(code.Id);
-            
-            result.ErrorType = ErrorType.Create;
-
-            return result;
-        }
     }
 }

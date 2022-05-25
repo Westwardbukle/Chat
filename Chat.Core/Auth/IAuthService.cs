@@ -12,6 +12,5 @@ namespace Chat.Core.Auth
     {
         Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto);
         Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto);
-        Task<ResultContainer<CodeResponseDto>> CodeСonfirmation(CodeDto codeDto);
     }
 }

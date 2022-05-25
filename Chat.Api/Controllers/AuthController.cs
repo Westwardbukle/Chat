@@ -20,16 +20,16 @@ namespace Chat.Controllers
     public class AuthController : BaseController
     {
         private readonly IAuthService _authService;
-        private readonly IRestoringCode _restoringCode;
+        private readonly IRestoringCodeService _restoringCodeService;
 
         public AuthController
         (
             IAuthService authService,
-            IRestoringCode restoringCode
+            IRestoringCodeService restoringCodeService
         )
         {
             _authService = authService;
-            _restoringCode = restoringCode;
+            _restoringCodeService = restoringCodeService;
         }
 
         /// <summary>
@@ -46,8 +46,7 @@ namespace Chat.Controllers
         public async Task<ActionResult> Registration([FromBody] RegisterUserDto registerUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Registration(registerUserDto));
-
-
+        
         /// <summary>
         /// User login
         /// </summary>
@@ -60,36 +59,5 @@ namespace Chat.Controllers
         public async Task<ActionResult> Login(LoginUserDto loginUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Login(loginUserDto));
-
-        
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="codeDto"></param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost("[action]")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> EmailConfirm(CodeDto codeDto)
-            => await ReturnResult<ResultContainer<CodeResponseDto>, CodeResponseDto>
-                (_authService.CodeСonfirmation(codeDto));
-
-
-        /// <summary>
-        /// sending code
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="userDto"></param>
-        /// <returns></returns>
-        [HttpPost("[action]")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> SendRestoringCode(UserDto userDto)
-            => await ReturnResult<ResultContainer<CodeResponseDto>, CodeResponseDto>
-                (_restoringCode.SendRestoringCode(userDto));
     }
 }

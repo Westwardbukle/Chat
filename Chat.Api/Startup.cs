@@ -57,7 +57,7 @@ namespace Chat
             
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IRestoringCode, RestoringCodeService>();
+            services.AddScoped<IRestoringCodeService, RestoringCodeServiceService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ISmtpService, SmtpSevice>();

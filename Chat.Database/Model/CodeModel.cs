@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Model
 {
-    [Table("RestoreCodes")]
     [Index(nameof(UserModelId), nameof(Code), nameof(CodePurpose), IsUnique = true)]
     public class CodeModel : BaseModel
     {
