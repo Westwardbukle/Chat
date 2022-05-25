@@ -49,6 +49,32 @@ namespace Chat.Core.Services
                 return result;
             }
 
+            var lastCode = _codeRepository.GetOne(c => c.Id == user.Id);
+
+            if (lastCode is null)
+            {
+                var newMailCode = _code.GenerateRestoringCode();
+            
+                await _smtpService.SendEmailAsync(user.Email, newMailCode);
+                
+                var newCode = new CodeModel()
+                {
+                    Id = user.Id,
+                    Code = newMailCode,
+                    CodePurpose = CodePurpose.ConfirmEmail,
+                    DateCreated = DateTime.Now,
+                    DateExpiration = DateTime.Now.AddHours(2),
+                    UserModelId = user.Id
+                };
+                
+                await _codeRepository.Create(newCode);
+
+                result.ErrorType = ErrorType.Create;
+                return result;
+            }
+
+            await _codeRepository.Delete(lastCode.Id);
+            
             var mailCode = _code.GenerateRestoringCode();
             
             await _smtpService.SendEmailAsync(user.Email, mailCode);
