@@ -12,5 +12,8 @@ namespace Chat.Core.Chat
         Task<ResultContainer<ChatResponseDto>> CreatePersonalChat(Guid user1, Guid user2);
 
         Task<ResultContainer<ChatResponseDto>> CreateCommonChat(CreateCommonChatDto commonChatDto);
+
+        Task<ResultContainer<ChatResponseDto>> InviteUserToCommonChat(Guid chatId,
+            InviteUserCommonChatDto inviteUserCommonChatDto);
     }
 }

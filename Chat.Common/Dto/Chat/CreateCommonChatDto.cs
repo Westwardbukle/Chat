@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Chat.Common.Chat;
 
 namespace Chat.Common.Dto.Chat
 {
     public class CreateCommonChatDto
     {
-        public List<Guid> userIds { get; set; }
-
-        public ChatType chatType { get; set; } = ChatType.Common;
-
-        public Guid? adminId { get; set; } = null;
+        [Required]
+        public Guid AdminId { get; set; }
+        [Required]
+        public string Name { get; set; }
+    }
+    
+    public class InviteUserCommonChatDto
+    {
+        public List<Guid> UserIds { get; set; }
     }
 }

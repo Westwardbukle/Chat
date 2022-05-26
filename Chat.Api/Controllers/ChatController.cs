@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Chat.Common.Chat;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Chat;
+using Chat.Common.Dto.Message;
 using Chat.Common.Result;
 using Chat.Core.Chat;
 using Chat.Validation;
@@ -14,7 +15,7 @@ namespace Chat.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("/api/v{version:apiVersion}/[controller]")]
+    [Route("/api/v{version:apiVersion}/chats")]
     public class ChatController : BaseController
     {
         private readonly IChatService _chatService;
@@ -28,8 +29,8 @@ namespace Chat.Controllers
             _chatService = chatService;
         }
         
-        /// <summary>
-        /// 
+        /*/// <summary>
+        ///  
         /// </summary>
         /// <param name="user1"></param>
         /// <param name="user2"></param>
@@ -37,18 +38,37 @@ namespace Chat.Controllers
         [HttpPost("users/{recepientId}/messages")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> SendPersonalMessage(Guid recepientId,/*Дто с получателем и тектом*/  )
+        public async Task<ActionResult> SendPersonalMessage(Guid recepientId, PersonalSenderDto personalSenderDto )
             => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
-                (_chatService.CreatePersonalChat( recepientId, ));
+                (_chatService.CreatePersonalChat( recepientId, personalSenderDto ));*/
 
-        [HttpPost("chats")]
+        
+        /// <summary>
+        /// Create common chat
+        /// </summary>
+        /// <param name="commonChatDto"></param>
+        /// <returns></returns>
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
             => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
                 (_chatService.CreateCommonChat(commonChatDto));
-
-        /*public async Task<ActionResult> Conversation(ChatRequestDto chatDto)
-            =>await  _chatService#2##1#*/
+        
+        /// <summary>
+        /// Invite Users in chat
+        /// </summary>
+        /// <param name="chatId"></param>
+        /// <param name="inviteUserCommonChatDto"></param>
+        /// <returns></returns>
+        [HttpPost("{chatId}/users")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto)
+            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
+                (_chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto));
+        
     }
 }

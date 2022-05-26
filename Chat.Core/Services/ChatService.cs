@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Chat.Common.Chat;
 using Chat.Common.Dto.Chat;
@@ -80,24 +81,58 @@ namespace Chat.Core.Services
         public async Task<ResultContainer<ChatResponseDto>> CreateCommonChat(CreateCommonChatDto commonChatDto)
         {
             var result = new ResultContainer<ChatResponseDto>();
-
+            
             var chatId = Guid.NewGuid();
+            
+            var userChat = new UserChatModel
+            {
+                UserId = commonChatDto.AdminId,
+                ChatId = chatId,
+                Role = Role.Administrator
+            };
 
             var chat = new ChatModel
             {
                 Id = chatId,
-                Name = null,
-                Type = commonChatDto.chatType,
+                Name = commonChatDto.Name,
+                Type = ChatType.Common,
                 UserChats = new List<UserChatModel>()
             };
             
-            foreach (var userId in commonChatDto.userIds)
+            chat.UserChats.Add(userChat);
+            
+            await _chatRepository.Create(chat);
+
+            return result;
+        }
+        
+        public async Task<ResultContainer<ChatResponseDto>> InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto)
+        {
+            var result = new ResultContainer<ChatResponseDto>();
+            
+            var chat = _chatRepository.GetOne(u => u.Id == chatId);
+            
+            
+            foreach (var user in inviteUserCommonChatDto.UserIds.ToList())
+            {
+                var isUserExistsDb = _userRepository.GetOne(u => u.Id == user) is not null;
+                
+                var isUsersExistsInChat = _userChatRepository.GetOne(u => u.ChatId == chatId) is not null;
+                
+                if (!isUserExistsDb || !isUsersExistsInChat)
+                {
+                    inviteUserCommonChatDto.UserIds.Remove(user);
+                }
+            }
+            
+            
+            foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
                 var userChat = new UserChatModel
                 {
                     UserId = userId,
                     ChatId = chatId,
-                    Role = commonChatDto.adminId == userId ? Role.Administrator : Role.User
+                    Role = Role.User
                 };
                 
                 chat.UserChats.Add(userChat);
