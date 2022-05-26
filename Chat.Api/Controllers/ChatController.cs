@@ -1,7 +1,13 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Chat.Common.Chat;
+using Chat.Common.Dto;
 using Chat.Common.Dto.Chat;
+using Chat.Common.Result;
 using Chat.Core.Chat;
+using Chat.Validation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Controllers
@@ -22,14 +28,27 @@ namespace Chat.Controllers
             _chatService = chatService;
         }
         
-        /*public async Task<ActionResult> CreateChat(ChatRequestDto chatDto)
-        =>await  _chatService
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user1"></param>
+        /// <param name="user2"></param>
+        /// <returns></returns>
+        [HttpPost("users/{recepientId}/messages")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> SendPersonalMessage(Guid recepientId,/*Дто с получателем и тектом*/  )
+            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
+                (_chatService.CreatePersonalChat( recepientId, ));
 
-        
-        public async Task<ActionResult> DeleteChat(ChatRequestDto chatDto)
-            =>await  _chatService
-        
-        public async Task<ActionResult> CreateCommonChat(ChatRequestDto chatDto)
-            =>await  _chatService*/
+        [HttpPost("chats")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
+            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
+                (_chatService.CreateCommonChat(commonChatDto));
+
+        /*public async Task<ActionResult> Conversation(ChatRequestDto chatDto)
+            =>await  _chatService#2##1#*/
     }
 }

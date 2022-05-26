@@ -1,6 +1,9 @@
-﻿namespace Chat.Database.Repository.UserChat
+﻿using Chat.Database.Model;
+using Chat.Database.Repository.Base;
+
+namespace Chat.Database.Repository.UserChat
 {
-    public interface IUserChatRepository
+    public interface IUserChatRepository : IBaseRepository<UserChatModel>
     {
         
     }

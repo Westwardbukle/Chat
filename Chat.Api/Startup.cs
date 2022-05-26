@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using AutoMapper;
 using Chat.Core.Auth;
+using Chat.Core.Chat;
 using Chat.Core.Code;
 using Chat.Core.Hashing;
 using Chat.Core.Options;
@@ -13,8 +14,11 @@ using Chat.Core.Services;
 using Chat.Core.Smtp;
 using Chat.Core.Token;
 using Chat.Database;
+using Chat.Database.Repository.Chat;
 using Chat.Database.Repository.Code;
+using Chat.Database.Repository.Message;
 using Chat.Database.Repository.User;
+using Chat.Database.Repository.UserChat;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -56,13 +60,18 @@ namespace Chat
             services.AddScoped<ValidationFilterAttribute>();
             
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICodeRepository, CodeRepository>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IUserChatRepository, UserChatRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRestoringCodeService, RestoringCodeServiceService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ISmtpService, SmtpSevice>();
             services.AddScoped<ICodeService, CodeService>();
-            services.AddScoped<ICodeRepository, CodeRepository>();
+            services.AddScoped<IChatService, ChatService>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));

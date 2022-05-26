@@ -19,7 +19,7 @@ namespace Chat.Database
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
         
