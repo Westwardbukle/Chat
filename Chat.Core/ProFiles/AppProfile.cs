@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Chat.Common.Dto;
+using Chat.Common.Dto.Chat;
 using Chat.Common.Dto.User;
 using Chat.Common.Result;
 using Chat.Database.Model;
@@ -16,6 +17,13 @@ namespace Chat.Core.ProFiles
                     opt.MapFrom(f => f));
             CreateMap<UserModel, UserModelDto>();
             
+            
+            CreateMap<ChatModel, ChatResponseDto>();
+            CreateMap<ChatModel, ResultContainer<ChatResponseDto>>()
+                .ForMember("Data", opt =>
+                    opt.MapFrom(f => f));
+
+            CreateMap<ChatResponseDto, ResultContainer<ChatResponseDto>>();
         }
     }
 }

@@ -100,5 +100,16 @@ namespace Chat.Core.Services
 
             return result;
         }
+
+        /*public async Task<ResultContainer<UserResponseDto>> GetAllUsers()
+        {
+            var result = new ResultContainer<UserResponseDto>();
+
+            var allUsers = _userRepository.GetAllObjects();
+
+            var result = _mapper.Map<ResultContainer<UserResponseDto>>(allUsers);
+
+            return result;
+        }*/
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Chat.Common.Base;
@@ -18,6 +19,9 @@ namespace Chat.Database.Repository.Base
 
         public TModel GetOne(Func<TModel, bool> predicate)
             => _context.Set<TModel>().AsNoTracking().FirstOrDefault(predicate);
+        
+        public IEnumerable<TModel> GetAllObjects()
+            => _context.Set<TModel>().AsNoTracking().ToList();
 
         public async Task<TModel> Create(TModel item)
         {
