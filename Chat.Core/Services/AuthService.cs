@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Chat.Common.Code;
 using Chat.Common.Dto;
-using Chat.Common.Dto.Code;
 using Chat.Common.Dto.Login;
 using Chat.Common.Dto.User;
 using Chat.Common.Error;
@@ -74,13 +71,13 @@ namespace Chat.Core.Services
                 Active = false,
                 DateTimeActivation = null,
             };
-            
+
             await _userRepository.Create(user);
 
             result.ErrorType = ErrorType.Create;
             return result;
         }
-        
+
 
         public async Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto)
         {
@@ -101,15 +98,28 @@ namespace Chat.Core.Services
             return result;
         }
 
-        /*public async Task<ResultContainer<UserResponseDto>> GetAllUsers()
+        public async Task<ResultContainer<UsersReturnDto>> GetAllUsers()
+        {
+            var result = new ResultContainer<UsersReturnDto>();
+            
+            var allUsers = _userRepository.GetAllObjects();
+            
+            result = _mapper.Map<ResultContainer<UsersReturnDto>>(allUsers);
+            
+            return result;
+        }
+
+        public async Task<ResultContainer<UserResponseDto>> UpdateUser(string nickname, string newnick)
         {
             var result = new ResultContainer<UserResponseDto>();
 
-            var allUsers = _userRepository.GetAllObjects();
+            var user = _userRepository.GetOne(u => u.Nickname == nickname);
 
-            var result = _mapper.Map<ResultContainer<UserResponseDto>>(allUsers);
+            user.Nickname = newnick;
+
+            await _userRepository.Update(user);
 
             return result;
-        }*/
+        }
     }
 }

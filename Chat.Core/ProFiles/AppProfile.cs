@@ -23,7 +23,7 @@ namespace Chat.Core.ProFiles
                 .ForMember("Data", opt =>
                     opt.MapFrom(f => f));
 
-            CreateMap<ChatResponseDto, ResultContainer<ChatResponseDto>>();
+            
         }
     }
 }
