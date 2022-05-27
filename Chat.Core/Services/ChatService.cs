@@ -111,39 +111,25 @@ namespace Chat.Core.Services
             return result;
         }
 
-        public async Task<ResultContainer<ChatResponseDto>> InviteUserToCommonChat(Guid chatId,
-            InviteUserCommonChatDto inviteUserCommonChatDto)
+        public async Task InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto)
         {
-            var result = new ResultContainer<ChatResponseDto>();
-
-            var chat = _chatRepository.GetOne(u => u.Id == chatId);
-
-
-            foreach (var user in inviteUserCommonChatDto.UserIds.ToList())
-            {
-                var isUserExistsDb = _userRepository.GetOne(u => u.Id == user) is not null;
-
-                var isUsersExistsInChat = _userChatRepository.GetOne(u => u.ChatId == chatId) is not null;
-
-                if (!isUserExistsDb || !isUsersExistsInChat)
-                {
-                    inviteUserCommonChatDto.UserIds.Remove(user);
-                }
-            }
-            
             foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
-                var userChat = new UserChatModel
+                var isUserExistsDb = _userRepository.GetOne(u => u.Id == userId) is not null;
+                var isUsersExistsInChat = _userChatRepository.GetOne(u => u.ChatId == chatId) is not null;
+
+                if (isUserExistsDb && !isUsersExistsInChat)
                 {
-                    UserId = userId,
-                    ChatId = chatId,
-                    Role = Role.User
-                };
+                    var userChat = new UserChatModel
+                    {
+                        UserId = userId,
+                        ChatId = chatId,
+                        Role = Role.User
+                    };
                 
-                await _userChatRepository.Create(userChat);
+                    await _userChatRepository.Create(userChat);
+                }
             }
-            
-            return result;
         }
         
         public async Task<ResultContainer<ChatResponseDto>> GetAllChats()
@@ -172,9 +158,9 @@ namespace Chat.Core.Services
         {
             var result = new ResultContainer<ChatResponseDto>();
 
-            var userchat = _userChatRepository.GetOne(u => u.UserId == userId && u.ChatId == chatId);
+            var userChat = _userChatRepository.GetOne(u => u.UserId == userId && u.ChatId == chatId);
 
-            await _userChatRepository.Delete(userchat.Id);
+            await _userChatRepository.Delete(userChat.Id);
 
             return result;
         }

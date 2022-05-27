@@ -55,7 +55,7 @@ namespace Chat.Controllers
             => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
                 (_chatService.CreateCommonChat(commonChatDto));
 
-        /// <summary>
+        /*/// <summary>
         /// Invite Users in chat
         /// </summary>
         /// <param name="chatId"></param>
@@ -67,8 +67,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> InviteUserToCommonChat(Guid chatId,
             InviteUserCommonChatDto inviteUserCommonChatDto)
-            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
-                (_chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto));
+            => ReturnResult<>(_chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto))*/
 
         /// <summary>
         ///  Get all chats

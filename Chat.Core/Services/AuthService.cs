@@ -109,13 +109,13 @@ namespace Chat.Core.Services
             return result;
         }
 
-        public async Task<ResultContainer<UserResponseDto>> UpdateUser(string nickname, string newnick)
+        public async Task<ResultContainer<UserResponseDto>> UpdateUser(string nickname, string newNick)
         {
             var result = new ResultContainer<UserResponseDto>();
 
             var user = _userRepository.GetOne(u => u.Nickname == nickname);
 
-            user.Nickname = newnick;
+            user.Nickname = newNick;
 
             await _userRepository.Update(user);
 

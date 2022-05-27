@@ -7,6 +7,7 @@ using Chat.Core.Auth;
 using Chat.Core.Chat;
 using Chat.Core.Code;
 using Chat.Core.Hashing;
+using Chat.Core.Message;
 using Chat.Core.Options;
 using Chat.Core.ProFiles;
 using Chat.Core.Restoring;
@@ -69,9 +70,10 @@ namespace Chat
             services.AddScoped<IRestoringCodeService, RestoringCodeServiceService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<ISmtpService, SmtpSevice>();
+            services.AddScoped<ISmtpService, SmtpService>();
             services.AddScoped<ICodeService, CodeService>();
             services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));

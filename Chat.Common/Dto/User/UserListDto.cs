@@ -3,8 +3,8 @@ using Chat.Common.User;
 
 namespace Chat.Common.Dto.User
 {
-    public class AllUserDto
+     class UserListDto
     {
-        private List<UserModelDto> Usermodels { get; set; }
+        private List<UsersReturnDto> UserReturn { get; set; }
     }
 }

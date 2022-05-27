@@ -21,7 +21,6 @@ namespace Chat.Database.Model
         
         public CodePurpose CodePurpose { get; set; }
         
-        
         [ForeignKey(nameof(Id))]
         public UserModel UserModel { get; set; }
     }

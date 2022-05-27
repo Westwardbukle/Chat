@@ -6,7 +6,6 @@ namespace Chat.Database.Model
 {
     public class MessageModel : BaseModel
     {
-        
         public string Text { get; set; }
         
         public Guid UserId { get; set; }

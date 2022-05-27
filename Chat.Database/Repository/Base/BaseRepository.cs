@@ -44,10 +44,14 @@ namespace Chat.Database.Repository.Base
         public async Task<TModel> Delete(Guid id)
         {
             var item = await _context.Set<TModel>().FindAsync(id);
+            
             if (item == null)
                 return null;
+            
             _context.Set<TModel>().Remove(item);
+            
             await _context.SaveChangesAsync();
+            
             return item;
         }
     }

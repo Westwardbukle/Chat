@@ -5,6 +5,6 @@
         NotFound = 1,
         BadRequest = 2,
         Unauthorized = 3,
-        Create =4
+        Create = 4
     }
 }

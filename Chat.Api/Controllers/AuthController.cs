@@ -1,14 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Chat.Common.Dto;
-using Chat.Common.Dto.Code;
 using Chat.Common.Dto.Login;
 using Chat.Common.Result;
 using Chat.Common.User;
 using Chat.Core.Auth;
 using Chat.Core.Restoring;
 using Chat.Validation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -59,5 +56,32 @@ namespace Chat.Controllers
         public async Task<ActionResult> Login(LoginUserDto loginUserDto)
             => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
                 (_authService.Login(loginUserDto));
+        
+        /// <summary>
+        ///  Get all users
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Users")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> GetAllUsers()
+            => await ReturnResult<ResultContainer<UsersReturnDto>, UsersReturnDto>
+                (_authService.GetAllUsers());
+        
+        /// <summary>
+        /// Update user nickname
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <param name="newNick"></param>
+        /// <returns></returns>
+        [HttpPut("Users/{nickname}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> UpdateUser(string nickname, string newNick)
+            => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
+                (_authService.UpdateUser(nickname, newNick));
+        
     }
 }

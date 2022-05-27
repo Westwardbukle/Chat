@@ -11,8 +11,7 @@ namespace Chat.Core.Chat
 
         Task<ResultContainer<ChatResponseDto>> CreateCommonChat(CreateCommonChatDto commonChatDto);
 
-        Task<ResultContainer<ChatResponseDto>> InviteUserToCommonChat(Guid chatId,
-            InviteUserCommonChatDto inviteUserCommonChatDto);
+        Task InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto);
 
         Task<ResultContainer<ChatResponseDto>> GetAllChats();
 
