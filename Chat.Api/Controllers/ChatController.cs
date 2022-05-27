@@ -23,12 +23,11 @@ namespace Chat.Controllers
         public ChatController
         (
             IChatService chatService
-            
         )
         {
             _chatService = chatService;
         }
-        
+
         /*/// <summary>
         ///  
         /// </summary>
@@ -42,7 +41,7 @@ namespace Chat.Controllers
             => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
                 (_chatService.CreatePersonalChat( recepientId, personalSenderDto ));*/
 
-        
+
         /// <summary>
         /// Create common chat
         /// </summary>
@@ -55,7 +54,7 @@ namespace Chat.Controllers
         public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
             => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
                 (_chatService.CreateCommonChat(commonChatDto));
-        
+
         /// <summary>
         /// Invite Users in chat
         /// </summary>
@@ -66,9 +65,52 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto)
+        public async Task<ActionResult> InviteUserToCommonChat(Guid chatId,
+            InviteUserCommonChatDto inviteUserCommonChatDto)
             => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
                 (_chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto));
+
+        /// <summary>
+        ///  Get all chats
+        /// </summary>
+        /// <returns>List with chat names</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> GetAllChats()
+            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
+                (_chatService.GetAllChats());
+
+        
+        /// <summary>
+        /// UpdateChat
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpPut("{chatId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> UpdateChat(Guid chatId, string name)
+            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
+                (_chatService.UpdateChat(chatId, name));
+        
+        
+        /// <summary>
+        /// Delete user in chat
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="chatId"></param>
+        /// <returns></returns>
+        [HttpDelete("{chatId}/users/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> RemoveUserInChat(Guid userId, Guid chatId)
+            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
+                (_chatService.RemoveUserInChat(userId, chatId));
         
     }
 }

@@ -130,8 +130,7 @@ namespace Chat.Core.Services
                     inviteUserCommonChatDto.UserIds.Remove(user);
                 }
             }
-
-
+            
             foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
                 var userChat = new UserChatModel
@@ -140,16 +139,13 @@ namespace Chat.Core.Services
                     ChatId = chatId,
                     Role = Role.User
                 };
-
-                chat.UserChats.Add(userChat);
+                
+                await _userChatRepository.Create(userChat);
             }
-
-            await _chatRepository.Create(chat);
-
+            
             return result;
         }
-
-
+        
         public async Task<ResultContainer<ChatResponseDto>> GetAllChats()
         {
             var result = new ResultContainer<ChatResponseDto>();
@@ -161,8 +157,7 @@ namespace Chat.Core.Services
             result = _mapper.Map<ResultContainer<ChatResponseDto>>(chatModels);
             return result;
         }
-
-
+        
         public async Task<ResultContainer<ChatResponseDto>> UpdateChat(Guid id, string name)
         {
             var result = new ResultContainer<ChatResponseDto>();
@@ -170,24 +165,6 @@ namespace Chat.Core.Services
             var chat = _chatRepository.GetOne(c => c.Id == id);
             chat.Name = name;
             await _chatRepository.Update(chat);
-            return result;
-        }
-
-
-        public async Task<ResultContainer<ChatResponseDto>> AddUserInChat(Guid UserId, Guid chatId)
-        {
-            var result = new ResultContainer<ChatResponseDto>();
-
-            var user = _userRepository.GetById(UserId);
-
-            var userchat = new UserChatModel
-            {
-                UserId = UserId,
-                ChatId = chatId,
-                Role = Role.User,
-            };
-
-            await _userChatRepository.Create(userchat);
             return result;
         }
         
