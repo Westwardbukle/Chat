@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using Chat.Common.Dto.Message;
 using Chat.Core.Chat;
 using Chat.Core.Message;
 using Chat.Database.Model;
@@ -17,19 +20,22 @@ namespace Chat.Core.Services
         private readonly IChatService _chatService;
         private readonly IChatRepository _chatRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
         public MessageService
         (
             IMessageRepository messageRepository,
             IChatService chatService,
             IChatRepository chatRepository,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            IMapper mapper
         )
         {
             _messageRepository = messageRepository;
             _chatService = chatService;
             _chatRepository = chatRepository;
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
 
@@ -55,15 +61,18 @@ namespace Chat.Core.Services
 
         }
 
-        /*public async Task<ResultContainer<MessageResponseDto>> GetAllMessageInChat(Guid chatId)
+        public async Task<ActionResult> GetAllMessageInChat(Guid chatId)
         {
-            var result = new ResultContainer<MessageResponseDto>();
-            
-            
-            
+            var chatIsReal = _chatRepository.GetOne(c => c.Id == chatId) is null;
 
-            return result;
-        }*/
+            if (chatIsReal) return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            
+            var allMessages = _messageRepository.GetByFilter(m => m.ChatId == chatId);
+
+            var listMess = _mapper.Map<List<AllMessagesResponseDto>>(allMessages);
+            
+            return new OkObjectResult(listMess);
+        }
         
         
         

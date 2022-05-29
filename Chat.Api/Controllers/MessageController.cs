@@ -35,6 +35,19 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> SendMessage(Guid userId, Guid chatId,[Required] string text)
             => await _messageService.SendMessage(userId, chatId, text);
+        
+        
+        /// <summary>
+        /// Get all messages in chat
+        /// </summary>
+        /// <param name="chat id"></param>
+        /// <returns> ListMessages in chat</returns>
+        [HttpGet("chat/{chatId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> GetAllMessage(Guid chatId)
+            => await _messageService.GetAllMessageInChat(chatId);
 
     }
 }
