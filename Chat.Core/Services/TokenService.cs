@@ -50,7 +50,7 @@ namespace Chat.Core.Services
 
             var token = handler.WriteToken(securityToken);
 
-            return new TokenModel(token, tokenExpiration.Ticks);
+            return new TokenModel(token);
         }
         private static IEnumerable<Claim> GetClaims(UserModelDto user)
         {

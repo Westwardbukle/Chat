@@ -4,6 +4,6 @@ namespace Chat.Common.Dto
 {
     public class UserResponseDto
     {
-        public TokenModel Token { get; set; }
+        public string Token { get; set; }
     }
 }

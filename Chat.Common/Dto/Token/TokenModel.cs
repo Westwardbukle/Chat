@@ -4,19 +4,19 @@ namespace Chat.Common.Dto.Token
 {
     public class TokenModel
     {
-        public TokenModel(string token, long expiration)
+        public TokenModel(string token)
         {
             if(string.IsNullOrWhiteSpace(token))
                 throw new ArgumentException("Invalid token.");
 
-            if(expiration <= 0)
-                throw new ArgumentException("Invalid expiration.");
+            /*if(expiration <= 0)
+                throw new ArgumentException("Invalid expiration.");*/
 
             Token = token;
-            Expiration = expiration;
+            //Expiration = expiration;
         }
 
         public string Token { get; set; }
-        public long Expiration { get; set; }
+        //public long Expiration { get; set; }
     }
 }

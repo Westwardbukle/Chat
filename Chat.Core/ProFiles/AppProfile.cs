@@ -20,32 +20,20 @@ namespace Chat.Core.ProFiles
             CreateMap<UserModel, UserModelDto>();
             
             
+            
+            
             CreateMap<ChatModel, ChatResponseDto>();
-            CreateMap<ChatModel, ResultContainer<ChatResponseDto>>()
-                .ForMember("Data", opt =>
-                    opt.MapFrom(f => f));
-
             
-            CreateMap<List<ChatModel>, ResultContainer<ChatResponseDto>>()
-                .ForMember("Data", opt
-                    => opt.MapFrom(p => p));
-        
-            CreateMap<List<ChatModel>, ChatResponseDto>()
-                .ForMember("Chats", opt
-                    => opt.MapFrom(p => p));
-
-            CreateMap<ChatModel, AllChatsDto>();
+            CreateMap<ChatModel, List<ChatResponseDto>>();
             
             
-            CreateMap<List<UserModel>, ResultContainer<AllUserDto>>()
-                .ForMember("Data", opt
-                    => opt.MapFrom(p => p));
+            
 
-            CreateMap<List<UserModel>, AllUserDto>();
-                /*.ForMember("Chats", opt
-                    => opt.MapFrom(p => p));*/
 
-            CreateMap<UserModel, UsersReturnDto>();
+
+            CreateMap<UserModel, GetAllUsersDto>();
+            
+            CreateMap<UserModel, List<GetAllUsersDto>>();
         }
     }
 }

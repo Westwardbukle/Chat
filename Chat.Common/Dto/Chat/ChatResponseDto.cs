@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using Chat.Common.Base;
 using Chat.Common.Chat;
 
 namespace Chat.Common.Dto.Chat
 {
-    public class ChatResponseDto
+    public class ChatResponseDto : BaseModel
     {
-        public List<AllChatsDto> Chats { get; set; }
+        public string? Name { get; set; }
+        
+        public ChatType Type { get; set; }
     }
 }

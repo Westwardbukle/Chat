@@ -15,6 +15,7 @@ namespace Chat.Common.Dto.Chat
     
     public class InviteUserCommonChatDto
     {
+        [Required]
         public List<Guid> UserIds { get; set; }
     }
 }

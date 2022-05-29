@@ -13,6 +13,8 @@ using Chat.Database.Model;
 using Chat.Database.Repository.Chat;
 using Chat.Database.Repository.User;
 using Chat.Database.Repository.UserChat;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Core.Services
 {
@@ -38,10 +40,8 @@ namespace Chat.Core.Services
         }
 
 
-        public async Task<ResultContainer<ChatResponseDto>> CreatePersonalChat(Guid user1, Guid user2)
+        public async Task<ActionResult> CreatePersonalChat(Guid user1, Guid user2)
         {
-            var result = new ResultContainer<ChatResponseDto>();
-
             var chatId = Guid.NewGuid();
 
             List<UserChatModel> userchats = new List<UserChatModel>();
@@ -49,8 +49,7 @@ namespace Chat.Core.Services
             if (_userRepository.GetOne(u => u.Id == user1) is null ||
                 _userRepository.GetOne(u => u.Id == user2) is null)
             {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
 
             var userChat1 = new UserChatModel
@@ -77,16 +76,12 @@ namespace Chat.Core.Services
             };
 
             await _chatRepository.Create(chat);
-
-            result.ErrorType = ErrorType.Create;
-
-            return result;
+            
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
-        public async Task<ResultContainer<ChatResponseDto>> CreateCommonChat(CreateCommonChatDto commonChatDto)
+        public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
         {
-            var result = new ResultContainer<ChatResponseDto>();
-
             var chatId = Guid.NewGuid();
 
             var userChat = new UserChatModel
@@ -108,15 +103,15 @@ namespace Chat.Core.Services
 
             await _chatRepository.Create(chat);
 
-            return result;
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
-        public async Task InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto)
+        public async Task<ActionResult> InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto)
         {
             foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
                 var isUserExistsDb = _userRepository.GetOne(u => u.Id == userId) is not null;
-                var isUsersExistsInChat = _userChatRepository.GetOne(u => u.ChatId == chatId) is not null;
+                var isUsersExistsInChat = _userChatRepository.GetOne(u => u.ChatId == chatId) is null;
 
                 if (isUserExistsDb && !isUsersExistsInChat)
                 {
@@ -128,41 +123,43 @@ namespace Chat.Core.Services
                     };
                 
                     await _userChatRepository.Create(userChat);
+                    
                 }
             }
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
         
-        public async Task<ResultContainer<ChatResponseDto>> GetAllChats()
+        public async Task<ActionResult> GetAllChats()
         {
-            var result = new ResultContainer<ChatResponseDto>();
-
-            List<ChatModel> chatModels = new List<ChatModel>();
+            var chatModels = new List<ChatModel>();
             
             chatModels.AddRange(_chatRepository.GetAllObjects());
-
-            result = _mapper.Map<ResultContainer<ChatResponseDto>>(chatModels);
-            return result;
+            
+            var result = _mapper.Map<List<ChatResponseDto>>(chatModels);
+            
+            return new OkObjectResult(result);
         }
         
-        public async Task<ResultContainer<ChatResponseDto>> UpdateChat(Guid id, string name)
+        public async Task<ActionResult> UpdateChat(Guid id, string name)
         {
-            var result = new ResultContainer<ChatResponseDto>();
-
             var chat = _chatRepository.GetOne(c => c.Id == id);
             chat.Name = name;
             await _chatRepository.Update(chat);
-            return result;
+            return new StatusCodeResult(StatusCodes.Status200OK);
         }
         
-        public async Task<ResultContainer<ChatResponseDto>> RemoveUserInChat(Guid userId, Guid chatId)
+        public async Task<ActionResult> RemoveUserInChat(Guid userId, Guid chatId)
         {
-            var result = new ResultContainer<ChatResponseDto>();
-
             var userChat = _userChatRepository.GetOne(u => u.UserId == userId && u.ChatId == chatId);
+
+            if (userChat is null)
+            {
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            }
 
             await _userChatRepository.Delete(userChat.Id);
 
-            return result;
+            return new StatusCodeResult(StatusCodes.Status200OK);
         }
     }
 }

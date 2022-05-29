@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Chat.Common.Chat;
@@ -16,7 +17,7 @@ namespace Chat.Controllers
     [ApiVersion("1.0")]
     [ApiController]
     [Route("/api/v{version:apiVersion}/chats")]
-    public class ChatController : BaseController
+    public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
 
@@ -52,10 +53,9 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
-            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
-                (_chatService.CreateCommonChat(commonChatDto));
+            => await _chatService.CreateCommonChat(commonChatDto);
 
-        /*/// <summary>
+        /// <summary>
         /// Invite Users in chat
         /// </summary>
         /// <param name="chatId"></param>
@@ -65,9 +65,8 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> InviteUserToCommonChat(Guid chatId,
-            InviteUserCommonChatDto inviteUserCommonChatDto)
-            => ReturnResult<>(_chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto))*/
+        public async Task<ActionResult> InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto) 
+            => await _chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto);
 
         /// <summary>
         ///  Get all chats
@@ -78,8 +77,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllChats()
-            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
-                (_chatService.GetAllChats());
+            => await _chatService.GetAllChats();
 
         
         /// <summary>
@@ -92,9 +90,8 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> UpdateChat(Guid chatId, string name)
-            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
-                (_chatService.UpdateChat(chatId, name));
+        public async Task<ActionResult> UpdateChat([Required] Guid chatId,[Required] string name)
+            => await _chatService.UpdateChat(chatId, name);
         
         
         /// <summary>
@@ -107,9 +104,8 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> RemoveUserInChat(Guid userId, Guid chatId)
-            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
-                (_chatService.RemoveUserInChat(userId, chatId));
+        public async Task<ActionResult> RemoveUserInChat([Required] Guid userId,[Required] Guid chatId)
+            => await _chatService.RemoveUserInChat(userId, chatId);
         
     }
 }

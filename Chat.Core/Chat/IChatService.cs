@@ -2,21 +2,22 @@
 using System.Threading.Tasks;
 using Chat.Common.Dto.Chat;
 using Chat.Common.Result;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Core.Chat
 {
     public interface IChatService
     {
-        Task<ResultContainer<ChatResponseDto>> CreatePersonalChat(Guid user1, Guid user2);
+        Task<ActionResult> CreatePersonalChat(Guid user1, Guid user2);
 
-        Task<ResultContainer<ChatResponseDto>> CreateCommonChat(CreateCommonChatDto commonChatDto);
+        Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto);
 
-        Task InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto);
+        Task<ActionResult> InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto);
 
-        Task<ResultContainer<ChatResponseDto>> GetAllChats();
+        Task<ActionResult> GetAllChats();
 
-        Task<ResultContainer<ChatResponseDto>> UpdateChat(Guid id, string name);
+        Task<ActionResult> UpdateChat(Guid id, string name);
 
-        Task<ResultContainer<ChatResponseDto>> RemoveUserInChat(Guid userId, Guid chatId);
+        Task<ActionResult> RemoveUserInChat(Guid userId, Guid chatId);
     }
 }

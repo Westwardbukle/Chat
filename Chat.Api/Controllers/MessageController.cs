@@ -14,7 +14,7 @@ namespace Chat.Controllers
     [ApiVersion("1.0")]
     [ApiController]
     [Route("/api/v{version:apiVersion}/[controller]")]
-    public class MessageController : BaseController
+    public class MessageController : ControllerBase
     {
         private readonly IMessageService _messageService;
 
@@ -37,8 +37,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> SendMessage(Guid userId, Guid chatId,[Required] string text)
-            => await ReturnResult<ResultContainer<MessageResponseDto>, MessageResponseDto>
-                (_messageService.SendMessage(userId, chatId, text));
+            => await _messageService.SendMessage(userId, chatId, text);
 
     }
 }

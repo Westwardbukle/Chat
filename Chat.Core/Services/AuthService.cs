@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto;
@@ -15,6 +16,8 @@ using Chat.Core.Token;
 using Chat.Database.Model;
 using Chat.Database.Repository.Code;
 using Chat.Database.Repository.User;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Core.Services
 {
@@ -24,40 +27,29 @@ namespace Chat.Core.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _hasher;
         private readonly ITokenService _tokenService;
-        private readonly ISmtpService _smtpService;
-        private readonly ICodeService _code;
-        private readonly ICodeRepository _codeRepository;
 
         public AuthService
         (
             IUserRepository userRepository,
             IMapper mapper,
             IPasswordHasher hasher,
-            ITokenService tokenService,
-            ISmtpService smtpService,
-            ICodeService code,
-            ICodeRepository codeRepository
+            ITokenService tokenService
         )
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _hasher = hasher;
             _tokenService = tokenService;
-            _smtpService = smtpService;
-            _code = code;
-            _codeRepository = codeRepository;
         }
 
-        public async Task<ResultContainer<UserResponseDto>> Registration(RegisterUserDto registerUserDto)
+        public async Task<ActionResult> Registration(RegisterUserDto registerUserDto)
         {
-            var result = new ResultContainer<UserResponseDto>();
 
             var id = Guid.NewGuid();
 
             if (_userRepository.GetOne(u => u.Nickname == registerUserDto.Nickname) is not null)
             {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
 
             var user = new UserModel
@@ -73,53 +65,45 @@ namespace Chat.Core.Services
             };
 
             await _userRepository.Create(user);
-
-            result.ErrorType = ErrorType.Create;
-            return result;
+            
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
 
-        public async Task<ResultContainer<UserResponseDto>> Login(LoginUserDto loginUserDto)
+        public async Task<ActionResult> Login(LoginUserDto loginUserDto)
         {
-            var result = new ResultContainer<UserResponseDto>();
-
             var trueUser = _userRepository.GetOne(u => u.Nickname == loginUserDto.Nickname);
 
             if (!_hasher.VerifyHashedPassword(loginUserDto.Password, trueUser.Password))
             {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
 
             var user = _mapper.Map<UserModelDto>(trueUser);
-            result = _mapper.Map<ResultContainer<UserResponseDto>>(trueUser);
-            result.Data.Token = _tokenService.CreateToken(user);
-
-            return result;
+            
+            return new OkObjectResult(_tokenService.CreateToken(user).Token);
         }
 
-        public async Task<ResultContainer<UsersReturnDto>> GetAllUsers()
+        public async Task<ActionResult> GetAllUsers()
         {
-            var result = new ResultContainer<UsersReturnDto>();
+            var users = _userRepository.GetAllObjects();
+
+            var userDto = _mapper.Map<List<GetAllUsersDto>>(users);
             
-            var allUsers = _userRepository.GetAllObjects();
-            
-            result = _mapper.Map<ResultContainer<UsersReturnDto>>(allUsers);
-            
-            return result;
+            return new OkObjectResult(userDto);
         }
+        
+        
 
-        public async Task<ResultContainer<UserResponseDto>> UpdateUser(string nickname, string newNick)
+        public async Task<ActionResult> UpdateUser(string nickname, string newNick)
         {
-            var result = new ResultContainer<UserResponseDto>();
-
             var user = _userRepository.GetOne(u => u.Nickname == nickname);
 
             user.Nickname = newNick;
 
             await _userRepository.Update(user);
 
-            return result;
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
     }
 }

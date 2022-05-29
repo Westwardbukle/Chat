@@ -14,19 +14,16 @@ namespace Chat.Controllers
     [ApiVersion("1.0")]
     [ApiController]
     [Route("/api/v{version:apiVersion}/[controller]")]
-    public class AuthController : BaseController
+    public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IRestoringCodeService _restoringCodeService;
 
         public AuthController
         (
-            IAuthService authService,
-            IRestoringCodeService restoringCodeService
+            IAuthService authService
         )
         {
             _authService = authService;
-            _restoringCodeService = restoringCodeService;
         }
 
         /// <summary>
@@ -40,10 +37,9 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Registration([FromBody] RegisterUserDto registerUserDto)
-            => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
-                (_authService.Registration(registerUserDto));
-        
+        public async Task<ActionResult> Registration([FromBody] RegisterUserDto registerUserDto) 
+            =>await _authService.Registration(registerUserDto);
+
         /// <summary>
         /// User login
         /// </summary>
@@ -54,8 +50,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> Login(LoginUserDto loginUserDto)
-            => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
-                (_authService.Login(loginUserDto));
+            => await _authService.Login(loginUserDto);
         
         /// <summary>
         ///  Get all users
@@ -66,8 +61,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllUsers()
-            => await ReturnResult<ResultContainer<UsersReturnDto>, UsersReturnDto>
-                (_authService.GetAllUsers());
+            => await _authService.GetAllUsers();
         
         /// <summary>
         /// Update user nickname
@@ -80,8 +74,6 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> UpdateUser(string nickname, string newNick)
-            => await ReturnResult<ResultContainer<UserResponseDto>, UserResponseDto>
-                (_authService.UpdateUser(nickname, newNick));
-        
+            => await _authService.UpdateUser(nickname, newNick);
     }
 }
