@@ -1,9 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Chat.Common.Dto.Chat;
-using Chat.Common.Dto.Message;
-using Chat.Common.Result;
 using Chat.Core.Message;
 using Chat.Validation;
 using Microsoft.AspNetCore.Http;

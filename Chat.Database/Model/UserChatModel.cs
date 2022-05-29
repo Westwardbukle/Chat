@@ -5,6 +5,7 @@ using Chat.Common.UsersRole;
 
 namespace Chat.Database.Model
 {
+    [Table("UserChat")]
     public class UserChatModel : BaseModel
     {
         public Guid UserId { get; set; }

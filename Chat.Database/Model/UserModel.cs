@@ -5,6 +5,7 @@ using Chat.Common.Base;
 
 namespace Chat.Database.Model
 {
+    [Table("User")]
     public class UserModel : BaseModel
     {
         public string Nickname { get; set; }

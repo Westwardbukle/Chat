@@ -9,10 +9,11 @@ namespace Chat.Database.Repository.Base
     {
          TModel GetOne(Func<TModel, bool> predicate);
          Task<TModel> Create(TModel item);
-
          IEnumerable<TModel> GetAllObjects();
+         IEnumerable<TModel> GetByFilter(Func<TModel, bool> predicate);
          Task<TModel> GetById(Guid id);
          Task<TModel> Update(TModel item);
+         Task<List<TModel>> UpdateRange(List<TModel> item);
          Task<TModel> Delete(Guid id);
     }
 }

@@ -4,6 +4,7 @@ using Chat.Common.Base;
 
 namespace Chat.Database.Model
 {
+    [Table("Message")]
     public class MessageModel : BaseModel
     {
         public string Text { get; set; }

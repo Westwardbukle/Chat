@@ -22,6 +22,9 @@ namespace Chat.Database.Repository.Base
         
         public IEnumerable<TModel> GetAllObjects()
             => _context.Set<TModel>().AsNoTracking().ToList();
+        
+        public IEnumerable<TModel> GetByFilter(Func<TModel, bool> predicate)
+            => _context.Set<TModel>().Where(predicate);
 
         public async Task<TModel> Create(TModel item)
         {
@@ -34,6 +37,13 @@ namespace Chat.Database.Repository.Base
         public async Task<TModel> Update(TModel item)
         {
             _context.Set<TModel>().Update(item);
+            await _context.SaveChangesAsync();
+            return item;
+        }
+        
+        public async Task<List<TModel>> UpdateRange(List<TModel> item)
+        {
+            _context.Set<TModel>().UpdateRange(item);
             await _context.SaveChangesAsync();
             return item;
         }

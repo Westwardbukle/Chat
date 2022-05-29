@@ -37,8 +37,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> EmailСonfirmation(CodeDto codeDto)
-            => await ReturnResult<ResultContainer<CodeResponseDto>, CodeResponseDto>
-                (_restoringCode.CodeСonfirmation(codeDto));
+            => await _restoringCode.CodeСonfirmation(codeDto);
 
 
         /// <summary>
@@ -52,7 +51,6 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> RecoveryСode(UserDto userDto)
-            => await ReturnResult<ResultContainer<CodeResponseDto>, CodeResponseDto>
-                (_restoringCode.SendRestoringCode(userDto));
+            => await _restoringCode.SendRestoringCode(userDto);
     }
 }

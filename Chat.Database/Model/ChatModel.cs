@@ -1,11 +1,13 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Chat.Common.Base;
 using Chat.Common.Chat;
 
 namespace Chat.Database.Model
 {
+    [Table("Chat")]
     public class ChatModel : BaseModel
     {
         public string? Name { get; set; }

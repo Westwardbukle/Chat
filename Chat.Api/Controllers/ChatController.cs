@@ -1,12 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Chat.Common.Chat;
-using Chat.Common.Dto;
 using Chat.Common.Dto.Chat;
-using Chat.Common.Dto.Message;
-using Chat.Common.Result;
 using Chat.Core.Chat;
 using Chat.Validation;
 using Microsoft.AspNetCore.Http;

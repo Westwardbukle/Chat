@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using Chat.Common.Code;
 using Chat.Common.Dto.Code;
-using Chat.Common.Error;
-using Chat.Common.Result;
 using Chat.Common.User;
 using Chat.Core.Code;
 using Chat.Core.Restoring;
@@ -12,6 +10,8 @@ using Chat.Core.Token;
 using Chat.Database.Model;
 using Chat.Database.Repository.Code;
 using Chat.Database.Repository.User;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Core.Services
 {
@@ -41,16 +41,13 @@ namespace Chat.Core.Services
         }
         
         
-        public async Task<ResultContainer<CodeResponseDto>> SendRestoringCode(UserDto userDto)
+        public async Task<ActionResult> SendRestoringCode(UserDto userDto)
         {
-            var result = new ResultContainer<CodeResponseDto>();
-
             var user = _userRepository.GetOne(u => u.Id == userDto.Userid);
 
             if (user== null)
             {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
 
             var lastCode = _codeRepository.GetOne(c => c.Id == user.Id);
@@ -72,9 +69,8 @@ namespace Chat.Core.Services
                 };
                 
                 await _codeRepository.Create(newCode);
-
-                result.ErrorType = ErrorType.Create;
-                return result;
+                
+                return new StatusCodeResult(StatusCodes.Status201Created);
             }
 
             await _codeRepository.Delete(lastCode.Id);
@@ -94,26 +90,19 @@ namespace Chat.Core.Services
             };
             
             await _codeRepository.Create(code);
-
-            result.ErrorType = ErrorType.Create;
-            return result;
+            
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
         
-        public async Task<ResultContainer<CodeResponseDto>> CodeСonfirmation(CodeDto codeDto)
+        public async Task<ActionResult> CodeСonfirmation(CodeDto codeDto)
         {
-            var result = new ResultContainer<CodeResponseDto>();
             var code = _codeRepository.GetOne(c => c.UserId == _tokenService.GetCurrentUserId());
 
-            if (code is null)
-            {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
-            }
-
+            if (code is null) return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            
             if (code.CodePurpose != CodePurpose.ConfirmEmail && code.DateExpiration > DateTime.Now)
             {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
             
             var user = _userRepository.GetOne(u => u.Id == code.Id); 
@@ -124,9 +113,7 @@ namespace Chat.Core.Services
             
             await _codeRepository.Delete(code.Id);
             
-            result.ErrorType = ErrorType.Create;
-
-            return result;
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
     }
 }
