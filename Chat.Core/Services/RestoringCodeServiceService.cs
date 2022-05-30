@@ -43,14 +43,14 @@ namespace Chat.Core.Services
         
         public async Task<ActionResult> SendRestoringCode(UserDto userDto)
         {
-            var user = _userRepository.GetOne(u => u.Id == userDto.Userid);
+            var user = _userRepository.GetUser(u => u.Id == userDto.Userid);
 
             if (user== null)
             {
                 return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
 
-            var lastCode = _codeRepository.GetOne(c => c.Id == user.Id);
+            var lastCode = _codeRepository.GetCode(c => c.Id == user.Id);
 
             if (lastCode is null)
             {
@@ -68,12 +68,12 @@ namespace Chat.Core.Services
                     UserId = user.Id
                 };
                 
-                await _codeRepository.Create(newCode);
+                _codeRepository.CreateCode(newCode);
                 
                 return new StatusCodeResult(StatusCodes.Status201Created);
             }
 
-            await _codeRepository.Delete(lastCode.Id);
+            _codeRepository.DeleteCode(lastCode);
             
             var mailCode = _code.GenerateRestoringCode();
             
@@ -89,14 +89,14 @@ namespace Chat.Core.Services
                 UserId = user.Id
             };
             
-            await _codeRepository.Create(code);
+             _codeRepository.CreateCode(code);
             
             return new StatusCodeResult(StatusCodes.Status201Created);
         }
         
         public async Task<ActionResult> CodeСonfirmation(CodeDto codeDto)
         {
-            var code = _codeRepository.GetOne(c => c.UserId == _tokenService.GetCurrentUserId());
+            var code = _codeRepository.GetCode(c => c.UserId == _tokenService.GetCurrentUserId());
 
             if (code is null) return new StatusCodeResult(StatusCodes.Status400BadRequest);
             
@@ -105,13 +105,13 @@ namespace Chat.Core.Services
                 return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
             
-            var user = _userRepository.GetOne(u => u.Id == code.Id); 
+            var user = _userRepository.GetUser(u => u.Id == code.Id); 
             user.Active = true;
             user.DateTimeActivation = DateTime.Now;
 
-            await _userRepository.Update(user);
+            _userRepository.UpdateUser(user);
             
-            await _codeRepository.Delete(code.Id);
+            _codeRepository.DeleteCode(code);
             
             return new StatusCodeResult(StatusCodes.Status201Created);
         }

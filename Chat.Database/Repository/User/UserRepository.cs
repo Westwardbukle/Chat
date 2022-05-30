@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Chat.Database.Model;
 using Chat.Database.Repository.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Repository.User
 {
@@ -13,9 +14,10 @@ namespace Chat.Database.Repository.User
         {
         }
 
-        public async Task<IEnumerable<UserModel>> GetAllUsers(bool trackChanges)
-            =>  GetAllObjects(trackChanges)
-                .OrderBy(c => c.Nickname);
+        public async Task<IEnumerable<UserModel>> GetAllUsers(bool trackChanges) 
+            => await GetAllObjects(trackChanges)
+                .OrderBy(c => c.Nickname)
+                .ToListAsync();
 
         public UserModel GetUser(Func<UserModel, bool> predicate)
             => GetOne(predicate);
@@ -25,5 +27,8 @@ namespace Chat.Database.Repository.User
 
         public void UpdateUser(UserModel item)
             => Update(item);
+
+        public Task<UserModel> GetUserById(Guid id)
+            => GetById(id);
     }
 }

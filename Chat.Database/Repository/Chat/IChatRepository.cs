@@ -14,5 +14,7 @@ namespace Chat.Database.Repository.Chat
         void CreateChat(ChatModel item);
 
         void UpdateChat(ChatModel item);
+        
+        Task<ChatModel> GetChatById(Guid id);
     }
 }

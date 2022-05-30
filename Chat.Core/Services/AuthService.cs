@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto;
@@ -21,6 +22,7 @@ namespace Chat.Core.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _hasher;
         private readonly ITokenService _tokenService;
+       // private readonly 
 
         public AuthService
         (
@@ -38,7 +40,6 @@ namespace Chat.Core.Services
 
         public async Task<ActionResult> Registration(RegisterUserDto registerUserDto)
         {
-
             var id = Guid.NewGuid();
 
             if (_userRepository.GetUser(u => u.Nickname == registerUserDto.Nickname) is not null)
@@ -80,11 +81,11 @@ namespace Chat.Core.Services
 
         public async Task<ActionResult> GetAllUsers()
         {
-            var users = _userRepository.GetAllUsers(false);
+            var users = await _userRepository.GetAllUsers(false);
 
-            var userDto = _mapper.Map<List<GetAllUsersDto>>(users);
+            var usersDto = _mapper.Map<IEnumerable<GetAllUsersDto>>(users);
             
-            return new OkObjectResult(userDto);
+            return new OkObjectResult(usersDto);
         }
         
         
@@ -96,6 +97,7 @@ namespace Chat.Core.Services
             user.Nickname = newNick;
 
              _userRepository.UpdateUser(user);
+             
 
             return new StatusCodeResult(StatusCodes.Status201Created);
         }

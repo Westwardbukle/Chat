@@ -108,7 +108,7 @@ namespace Chat.Core.Services
             foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
                 var isUserExistsDb = _userRepository.GetUser(u => u.Id == userId) is not null;
-                var isUsersExistsInChat = _userChatRepository.GetOne(u => u.ChatId == chatId) is null;
+                var isUsersExistsInChat = _userChatRepository.GetOneUserChat(u => u.ChatId == chatId) is null;
 
                 if (isUserExistsDb && !isUsersExistsInChat)
                 {
@@ -118,8 +118,8 @@ namespace Chat.Core.Services
                         ChatId = chatId,
                         Role = Role.User
                     };
-                
-                    await _userChatRepository.Create(userChat);
+                    
+                    _userChatRepository.CreateUserChat(userChat);
                     
                 }
             }
@@ -147,14 +147,14 @@ namespace Chat.Core.Services
         
         public async Task<ActionResult> RemoveUserInChat(Guid userId, Guid chatId)
         {
-            var userChat = _userChatRepository.GetOne(u => u.UserId == userId && u.ChatId == chatId);
+            var userChat = _userChatRepository.GetOneUserChat(u => u.UserId == userId && u.ChatId == chatId);
 
             if (userChat is null)
             {
                 return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
 
-            await _userChatRepository.Delete(userChat.Id);
+            _userChatRepository.DeleteUserChat(userChat);
 
             return new StatusCodeResult(StatusCodes.Status200OK);
         }

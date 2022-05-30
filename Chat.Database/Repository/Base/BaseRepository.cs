@@ -26,16 +26,20 @@ namespace Chat.Database.Repository.Base
                 AppDbContext.Set<TModel>();
         
         public IQueryable<TModel> FindByCondition(Expression<Func<TModel, bool>> expression,
-            bool trackChanges)
-            => !trackChanges ?
+            bool trackChanges) => 
+            !trackChanges ?
                 AppDbContext.Set<TModel>()
                     .Where(expression)
                     .AsNoTracking() :
                 AppDbContext.Set<TModel>()
                     .Where(expression);
         
-        public void Create(TModel item) => AppDbContext.Set<TModel>().Add(item);
-        
+        public void Create(TModel item)
+        {
+            AppDbContext.Set<TModel>().Add(item);
+            AppDbContext.SaveChangesAsync();
+        }
+
         public void Update(TModel item) => AppDbContext.Set<TModel>().Update(item);
         
         public async Task<List<TModel>> UpdateRange(List<TModel> item)

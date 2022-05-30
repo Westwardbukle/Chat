@@ -53,7 +53,7 @@ namespace Chat.Controllers
         ///  Get all users
         /// </summary>
         /// <returns></returns>
-        [HttpPost("Users")]
+        [HttpGet("Users")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]

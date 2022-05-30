@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Chat;
@@ -30,8 +31,13 @@ namespace Chat.Core.ProFiles
 
             
             //Return list users, in AuthService, GetAllUsers method 
-            CreateMap<UserModel, GetAllUsersDto>();
-            CreateMap<UserModel, List<GetAllUsersDto>>();
+            CreateMap<UserModel, GetAllUsersDto>()
+                .ForMember(c => c.Nickname,
+                    opt => opt.MapFrom(x => string.Join(' ', x.DateofBirth, x.Email)));
+            
+            /*CreateMap<UserModel, GetAllUsersDto>();
+            //CreateMap<UserModel, List<GetAllUsersDto>>();
+            CreateMap<IEnumerable<UserModel>, List<GetAllUsersDto>>();*/
         }
     }
 }

@@ -16,7 +16,9 @@ namespace Chat.Database.Repository.Message
 
         public void CreateMessage(MessageModel item)
             => Create(item);
-        
-        
+
+        public IQueryable<MessageModel> FindMessageByCondition(Expression<Func<MessageModel, bool>> expression,
+            bool trackChanges)
+            => FindByCondition(expression, trackChanges);
     }
 }

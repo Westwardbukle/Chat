@@ -47,9 +47,9 @@ namespace Chat.Core.Services
 
         public async Task<ActionResult> SendMessage(Guid userId, Guid chatId, string text)
         {
-            var checkUser = _userRepository.GetById(userId) is not null;
+            var checkUser = _userRepository.GetUserById(userId) is not null;
 
-            var checkChat = _chatRepository.GetById(chatId) is not null;
+            var checkChat = _chatRepository.GetChatById(chatId) is not null;
 
             if (!checkUser || !checkChat) return new StatusCodeResult(StatusCodes.Status400BadRequest);
 
@@ -68,11 +68,11 @@ namespace Chat.Core.Services
 
         public async Task<ActionResult> GetAllMessageInChat(Guid chatId)
         {
-            var chatIsReal = _chatRepository.GetOne(c => c.Id == chatId) is null;
+            var chatIsReal = _chatRepository.GetChat(c => c.Id == chatId) is null;
 
             if (chatIsReal) return new StatusCodeResult(StatusCodes.Status400BadRequest);
 
-            var allMessages = _messageRepository.GetByFilter(m => m.ChatId == chatId);
+            var allMessages = _messageRepository.FindMessageByCondition(m => m.ChatId == chatId, false);
 
             var listMess = _mapper.Map<List<AllMessagesResponseDto>>(allMessages);
 
