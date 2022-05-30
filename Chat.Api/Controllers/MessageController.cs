@@ -34,8 +34,18 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> SendPersonalMessage(Guid senderId, Guid recipientId, string text)
-            => await _messageService.SendPersonalMessage(senderId, recipientId, text);*/
+            => await _messageService.SendPersonalMessage(senderId, recipientId, text);
         
-        
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <param name="user1"></param>
+        /// <param name="user2"></param>
+        /// <returns></returns>
+        [HttpPost("{userId}/messages/{senderId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId, string text)
+            => await _messageService.SendPersonalMessage(senderId, senderId, text);*/
     }
 }

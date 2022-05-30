@@ -60,8 +60,8 @@ namespace Chat.Core.Services
                 ChatId = chatId,
                 DispatchTime = DateTime.Now,
             };
-
-            await _messageRepository.Create(message);
+            
+            _messageRepository.CreateMessage(message);
 
             return new StatusCodeResult(StatusCodes.Status201Created);
         }
@@ -87,13 +87,14 @@ namespace Chat.Core.Services
             
             if (_userRepository.GetOne(u => u.Id == recipientId) is null)
                 return new StatusCodeResult(StatusCodes.Status400BadRequest);
-
-            //var chats = _userChatRepository.GetWithInclude(c => c.Chats);
+            
+            
+             
 
             return new OkObjectResult(chats);
         }*/
 
-        /*public async Task<ActionResult> GetAllMessagesFromUser(Guid senderId, )
+        /*public async Task<ActionResult> GetAllMessagesFromUser(Guid senderId, Guid userId )
         {
             
         }*/

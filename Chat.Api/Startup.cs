@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using Chat.Core.Auth;
 using Chat.Core.Chat;
@@ -90,7 +91,8 @@ namespace Chat
             
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
             
-            services.AddControllers( options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
+            services.AddControllers( options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true).AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddHttpContextAccessor();
             
         }

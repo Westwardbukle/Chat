@@ -1,4 +1,8 @@
-﻿using Chat.Database.Model;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Chat.Database.Model;
 using Chat.Database.Repository.Base;
 
 namespace Chat.Database.Repository.Message
@@ -9,5 +13,10 @@ namespace Chat.Database.Repository.Message
         {
             
         }
+
+        public void CreateMessage(MessageModel item)
+            => Create(item);
+        
+        
     }
 }

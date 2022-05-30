@@ -1,10 +1,18 @@
-﻿using Chat.Database.Model;
-using Chat.Database.Repository.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Chat.Database.Model;
 
 namespace Chat.Database.Repository.User
 {
-    public interface IUserRepository: IBaseRepository<UserModel>
-    {
+    public interface IUserRepository
+    { 
+        Task<IEnumerable<UserModel>> GetAllUsers(bool trackChanges);
         
+        UserModel GetUser(Func<UserModel, bool> predicate);
+
+        void CreateUser(UserModel item);
+
+        void UpdateUser(UserModel item);
     }
 }

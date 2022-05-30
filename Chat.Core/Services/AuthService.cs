@@ -41,7 +41,7 @@ namespace Chat.Core.Services
 
             var id = Guid.NewGuid();
 
-            if (_userRepository.GetOne(u => u.Nickname == registerUserDto.Nickname) is not null)
+            if (_userRepository.GetUser(u => u.Nickname == registerUserDto.Nickname) is not null)
             {
                 return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
@@ -58,7 +58,7 @@ namespace Chat.Core.Services
                 DateTimeActivation = null,
             };
 
-            await _userRepository.Create(user);
+             _userRepository.CreateUser(user);
             
             return new StatusCodeResult(StatusCodes.Status201Created);
         }
@@ -66,7 +66,7 @@ namespace Chat.Core.Services
 
         public async Task<ActionResult> Login(LoginUserDto loginUserDto)
         {
-            var trueUser = _userRepository.GetOne(u => u.Nickname == loginUserDto.Nickname);
+            var trueUser = _userRepository.GetUser(u => u.Nickname == loginUserDto.Nickname);
 
             if (!_hasher.VerifyHashedPassword(loginUserDto.Password, trueUser.Password))
             {
@@ -80,7 +80,7 @@ namespace Chat.Core.Services
 
         public async Task<ActionResult> GetAllUsers()
         {
-            var users = _userRepository.GetAllObjects();
+            var users = _userRepository.GetAllUsers(false);
 
             var userDto = _mapper.Map<List<GetAllUsersDto>>(users);
             
@@ -91,11 +91,11 @@ namespace Chat.Core.Services
 
         public async Task<ActionResult> UpdateUser(string nickname, string newNick)
         {
-            var user = _userRepository.GetOne(u => u.Nickname == nickname);
+            var user = _userRepository.GetUser(u => u.Nickname == nickname);
 
             user.Nickname = newNick;
 
-            await _userRepository.Update(user);
+             _userRepository.UpdateUser(user);
 
             return new StatusCodeResult(StatusCodes.Status201Created);
         }
