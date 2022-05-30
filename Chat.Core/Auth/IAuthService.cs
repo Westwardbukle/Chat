@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
-using Chat.Common.Result;
-using Chat.Common.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Core.Auth

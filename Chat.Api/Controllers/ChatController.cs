@@ -2,7 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Chat;
+using Chat.Common.Dto.Message;
 using Chat.Core.Chat;
+using Chat.Core.Message;
 using Chat.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,35 +17,36 @@ namespace Chat.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
+        private readonly IMessageService _messageService;
 
         public ChatController
         (
-            IChatService chatService
+            IChatService chatService,
+            IMessageService messageService
         )
         {
             _chatService = chatService;
+            _messageService = messageService;
         }
-
-        /*/// <summary>
-        ///  
+        
+        /// <summary>
+        /// Create personal chat
         /// </summary>
-        /// <param name="user1"></param>
-        /// <param name="user2"></param>
+        /// <param name="commonChatDto"></param>
         /// <returns></returns>
-        [HttpPost("users/{recepientId}/messages")]
+        [HttpPost("private")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> SendPersonalMessage(Guid recepientId, PersonalSenderDto personalSenderDto )
-            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>
-                (_chatService.CreatePersonalChat( recepientId, personalSenderDto ));*/
-
-
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> CreatePersonalChat(Guid user1, Guid user2)
+            => await _chatService.CreatePersonalChat(user1, user2);
+        
         /// <summary>
         /// Create common chat
         /// </summary>
         /// <param name="commonChatDto"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("common")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -73,7 +76,6 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllChats()
             => await _chatService.GetAllChats();
-
         
         /// <summary>
         /// UpdateChat
@@ -88,7 +90,6 @@ namespace Chat.Controllers
         public async Task<ActionResult> UpdateChat([Required] Guid chatId,[Required] string name)
             => await _chatService.UpdateChat(chatId, name);
         
-        
         /// <summary>
         /// Delete user in chat
         /// </summary>
@@ -102,5 +103,28 @@ namespace Chat.Controllers
         public async Task<ActionResult> RemoveUserInChat([Required] Guid userId,[Required] Guid chatId)
             => await _chatService.RemoveUserInChat(userId, chatId);
         
+        /// <summary>
+        /// Send message in common chat
+        /// </summary>
+        /// <param name="commonChatDto"></param>
+        /// <returns></returns>
+        [HttpPost("{chatId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> SendMessage(Guid userId, Guid chatId,[Required] string text)
+            => await _messageService.SendMessage(userId, chatId, text);
+        
+        /// <summary>
+        /// Get all messages in chat
+        /// </summary>
+        /// <param name="chat id"></param>
+        /// <returns> ListMessages in chat</returns>
+        [HttpGet("{chatId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> GetAllMessage(Guid chatId)
+            => await _messageService.GetAllMessageInChat(chatId);
     }
 }

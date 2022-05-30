@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Chat.Common.Dto.Code;
-using Chat.Common.Result;
 using Chat.Common.User;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Chat.Common.Dto.Code;
-using Chat.Common.Result;
 using Chat.Common.User;
 using Chat.Core.Restoring;
 using Chat.Validation;
@@ -13,7 +12,7 @@ namespace Chat.Controllers
     [ApiVersion("1.0")]
     [ApiController]
     [Route("/api/v{version:apiVersion}/[controller]")]
-    public class RestoreCodeController : BaseController
+    public class RestoreCodeController : ControllerBase
     {
         private readonly IRestoringCodeService _restoringCode;
         

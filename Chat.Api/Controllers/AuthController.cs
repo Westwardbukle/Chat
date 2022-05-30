@@ -1,10 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
-using Chat.Common.Result;
-using Chat.Common.User;
 using Chat.Core.Auth;
-using Chat.Core.Restoring;
 using Chat.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

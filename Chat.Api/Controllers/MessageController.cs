@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Chat.Common.Dto.Message;
 using Chat.Core.Message;
 using Chat.Validation;
 using Microsoft.AspNetCore.Http;
@@ -23,31 +24,18 @@ namespace Chat.Controllers
             _messageService = messageService;
         }
 
-
-        /// <summary>
-        /// Send message in common chat
+        /*/// <summary>
+        ///  
         /// </summary>
-        /// <param name="commonChatDto"></param>
+        /// <param name="user1"></param>
+        /// <param name="user2"></param>
         /// <returns></returns>
-        [HttpPost("chat/{chatId}/user/{userId}")]
+        [HttpPost("users/{senderId}/messages")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> SendMessage(Guid userId, Guid chatId,[Required] string text)
-            => await _messageService.SendMessage(userId, chatId, text);
+        public async Task<ActionResult> SendPersonalMessage(Guid senderId, Guid recipientId, string text)
+            => await _messageService.SendPersonalMessage(senderId, recipientId, text);*/
         
         
-        /// <summary>
-        /// Get all messages in chat
-        /// </summary>
-        /// <param name="chat id"></param>
-        /// <returns> ListMessages in chat</returns>
-        [HttpGet("chat/{chatId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllMessage(Guid chatId)
-            => await _messageService.GetAllMessageInChat(chatId);
-
     }
 }
