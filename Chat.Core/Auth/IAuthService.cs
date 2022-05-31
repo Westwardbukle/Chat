@@ -7,7 +7,7 @@ namespace Chat.Core.Auth
 {
     public interface IAuthService
     {
-        Task<ActionResult> Registration(RegisterUserDto registerUserDto);
+        Task Registration(RegisterUserDto registerUserDto);
         Task<ActionResult> Login(LoginUserDto loginUserDto);
         Task<ActionResult> GetAllUsers();
         Task<ActionResult> UpdateUser(string nickname, string newNick);

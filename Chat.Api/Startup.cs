@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using AutoMapper;
+using Chat.Common.Exceptions;
 using Chat.Core.Auth;
 using Chat.Core.Chat;
 using Chat.Core.Code;
@@ -25,7 +26,9 @@ using Chat.Database.Repository.UserChat;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -192,6 +195,30 @@ namespace Chat
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
             });
+
+            /*private static void ConfigureExceptionHandler(IApplicationBuilder app)
+            {
+                app.UseExceptionHandler(appError =>
+                {
+                    appError.Run(async context =>
+                    {
+                        context.Response.ContentType = "application/json";
+                        var contextfeature = context.Features.Get<IExceptionHandlerFeature>();
+                        if (contextfeature != null)
+                        {
+                            context.Response.StatusCode = contextfeature.Error switch
+                            {
+                                NotFoundException => StatusCodes.Status404NotFound,
+                                BadRequestException => StatusCodes.Status400BadRequest,
+                                _ => StatusCodes.Status500InternalServerError
+                            };
+                        }
+                    }
+
+
+                    );
+                });
+            }*/
         }
     }
 }

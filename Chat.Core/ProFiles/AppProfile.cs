@@ -32,10 +32,7 @@ namespace Chat.Core.ProFiles
             
             //Return list users, in AuthService, GetAllUsers method 
             CreateMap<UserModel, GetAllUsersDto>();
-
-            /*CreateMap<UserModel, GetAllUsersDto>();
-            //CreateMap<UserModel, List<GetAllUsersDto>>();
-            CreateMap<IEnumerable<UserModel>, List<GetAllUsersDto>>();*/
+            
         }
     }
 }

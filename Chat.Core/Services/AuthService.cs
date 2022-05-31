@@ -6,6 +6,7 @@ using AutoMapper;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
 using Chat.Common.Dto.User;
+using Chat.Common.Exceptions;
 using Chat.Core.Auth;
 using Chat.Core.Hashing;
 using Chat.Core.Token;
@@ -38,13 +39,13 @@ namespace Chat.Core.Services
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<ActionResult> Registration(RegisterUserDto registerUserDto)
+        public async Task Registration(RegisterUserDto registerUserDto)
         {
             var id = Guid.NewGuid();
 
             if (_repositoryManager.User.GetUser(u => u.Nickname == registerUserDto.Nickname) is not null)
             {
-                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+                throw new UserExistException();
             }
 
             var user = new UserModel
@@ -61,8 +62,6 @@ namespace Chat.Core.Services
 
             _repositoryManager.User.CreateUser(user);
             await _repositoryManager.SaveAsync();
-
-            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
 
@@ -100,7 +99,7 @@ namespace Chat.Core.Services
 
             await _repositoryManager.SaveAsync();
 
-            return new StatusCodeResult(StatusCodes.Status201Created);
+            return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
     }
 }
