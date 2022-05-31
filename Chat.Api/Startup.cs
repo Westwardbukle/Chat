@@ -18,6 +18,7 @@ using Chat.Core.Token;
 using Chat.Database;
 using Chat.Database.Repository.Chat;
 using Chat.Database.Repository.Code;
+using Chat.Database.Repository.Manager;
 using Chat.Database.Repository.Message;
 using Chat.Database.Repository.User;
 using Chat.Database.Repository.UserChat;
@@ -66,6 +67,7 @@ namespace Chat
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IUserChatRepository, UserChatRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IRepositoryManager, RepositoryManager>();
             
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRestoringCodeService, RestoringCodeServiceService>();

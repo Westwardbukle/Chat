@@ -34,12 +34,8 @@ namespace Chat.Database.Repository.Base
                 AppDbContext.Set<TModel>()
                     .Where(expression);
         
-        public void Create(TModel item)
-        {
-            AppDbContext.Set<TModel>().Add(item);
-            AppDbContext.SaveChangesAsync();
-        }
-
+        public void Create(TModel item) => AppDbContext.Set<TModel>().Add(item);
+        
         public void Update(TModel item) => AppDbContext.Set<TModel>().Update(item);
         
         public async Task<List<TModel>> UpdateRange(List<TModel> item)

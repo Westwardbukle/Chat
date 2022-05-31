@@ -10,6 +10,7 @@ using Chat.Core.Auth;
 using Chat.Core.Hashing;
 using Chat.Core.Token;
 using Chat.Database.Model;
+using Chat.Database.Repository.Manager;
 using Chat.Database.Repository.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,30 +20,29 @@ namespace Chat.Core.Services
     public class AuthService : IAuthService
     {
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _hasher;
         private readonly ITokenService _tokenService;
-       // private readonly 
+        private readonly IRepositoryManager _repositoryManager;
 
         public AuthService
         (
-            IUserRepository userRepository,
             IMapper mapper,
             IPasswordHasher hasher,
-            ITokenService tokenService
+            ITokenService tokenService,
+            IRepositoryManager repositoryManager
         )
         {
-            _userRepository = userRepository;
             _mapper = mapper;
             _hasher = hasher;
             _tokenService = tokenService;
+            _repositoryManager = repositoryManager;
         }
 
         public async Task<ActionResult> Registration(RegisterUserDto registerUserDto)
         {
             var id = Guid.NewGuid();
 
-            if (_userRepository.GetUser(u => u.Nickname == registerUserDto.Nickname) is not null)
+            if (_repositoryManager.User.GetUser(u => u.Nickname == registerUserDto.Nickname) is not null)
             {
                 return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
@@ -59,15 +59,16 @@ namespace Chat.Core.Services
                 DateTimeActivation = null,
             };
 
-             _userRepository.CreateUser(user);
-            
+            _repositoryManager.User.CreateUser(user);
+            await _repositoryManager.SaveAsync();
+
             return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
 
         public async Task<ActionResult> Login(LoginUserDto loginUserDto)
         {
-            var trueUser = _userRepository.GetUser(u => u.Nickname == loginUserDto.Nickname);
+            var trueUser = _repositoryManager.User.GetUser(u => u.Nickname == loginUserDto.Nickname);
 
             if (!_hasher.VerifyHashedPassword(loginUserDto.Password, trueUser.Password))
             {
@@ -75,29 +76,29 @@ namespace Chat.Core.Services
             }
 
             var user = _mapper.Map<UserModelDto>(trueUser);
-            
+
             return new OkObjectResult(_tokenService.CreateToken(user).Token);
         }
 
         public async Task<ActionResult> GetAllUsers()
         {
-            var users = await _userRepository.GetAllUsers(false);
+            var users = await _repositoryManager.User.GetAllUsers(false);
 
             var usersDto = _mapper.Map<IEnumerable<GetAllUsersDto>>(users);
-            
+
             return new OkObjectResult(usersDto);
         }
-        
-        
+
 
         public async Task<ActionResult> UpdateUser(string nickname, string newNick)
         {
-            var user = _userRepository.GetUser(u => u.Nickname == nickname);
+            var user = _repositoryManager.User.GetUser(u => u.Nickname == nickname);
 
             user.Nickname = newNick;
+            
+            _repositoryManager.User.UpdateUser(user);
 
-             _userRepository.UpdateUser(user);
-             
+            await _repositoryManager.SaveAsync();
 
             return new StatusCodeResult(StatusCodes.Status201Created);
         }

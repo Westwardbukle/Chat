@@ -9,6 +9,7 @@ using Chat.Core.Chat;
 using Chat.Core.Message;
 using Chat.Database.Model;
 using Chat.Database.Repository.Chat;
+using Chat.Database.Repository.Manager;
 using Chat.Database.Repository.Message;
 using Chat.Database.Repository.User;
 using Chat.Database.Repository.UserChat;
@@ -19,37 +20,28 @@ namespace Chat.Core.Services
 {
     public class MessageService : IMessageService
     {
-        private readonly IMessageRepository _messageRepository;
         private readonly IChatService _chatService;
-        private readonly IChatRepository _chatRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        private readonly IUserChatRepository _userChatRepository;
+        private readonly IRepositoryManager _repository;
 
         public MessageService
         (
-            IMessageRepository messageRepository,
+            IRepositoryManager repository,
             IChatService chatService,
-            IChatRepository chatRepository,
-            IUserRepository userRepository,
-            IMapper mapper,
-            IUserChatRepository userChatRepository
+            IMapper mapper
         )
         {
-            _messageRepository = messageRepository;
+            _repository = repository;
             _chatService = chatService;
-            _chatRepository = chatRepository;
-            _userRepository = userRepository;
             _mapper = mapper;
-            _userChatRepository = userChatRepository;
         }
 
 
         public async Task<ActionResult> SendMessage(Guid userId, Guid chatId, string text)
         {
-            var checkUser = _userRepository.GetUserById(userId) is not null;
+            var checkUser = _repository.User.GetUserById(userId) is not null;
 
-            var checkChat = _chatRepository.GetChatById(chatId) is not null;
+            var checkChat = _repository.Chat.GetChatById(chatId) is not null;
 
             if (!checkUser || !checkChat) return new StatusCodeResult(StatusCodes.Status400BadRequest);
 
@@ -60,19 +52,21 @@ namespace Chat.Core.Services
                 ChatId = chatId,
                 DispatchTime = DateTime.Now,
             };
+
+            _repository.Message.CreateMessage(message);
             
-            _messageRepository.CreateMessage(message);
+            await _repository.SaveAsync();
 
             return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
         public async Task<ActionResult> GetAllMessageInChat(Guid chatId)
         {
-            var chatIsReal = _chatRepository.GetChat(c => c.Id == chatId) is null;
+            var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
 
             if (chatIsReal) return new StatusCodeResult(StatusCodes.Status400BadRequest);
 
-            var allMessages = _messageRepository.FindMessageByCondition(m => m.ChatId == chatId, false);
+            var allMessages = _repository.Message.FindMessageByCondition(m => m.ChatId == chatId, false);
 
             var listMess = _mapper.Map<List<AllMessagesResponseDto>>(allMessages);
 
