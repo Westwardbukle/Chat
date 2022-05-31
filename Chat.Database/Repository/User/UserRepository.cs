@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Database.Model;
 using Chat.Database.Repository.Base;
@@ -30,5 +31,15 @@ namespace Chat.Database.Repository.User
 
         public Task<UserModel> GetUserById(Guid id)
             => GetById(id);
+
+        public IQueryable<UserModel> FindUserByCondition(Expression<Func<UserModel, bool>> expression,
+            bool trackChanges)
+            => FindByCondition(expression, trackChanges);
+        
+        /*public IQueryable<UserModel> GetAllUsersInChat(Guid chatId)
+        {
+            var users = AppDbContext.UserModels.Include(u => u.UserChatModel)
+                .
+        }*/
     }
 }

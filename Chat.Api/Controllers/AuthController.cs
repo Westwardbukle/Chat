@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
@@ -56,7 +57,7 @@ namespace Chat.Controllers
         public async Task<string> Login(LoginUserDto loginUserDto)
             => await _authService.Login(loginUserDto);
         
-        /// <summary>
+        /*/// <summary>
         ///  Get all users
         /// </summary>
         /// <returns></returns>
@@ -64,8 +65,8 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsers()
-            => await _authService.GetAllUsers();
+        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
+            => await _authService.GetAllUsersInChat(chatId);*/
 
         /// <summary>
         /// Update user nickname

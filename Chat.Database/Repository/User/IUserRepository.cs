@@ -18,5 +18,8 @@ namespace Chat.Database.Repository.User
         void UpdateUser(UserModel item);
 
         Task<UserModel> GetUserById(Guid id);
+
+        IQueryable<UserModel> FindUserByCondition(Expression<Func<UserModel, bool>> expression,
+            bool trackChanges);
     }
 }

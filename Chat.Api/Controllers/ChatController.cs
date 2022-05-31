@@ -42,7 +42,7 @@ namespace Chat.Controllers
         {
             await _chatService.CreatePersonalChat(user1, user2);
 
-            return StatusCode(201);
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Chat.Controllers
         {
             await _chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto);
 
-            return StatusCode(201);
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Chat.Controllers
         {
             await _messageService.SendMessage(userId, chatId, text);
 
-            return StatusCode(201);
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         /// <summary>
