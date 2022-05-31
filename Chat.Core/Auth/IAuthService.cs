@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
+using Chat.Common.Dto.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Core.Auth
@@ -8,8 +10,8 @@ namespace Chat.Core.Auth
     public interface IAuthService
     {
         Task Registration(RegisterUserDto registerUserDto);
-        Task<ActionResult> Login(LoginUserDto loginUserDto);
-        Task<ActionResult> GetAllUsers();
-        Task<ActionResult> UpdateUser(string nickname, string newNick);
+        Task<string> Login(LoginUserDto loginUserDto);
+        Task<IEnumerable<GetAllUsersDto>> GetAllUsers();
+        Task UpdateUser(string nickname, string newNick);
     }
 }

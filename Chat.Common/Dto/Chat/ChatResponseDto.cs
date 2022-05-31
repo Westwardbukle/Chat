@@ -4,7 +4,7 @@ using Chat.Common.Chat;
 
 namespace Chat.Common.Dto.Chat
 {
-    public class ChatResponseDto : BaseModel
+    public class ChatResponseDto
     {
         public string? Name { get; set; }
         

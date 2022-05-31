@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Chat;
 using Chat.Common.Dto.Message;
+using Chat.Common.Exceptions;
 using Chat.Core.Chat;
 using Chat.Core.Message;
 using Chat.Database.Model;
@@ -37,13 +38,13 @@ namespace Chat.Core.Services
         }
 
 
-        public async Task<ActionResult> SendMessage(Guid userId, Guid chatId, string text)
+        public async Task SendMessage(Guid userId, Guid chatId, string text)
         {
             var checkUser = _repository.User.GetUserById(userId) is not null;
 
             var checkChat = _repository.Chat.GetChatById(chatId) is not null;
 
-            if (!checkUser || !checkChat) return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            if (!checkUser || !checkChat) throw new UserOrChatNotFoundException();
 
             var message = new MessageModel
             {
@@ -56,33 +57,32 @@ namespace Chat.Core.Services
             _repository.Message.CreateMessage(message);
             
             await _repository.SaveAsync();
-
-            return new StatusCodeResult(StatusCodes.Status201Created);
+            
         }
 
-        public async Task<ActionResult> GetAllMessageInChat(Guid chatId)
+        public async Task<List<AllMessagesResponseDto>> GetAllMessageInChat(Guid chatId)
         {
             var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
 
-            if (chatIsReal) return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            if (chatIsReal) throw new ChatNotFoundException();
 
             var allMessages = _repository.Message.FindMessageByCondition(m => m.ChatId == chatId, false);
 
             var listMess = _mapper.Map<List<AllMessagesResponseDto>>(allMessages);
 
-            return new OkObjectResult(listMess);
+            return listMess;
         }
 
 
-        /*public async Task<ActionResult> SendPersonalMessage(Guid senderId, Guid recipientId, string text)
+        /*public async Task SendPersonalMessage(Guid senderId, Guid recipientId, string text)
         {
-            if (_userRepository.GetOne(u => u.Id == senderId) is null)
-                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            if (_repository.User.GetUser(u => u.Id == senderId) is null)
+                throw new UserNotFoundException();
             
-            if (_userRepository.GetOne(u => u.Id == recipientId) is null)
-                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            if (_repository.User.GetUser(u => u.Id == recipientId) is null)
+                throw new UserNotFoundException();
             
-            
+            _repository.Message.
              
 
             return new OkObjectResult(chats);

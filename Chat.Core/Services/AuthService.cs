@@ -65,31 +65,33 @@ namespace Chat.Core.Services
         }
 
 
-        public async Task<ActionResult> Login(LoginUserDto loginUserDto)
+        public async Task<string> Login(LoginUserDto loginUserDto)
         {
             var trueUser = _repositoryManager.User.GetUser(u => u.Nickname == loginUserDto.Nickname);
 
             if (!_hasher.VerifyHashedPassword(loginUserDto.Password, trueUser.Password))
             {
-                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+              throw new PasswordIncorrectException();
             }
 
             var user = _mapper.Map<UserModelDto>(trueUser);
 
-            return new OkObjectResult(_tokenService.CreateToken(user).Token);
+            var token = _tokenService.CreateToken(user).Token;
+
+            return token;
         }
 
-        public async Task<ActionResult> GetAllUsers()
+        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsers()
         {
             var users = await _repositoryManager.User.GetAllUsers(false);
 
             var usersDto = _mapper.Map<IEnumerable<GetAllUsersDto>>(users);
 
-            return new OkObjectResult(usersDto);
+            return usersDto;
         }
 
 
-        public async Task<ActionResult> UpdateUser(string nickname, string newNick)
+        public async Task UpdateUser(string nickname, string newNick)
         {
             var user = _repositoryManager.User.GetUser(u => u.Nickname == nickname);
 
@@ -98,8 +100,6 @@ namespace Chat.Core.Services
             _repositoryManager.User.UpdateUser(user);
 
             await _repositoryManager.SaveAsync();
-
-            return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
     }
 }

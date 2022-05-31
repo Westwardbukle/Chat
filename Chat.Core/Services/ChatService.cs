@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Chat;
 using Chat.Common.Dto.Chat;
+using Chat.Common.Exceptions;
 using Chat.Common.UsersRole;
 using Chat.Core.Chat;
 using Chat.Database.Model;
@@ -32,7 +33,7 @@ namespace Chat.Core.Services
         }
 
 
-        public async Task<ActionResult> CreatePersonalChat(Guid user1, Guid user2)
+        public async Task CreatePersonalChat(Guid user1, Guid user2)
         {
             var chatId = Guid.NewGuid();
 
@@ -41,7 +42,7 @@ namespace Chat.Core.Services
             if (_repository.User.GetUser(u => u.Id == user1) is null ||
                 _repository.User.GetUser(u => u.Id == user2) is null)
             {
-                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+                throw new UserNotFoundException();
             }
 
             var userChat1 = new UserChatModel
@@ -69,12 +70,15 @@ namespace Chat.Core.Services
 
             _repository.Chat.CreateChat(chat);
             await _repository.SaveAsync();
-
-            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
-        public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
+        public async Task CreateCommonChat(CreateCommonChatDto commonChatDto)
         {
+            if (_repository.User.GetUser(u => u.Id == commonChatDto.AdminId) is null)
+            {
+                throw new UserNotFoundException();
+            }
+            
             var chatId = Guid.NewGuid();
 
             var userChat = new UserChatModel
@@ -96,11 +100,9 @@ namespace Chat.Core.Services
 
             _repository.Chat.CreateChat(chat);
             await _repository.SaveAsync();
-
-            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
-        public async Task<ActionResult> InviteUserToCommonChat(Guid chatId,
+        public async Task InviteUserToCommonChat(Guid chatId,
             InviteUserCommonChatDto inviteUserCommonChatDto)
         {
             foreach (var userId in inviteUserCommonChatDto.UserIds)
@@ -120,23 +122,25 @@ namespace Chat.Core.Services
                     _repository.UserChat.CreateUserChat(userChat);
                     await _repository.SaveAsync();
                 }
+                else
+                {
+                    throw new UserNotFoundException();
+                }
             }
-
-            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
-        public async Task<ActionResult> GetAllChats()
+        public async Task<List<ChatResponseDto>> GetAllCommonChats()
         {
             var chatModels = new List<ChatModel>();
 
-            chatModels.AddRange(await _repository.Chat.GetAllChats(true));
+            chatModels.AddRange( _repository.Chat.FindChatByCondition( c=> c.Type == ChatType.Common, false));
 
             var result = _mapper.Map<List<ChatResponseDto>>(chatModels);
 
-            return new OkObjectResult(result);
+            return result;
         }
 
-        public async Task<ActionResult> UpdateChat(Guid id, string name)
+        public async Task UpdateChat(Guid id, string name)
         {
             var chat = _repository.Chat.GetChat(c => c.Id == id);
 
@@ -144,23 +148,19 @@ namespace Chat.Core.Services
 
             _repository.Chat.UpdateChat(chat);
             await _repository.SaveAsync();
-
-            return new StatusCodeResult(StatusCodes.Status200OK);
         }
 
-        public async Task<ActionResult> RemoveUserInChat(Guid userId, Guid chatId)
+        public async Task RemoveUserInChat(Guid userId, Guid chatId)
         {
             var userChat = _repository.UserChat.GetOneUserChat(u => u.UserId == userId && u.ChatId == chatId);
 
             if (userChat is null)
             {
-                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+                throw new UserChatNotFoundException();
             }
 
             _repository.UserChat.DeleteUserChat(userChat);
             await _repository.SaveAsync();
-
-            return new StatusCodeResult(StatusCodes.Status200OK);
         }
     }
 }

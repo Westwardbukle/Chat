@@ -9,6 +9,7 @@ namespace Chat.Common.Dto.Chat
     {
         [Required]
         public Guid AdminId { get; set; }
+        
         [Required]
         public string Name { get; set; }
     }

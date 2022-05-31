@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Chat;
 using Microsoft.AspNetCore.Mvc;
@@ -7,16 +8,16 @@ namespace Chat.Core.Chat
 {
     public interface IChatService
     {
-        Task<ActionResult> CreatePersonalChat(Guid user1, Guid user2);
+        Task CreatePersonalChat(Guid user1, Guid user2);
 
-        Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto);
+        Task CreateCommonChat(CreateCommonChatDto commonChatDto);
 
-        Task<ActionResult> InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto);
+        Task InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto);
 
-        Task<ActionResult> GetAllChats();
+        Task<List<ChatResponseDto>> GetAllCommonChats();
 
-        Task<ActionResult> UpdateChat(Guid id, string name);
+        Task UpdateChat(Guid id, string name);
 
-        Task<ActionResult> RemoveUserInChat(Guid userId, Guid chatId);
+        Task RemoveUserInChat(Guid userId, Guid chatId);
     }
 }

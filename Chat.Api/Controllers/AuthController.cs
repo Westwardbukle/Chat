@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
+using Chat.Common.Dto.User;
 using Chat.Core.Auth;
 using Chat.Validation;
 using Microsoft.AspNetCore.Http;
@@ -34,12 +36,14 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task Registration([FromBody] RegisterUserDto registerUserDto)
+        public async Task<IActionResult> Registration([FromBody] RegisterUserDto registerUserDto)
         {
             await _authService.Registration(registerUserDto);
-           
-        }
 
+            return StatusCode(201);
+        }
+           
+        
         /// <summary>
         /// User login
         /// </summary>
@@ -49,7 +53,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Login(LoginUserDto loginUserDto)
+        public async Task<string> Login(LoginUserDto loginUserDto)
             => await _authService.Login(loginUserDto);
         
         /// <summary>
@@ -60,9 +64,9 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllUsers()
+        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsers()
             => await _authService.GetAllUsers();
-        
+
         /// <summary>
         /// Update user nickname
         /// </summary>
@@ -70,10 +74,13 @@ namespace Chat.Controllers
         /// <param name="newNick"></param>
         /// <returns></returns>
         [HttpPut("Users/{nickname}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> UpdateUser(string nickname, string newNick)
-            => await _authService.UpdateUser(nickname, newNick);
+        public async Task<IActionResult> UpdateUser(string nickname, string newNick)
+        {
+            await _authService.UpdateUser(nickname, newNick);
+            return NoContent();
+        }
     }
 }

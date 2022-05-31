@@ -28,7 +28,7 @@ namespace Chat.Controllers
             _chatService = chatService;
             _messageService = messageService;
         }
-        
+
         /// <summary>
         /// Create personal chat
         /// </summary>
@@ -39,8 +39,12 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> CreatePersonalChat(Guid user1, Guid user2)
-            => await _chatService.CreatePersonalChat(user1, user2);
-        
+        {
+            await _chatService.CreatePersonalChat(user1, user2);
+
+            return StatusCode(201);
+        }
+
         /// <summary>
         /// Create common chat
         /// </summary>
@@ -51,7 +55,11 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
-            => await _chatService.CreateCommonChat(commonChatDto);
+        {
+            var chats = _chatService.CreateCommonChat(commonChatDto);
+
+            return Ok(chats);
+        }
 
         /// <summary>
         /// Invite Users in chat
@@ -63,8 +71,13 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto) 
-            => await _chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto);
+        public async Task<ActionResult> InviteUserToCommonChat(Guid chatId,
+            InviteUserCommonChatDto inviteUserCommonChatDto)
+        {
+            await _chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto);
+
+            return StatusCode(201);
+        }
 
         /// <summary>
         ///  Get all chats
@@ -75,8 +88,11 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllChats()
-            => await _chatService.GetAllChats();
-        
+        {
+            var chats = await _chatService.GetAllCommonChats();
+            return Ok(chats);
+        }
+
         /// <summary>
         /// UpdateChat
         /// </summary>
@@ -87,9 +103,13 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> UpdateChat([Required] Guid chatId,[Required] string name)
-            => await _chatService.UpdateChat(chatId, name);
-        
+        public async Task<ActionResult> UpdateChat([Required] Guid chatId, [Required] string name)
+        {
+            await _chatService.UpdateChat(chatId, name);
+
+            return Ok();
+        }
+
         /// <summary>
         /// Delete user in chat
         /// </summary>
@@ -100,9 +120,13 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> RemoveUserInChat([Required] Guid userId,[Required] Guid chatId)
-            => await _chatService.RemoveUserInChat(userId, chatId);
-        
+        public async Task<ActionResult> RemoveUserInChat([Required] Guid userId, [Required] Guid chatId)
+        {
+            await _chatService.RemoveUserInChat(userId, chatId);
+
+            return Ok();
+        }
+
         /// <summary>
         /// Send message in common chat
         /// </summary>
@@ -112,9 +136,13 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> SendMessage(Guid userId, Guid chatId,[Required] string text)
-            => await _messageService.SendMessage(userId, chatId, text);
-        
+        public async Task<ActionResult> SendMessage(Guid userId, Guid chatId, [Required] string text)
+        {
+            await _messageService.SendMessage(userId, chatId, text);
+
+            return StatusCode(201);
+        }
+
         /// <summary>
         /// Get all messages in chat
         /// </summary>
@@ -125,6 +153,10 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllMessage(Guid chatId)
-            => await _messageService.GetAllMessageInChat(chatId);
+        {
+            var messages = await _messageService.GetAllMessageInChat(chatId);
+
+            return Ok(messages);
+        }
     }
 }

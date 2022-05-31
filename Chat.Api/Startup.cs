@@ -94,8 +94,7 @@ namespace Chat
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
             services.AddControllers(options =>
-                options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true).AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+                options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             services.AddHttpContextAccessor();
         }
 
@@ -118,7 +117,7 @@ namespace Chat
                     }
                 );
             }
-
+            
             ConfigureExceptionHandler(app);
 
             app.UseHttpsRedirection();
@@ -205,10 +204,10 @@ namespace Chat
                 appError.Run(async context =>
                 {
                     context.Response.ContentType = "application/json";
-                    var contextfeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextfeature != null)
+                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    if (contextFeature != null)
                     {
-                        context.Response.StatusCode = contextfeature.Error switch
+                        context.Response.StatusCode = contextFeature.Error switch
                         {
                             NotFoundException => StatusCodes.Status404NotFound,
                             BadRequestException => StatusCodes.Status400BadRequest,
@@ -218,7 +217,7 @@ namespace Chat
                         await context.Response.WriteAsync(new ErrorDetails()
                         {
                             StatusCode = context.Response.StatusCode,
-                            Message = contextfeature.Error.Message
+                            Message = contextFeature.Error.Message
                         }.ToString());
                     }
                 });
