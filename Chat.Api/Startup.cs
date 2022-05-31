@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using AutoMapper;
+using Chat.Common.Error;
 using Chat.Common.Exceptions;
 using Chat.Core.Auth;
 using Chat.Core.Chat;
@@ -42,7 +43,6 @@ using Microsoft.OpenApi.Models;
 
 namespace Chat
 {
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -58,20 +58,20 @@ namespace Chat
             services.Configure<AppOptions>(Configuration.GetSection(AppOptions.App));
             var appOptions = Configuration.GetSection(AppOptions.App).Get<AppOptions>();
             services.AddSingleton(appOptions);
-            
+
             ConfigureAuthentication(services);
-            
+
             ConfigureSwagger(services);
 
             services.AddScoped<ValidationFilterAttribute>();
-            
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICodeRepository, CodeRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IUserChatRepository, UserChatRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IRepositoryManager, RepositoryManager>();
-            
+
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRestoringCodeService, RestoringCodeServiceService>();
             services.AddScoped<IPasswordHasher, PasswordHasherService>();
@@ -83,23 +83,20 @@ namespace Chat
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
-            
-            
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new AppProfile());
-            });
+
+
+            var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new AppProfile()); });
             var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-            
-            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);  
-            
+
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
-            
-            services.AddControllers( options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true).AddJsonOptions(x =>
+
+            services.AddControllers(options =>
+                options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true).AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddHttpContextAccessor();
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,15 +107,19 @@ namespace Chat
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(
-                    opt => {
-                        foreach (var description in provider.ApiVersionDescriptions) {
+                    opt =>
+                    {
+                        foreach (var description in provider.ApiVersionDescriptions)
+                        {
                             opt.SwaggerEndpoint(
-                                $"/swagger/{description.GroupName}/swagger.json", 
-                                description.GroupName.ToUpperInvariant()); 
-                        } 
+                                $"/swagger/{description.GroupName}/swagger.json",
+                                description.GroupName.ToUpperInvariant());
+                        }
                     }
                 );
             }
+
+            ConfigureExceptionHandler(app);
 
             app.UseHttpsRedirection();
 
@@ -129,11 +130,11 @@ namespace Chat
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
-        
+
         private void ConfigureAuthentication(IServiceCollection services)
         {
             var key = Encoding.ASCII.GetBytes(Configuration["AppOptions:SecretKey"]);
-            
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(x =>
                 {
@@ -149,8 +150,8 @@ namespace Chat
                     x.SaveToken = true;
                 });
         }
-        
-         private static void ConfigureSwagger(IServiceCollection services)
+
+        private static void ConfigureSwagger(IServiceCollection services)
         {
             services.AddApiVersioning(options =>
             {
@@ -159,16 +160,16 @@ namespace Chat
                 options.ReportApiVersions = true;
                 options.ApiVersionReader = new UrlSegmentApiVersionReader();
             });
-            
+
             services.AddVersionedApiExplorer(options =>
             {
                 options.GroupNameFormat = "'v'VVV";
                 options.SubstituteApiVersionInUrl = true;
             });
-            
+
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Chat.API", Version = "v1"});
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Chat.API", Version = "v1" });
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     In = ParameterLocation.Header,
@@ -195,30 +196,33 @@ namespace Chat
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
             });
+        }
 
-            /*private static void ConfigureExceptionHandler(IApplicationBuilder app)
+        private static void ConfigureExceptionHandler(IApplicationBuilder app)
+        {
+            app.UseExceptionHandler(appError =>
             {
-                app.UseExceptionHandler(appError =>
+                appError.Run(async context =>
                 {
-                    appError.Run(async context =>
+                    context.Response.ContentType = "application/json";
+                    var contextfeature = context.Features.Get<IExceptionHandlerFeature>();
+                    if (contextfeature != null)
                     {
-                        context.Response.ContentType = "application/json";
-                        var contextfeature = context.Features.Get<IExceptionHandlerFeature>();
-                        if (contextfeature != null)
+                        context.Response.StatusCode = contextfeature.Error switch
                         {
-                            context.Response.StatusCode = contextfeature.Error switch
-                            {
-                                NotFoundException => StatusCodes.Status404NotFound,
-                                BadRequestException => StatusCodes.Status400BadRequest,
-                                _ => StatusCodes.Status500InternalServerError
-                            };
-                        }
+                            NotFoundException => StatusCodes.Status404NotFound,
+                            BadRequestException => StatusCodes.Status400BadRequest,
+                            _ => StatusCodes.Status500InternalServerError
+                        };
+
+                        await context.Response.WriteAsync(new ErrorDetails()
+                        {
+                            StatusCode = context.Response.StatusCode,
+                            Message = contextfeature.Error.Message
+                        }.ToString());
                     }
-
-
-                    );
                 });
-            }*/
+            });
         }
     }
 }
