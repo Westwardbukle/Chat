@@ -31,10 +31,8 @@ namespace Chat.Core.ProFiles
 
             
             //Return list users, in AuthService, GetAllUsers method 
-            CreateMap<UserModel, GetAllUsersDto>()
-                .ForMember(c => c.Nickname,
-                    opt => opt.MapFrom(x => string.Join(' ', x.DateofBirth, x.Email)));
-            
+            CreateMap<UserModel, GetAllUsersDto>();
+
             /*CreateMap<UserModel, GetAllUsersDto>();
             //CreateMap<UserModel, List<GetAllUsersDto>>();
             CreateMap<IEnumerable<UserModel>, List<GetAllUsersDto>>();*/
