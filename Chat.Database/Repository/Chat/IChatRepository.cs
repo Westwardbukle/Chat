@@ -21,5 +21,7 @@ namespace Chat.Database.Repository.Chat
 
         IQueryable<ChatModel> FindChatByCondition(Expression<Func<ChatModel, bool>> expression,
             bool trackChanges);
+
+        public ChatModel GetPersonalChat(Guid user1, Guid user2);
     }
 }

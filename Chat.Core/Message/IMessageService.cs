@@ -10,7 +10,7 @@ namespace Chat.Core.Message
     {
         Task SendMessage(Guid userId, Guid chatId, string text);
         Task<List<AllMessagesResponseDto>> GetAllMessageInChat(Guid chatId);
-        /*Task<ActionResult> SendPersonalMessage(Guid senderId, Guid recipientId, string text);*/
+        Task SendPersonalMessage(Guid senderId, Guid recipientId, string text);
         /*Task<ActionResult> GetAllMessagesFromUser();*/
         
     }

@@ -3,7 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Message;
 using Chat.Core.Message;
+using Chat.Core.Token;
 using Chat.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,28 +17,37 @@ namespace Chat.Controllers
     public class MessageController : ControllerBase
     {
         private readonly IMessageService _messageService;
+        private readonly ITokenService _tokenService;
 
         public MessageController
         (
-            IMessageService messageService
+            IMessageService messageService,
+            ITokenService tokenService
         )
         {
             _messageService = messageService;
+            _tokenService = tokenService;
         }
 
-        /*/// <summary>
-        ///  
+        /// <summary>
+        /// Send Personal message
         /// </summary>
         /// <param name="user1"></param>
         /// <param name="user2"></param>
         /// <returns></returns>
-        [HttpPost("users/{senderId}/messages")]
+        [Authorize]
+        [HttpPost("users/{recipientId}/messages")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> SendPersonalMessage(Guid senderId, Guid recipientId, string text)
-            => await _messageService.SendPersonalMessage(senderId, recipientId, text);
+        public async Task<ActionResult> SendPersonalMessage(Guid recipientId,PersonalMessageDto personalMessage)
+        {
+            var senderId = _tokenService.GetCurrentUserId();
+            await _messageService.SendPersonalMessage(senderId, recipientId, personalMessage.Text);
+
+            return StatusCode(201);
+        } 
         
-        /// <summary>
+        /*/// <summary>
         ///  
         /// </summary>
         /// <param name="user1"></param>

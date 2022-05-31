@@ -74,19 +74,32 @@ namespace Chat.Core.Services
         }
 
 
-        /*public async Task SendPersonalMessage(Guid senderId, Guid recipientId, string text)
+        public async Task SendPersonalMessage(Guid senderId, Guid recipientId, string text)
         {
             if (_repository.User.GetUser(u => u.Id == senderId) is null)
                 throw new UserNotFoundException();
             
             if (_repository.User.GetUser(u => u.Id == recipientId) is null)
                 throw new UserNotFoundException();
-            
-            _repository.Message.
-             
 
-            return new OkObjectResult(chats);
-        }*/
+            var personalChat =  _repository.Chat.GetPersonalChat(senderId, recipientId);
+            
+
+            if (personalChat is null)
+            {
+                await _chatService.CreatePersonalChat(senderId, recipientId);
+            }
+
+            var personalMessage = new MessageModel
+            {
+                Text = text,
+                UserId = senderId,
+                ChatId = personalChat.Id,
+                DispatchTime = DateTime.Now,
+            };
+            _repository.Message.CreateMessage(personalMessage);
+            await _repository.SaveAsync();
+        }
 
         /*public async Task<ActionResult> GetAllMessagesFromUser(Guid senderId, Guid userId )
         {
