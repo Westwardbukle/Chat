@@ -6,7 +6,7 @@ using Chat.Common.Dto.Message;
 using Chat.Common.Dto.User;
 using Chat.Database.Model;
 
-namespace Chat.Core.Abstract
+namespace Chat.Core.ProFiles
 {
     public class AppProfile : Profile
     {

@@ -1,4 +1,4 @@
-﻿namespace Chat.Core.Abstract
+﻿namespace Chat.Core.Options
 {
     public class AppOptions
     {

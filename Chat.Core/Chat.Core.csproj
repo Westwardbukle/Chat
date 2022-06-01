@@ -16,8 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Smtp" />
-      <Folder Include="Token" />
+      <Folder Include="Manager" />
     </ItemGroup>
 
 </Project>

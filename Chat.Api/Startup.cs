@@ -1,37 +1,23 @@
-using System;
-using System.IO;
-using System.Reflection;
 using System.Text;
-using System.Text.Json.Serialization;
 using AutoMapper;
-using Chat.Common.Error;
-using Chat.Common.Exceptions;
 using Chat.Core.Abstract;
+using Chat.Core.Options;
+using Chat.Core.ProFiles;
 using Chat.Core.Services;
 using Chat.Database;
-using Chat.Database.Repository.Chat;
-using Chat.Database.Repository.Code;
-using Chat.Database.Repository.Manager;
-using Chat.Database.Repository.Message;
-using Chat.Database.Repository.User;
-using Chat.Database.Repository.UserChat;
 using Chat.Extentions;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 
 namespace Chat
 {
@@ -53,13 +39,11 @@ namespace Chat
 
             ConfigureAuthentication(services);
 
-            ConfigureSwagger(services);
+            services.ConfigureSwagger();
 
             services.AddScoped<ValidationFilterAttribute>();
-            
+
             services.ConfigureRepositoryManager();
-            
-            
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRestoringCodeService, RestoringCodeServiceService>();
@@ -106,7 +90,7 @@ namespace Chat
                     }
                 );
             }
-            
+
             app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
@@ -137,53 +121,6 @@ namespace Chat
                     };
                     x.SaveToken = true;
                 });
-        }
-
-        private static void ConfigureSwagger(IServiceCollection services)
-        {
-            services.AddApiVersioning(options =>
-            {
-                options.DefaultApiVersion = new ApiVersion(1, 0);
-                options.AssumeDefaultVersionWhenUnspecified = true;
-                options.ReportApiVersions = true;
-                options.ApiVersionReader = new UrlSegmentApiVersionReader();
-            });
-
-            services.AddVersionedApiExplorer(options =>
-            {
-                options.GroupNameFormat = "'v'VVV";
-                options.SubstituteApiVersionInUrl = true;
-            });
-
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Chat.API", Version = "v1" });
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                {
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    BearerFormat = "Bearer {authToken}",
-                    Description = "JSON Web Token to access resources. Example: Bearer {token}",
-                    Type = SecuritySchemeType.ApiKey
-                });
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);
-            });
         }
     }
 }
