@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Chat;
 using Chat.Common.Dto.Message;
-using Chat.Core.Chat;
-using Chat.Core.Message;
-using Chat.Core.Token;
+using Chat.Common.Dto.User;
+using Chat.Core.Abstract;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -21,18 +20,18 @@ namespace Chat.Controllers
     {
         private readonly IChatService _chatService;
         private readonly IMessageService _messageService;
-        private readonly ITokenService _tokenService;
+        private readonly IAuthService _authService;
 
         public ChatController
         (
             IChatService chatService,
             IMessageService messageService,
-            ITokenService tokenService
+            IAuthService authService
         )
         {
             _chatService = chatService;
             _messageService = messageService;
-            _tokenService = tokenService;
+            _authService = authService;
         }
 
         /// <summary>
@@ -40,13 +39,13 @@ namespace Chat.Controllers
         /// </summary>
         /// <param name="commonChatDto"></param>
         /// <returns></returns>
-        [HttpPost("private")]
+        [HttpPost("type/personal")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> CreatePersonalChat(Guid user1, Guid user2)
+        public async Task<ActionResult> CreatePersonalChat(CreatePersonalChatDto createPersonalChat)
         {
-            await _chatService.CreatePersonalChat(user1, user2);
+            await _chatService.CreatePersonalChat(createPersonalChat.User1, createPersonalChat.User2);
 
             return StatusCode(StatusCodes.Status201Created);
         }
@@ -56,7 +55,7 @@ namespace Chat.Controllers
         /// </summary>
         /// <param name="commonChatDto"></param>
         /// <returns></returns>
-        [HttpPost("common")]
+        [HttpPost("type/common")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -84,23 +83,18 @@ namespace Chat.Controllers
 
             return StatusCode(StatusCodes.Status201Created);
         }
-
+        
         /// <summary>
-        ///  Get all chats
+        ///  Get all users in chat
         /// </summary>
-        /// <returns>List with chat names</returns>
-        [HttpGet]
+        /// <returns></returns>
+        [HttpGet("/{chatId}/users")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllChatsOfUser()
-        {
-            var userid = _tokenService.GetCurrentUserId();
-            
-            var chats = await _chatService.GetAllCommonChatsOfUser(userid);
-            
-            return Ok(chats);
-        }
+        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
+            => await _authService.GetAllUsersInChat(chatId);
+        
 
         /// <summary>
         /// UpdateChat
@@ -112,9 +106,9 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> UpdateChat([Required] Guid chatId, [Required] string name)
+        public async Task<ActionResult> UpdateChat( Guid chatId, [FromBody] NewNameChatDto newNameChat)
         {
-            await _chatService.UpdateChat(chatId, name);
+            await _chatService.UpdateChat(chatId, newNameChat.Name);
 
             return Ok();
         }
@@ -129,7 +123,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> RemoveUserInChat([Required] Guid userId, [Required] Guid chatId)
+        public async Task<ActionResult> RemoveUserInChat( Guid userId,  Guid chatId)
         {
             await _chatService.RemoveUserInChat(userId, chatId);
 
@@ -145,9 +139,9 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> SendMessage(Guid userId, Guid chatId, [Required] string text)
+        public async Task<ActionResult> SendMessage( Guid chatId, SendMessageDto sendMessage)
         {
-            await _messageService.SendMessage(userId, chatId, text);
+            await _messageService.SendMessage(sendMessage.UserId, chatId, sendMessage.Text);
 
             return StatusCode(StatusCodes.Status201Created);
         }
@@ -161,7 +155,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllMessageInChat(Guid chatId)
+        public async Task<ActionResult> GetAllMessageInChat( Guid chatId)
         {
             var messages = await _messageService.GetAllMessageInChat(chatId);
 

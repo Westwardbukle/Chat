@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Chat.Core.Smtp
+namespace Chat.Core.Abstract
 {
     public interface ISmtpService
     {

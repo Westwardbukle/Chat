@@ -2,8 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Message;
-using Chat.Core.Message;
-using Chat.Core.Token;
+using Chat.Core.Abstract;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -39,7 +38,7 @@ namespace Chat.Controllers
         [HttpPost("users/{recipientId}/messages")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> SendPersonalMessage(Guid recipientId,PersonalMessageDto personalMessage)
+        public async Task<ActionResult> SendPersonalMessage(Guid recipientId,[FromBody] PersonalMessageDto personalMessage)
         {
             var senderId = _tokenService.GetCurrentUserId();
             await _messageService.SendPersonalMessage(senderId, recipientId, personalMessage.Text);
@@ -57,6 +56,6 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId, string text)
-            => await _messageService.SendPersonalMessage(senderId, senderId, text);*/
+            => await _messageService.(senderId, senderId, text);*/
     }
 }

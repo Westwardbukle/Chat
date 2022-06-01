@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using Chat.Core.Hashing;
+using Chat.Core.Abstract;
 
 namespace Chat.Core.Services
 {

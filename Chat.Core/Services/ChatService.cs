@@ -7,14 +7,9 @@ using Chat.Common.Chat;
 using Chat.Common.Dto.Chat;
 using Chat.Common.Exceptions;
 using Chat.Common.UsersRole;
-using Chat.Core.Chat;
+using Chat.Core.Abstract;
 using Chat.Database.Model;
-using Chat.Database.Repository.Chat;
 using Chat.Database.Repository.Manager;
-using Chat.Database.Repository.User;
-using Chat.Database.Repository.UserChat;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Core.Services
 {

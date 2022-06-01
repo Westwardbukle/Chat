@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
-using Chat.Common.Dto.User;
-using Chat.Core.Auth;
+using Chat.Core.Abstract;
 using Chat.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,13 +15,19 @@ namespace Chat.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly ITokenService _tokenService;
+        private readonly IChatService _chatService;
 
         public AuthController
         (
-            IAuthService authService
+            IAuthService authService,
+            ITokenService tokenService,
+            IChatService chatService
         )
         {
             _authService = authService;
+            _tokenService = tokenService;
+            _chatService = chatService;
         }
 
         /// <summary>
@@ -37,14 +41,14 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> Registration([FromBody] RegisterUserDto registerUserDto)
+        public async Task<IActionResult> Registration(RegisterUserDto registerUserDto)
         {
             await _authService.Registration(registerUserDto);
 
             return StatusCode(201);
         }
-           
-        
+
+
         /// <summary>
         /// User login
         /// </summary>
@@ -56,17 +60,25 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<string> Login(LoginUserDto loginUserDto)
             => await _authService.Login(loginUserDto);
-        
+
+
         /// <summary>
-        ///  Get all users in chat
+        ///  Get all chats of user
         /// </summary>
-        /// <returns></returns>
-        [HttpGet("chats/{chatId}/users")]
+        /// <returns>List with chat names</returns>
+        [Authorize]
+        [HttpGet("Users/{userid}/chats")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
-            => await _authService.GetAllUsersInChat(chatId);
+        public async Task<ActionResult> GetAllChatsOfUser()
+        {
+            var userid = _tokenService.GetCurrentUserId();
+
+            var chats = await _chatService.GetAllCommonChatsOfUser(userid);
+
+            return Ok(chats);
+        }
 
         /// <summary>
         /// Update user nickname
@@ -74,6 +86,7 @@ namespace Chat.Controllers
         /// <param name="nickname"></param>
         /// <param name="newNick"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("Users/{nickname}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -6,17 +6,8 @@ using System.Text.Json.Serialization;
 using AutoMapper;
 using Chat.Common.Error;
 using Chat.Common.Exceptions;
-using Chat.Core.Auth;
-using Chat.Core.Chat;
-using Chat.Core.Code;
-using Chat.Core.Hashing;
-using Chat.Core.Message;
-using Chat.Core.Options;
-using Chat.Core.ProFiles;
-using Chat.Core.Restoring;
+using Chat.Core.Abstract;
 using Chat.Core.Services;
-using Chat.Core.Smtp;
-using Chat.Core.Token;
 using Chat.Database;
 using Chat.Database.Repository.Chat;
 using Chat.Database.Repository.Code;
@@ -24,6 +15,7 @@ using Chat.Database.Repository.Manager;
 using Chat.Database.Repository.Message;
 using Chat.Database.Repository.User;
 using Chat.Database.Repository.UserChat;
+using Chat.Extentions;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -64,13 +56,10 @@ namespace Chat
             ConfigureSwagger(services);
 
             services.AddScoped<ValidationFilterAttribute>();
-
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ICodeRepository, CodeRepository>();
-            services.AddScoped<IChatRepository, ChatRepository>();
-            services.AddScoped<IUserChatRepository, UserChatRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
-            services.AddScoped<IRepositoryManager, RepositoryManager>();
+            
+            services.ConfigureRepositoryManager();
+            
+            
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRestoringCodeService, RestoringCodeServiceService>();
@@ -118,7 +107,7 @@ namespace Chat
                 );
             }
             
-            ConfigureExceptionHandler(app);
+            app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 
@@ -194,33 +183,6 @@ namespace Chat
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
-            });
-        }
-
-        private static void ConfigureExceptionHandler(IApplicationBuilder app)
-        {
-            app.UseExceptionHandler(appError =>
-            {
-                appError.Run(async context =>
-                {
-                    context.Response.ContentType = "application/json";
-                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextFeature != null)
-                    {
-                        context.Response.StatusCode = contextFeature.Error switch
-                        {
-                            NotFoundException => StatusCodes.Status404NotFound,
-                            BadRequestException => StatusCodes.Status400BadRequest,
-                            _ => StatusCodes.Status500InternalServerError
-                        };
-
-                        await context.Response.WriteAsync(new ErrorDetails()
-                        {
-                            StatusCode = context.Response.StatusCode,
-                            Message = contextFeature.Error.Message
-                        }.ToString());
-                    }
-                });
             });
         }
     }

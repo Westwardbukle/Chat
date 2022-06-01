@@ -5,8 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Chat.Common.Dto.Token;
 using Chat.Common.Dto.User;
-using Chat.Core.Options;
-using Chat.Core.Token;
+using Chat.Core.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 

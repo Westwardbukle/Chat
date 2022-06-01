@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Chat.Common.Dto.Code;
 using Chat.Common.User;
-using Chat.Core.Restoring;
+using Chat.Core.Abstract;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,13 +15,16 @@ namespace Chat.Controllers
     public class RestoreCodeController : ControllerBase
     {
         private readonly IRestoringCodeService _restoringCode;
+        private readonly ITokenService _tokenService;
         
         public RestoreCodeController
         (
-            IRestoringCodeService restoringCode
+            IRestoringCodeService restoringCode,
+            ITokenService tokenService
         )
         {
             _restoringCode = restoringCode;
+            _tokenService = tokenService;
         }
         
         
@@ -45,11 +48,18 @@ namespace Chat.Controllers
         /// <param name="id"></param>
         /// <param name="userDto"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> RecoveryСode(UserDto userDto)
-            => await _restoringCode.SendRestoringCode(userDto);
+        public async Task<ActionResult> RecoveryСode()
+        {
+            var userId = _tokenService.GetCurrentUserId();
+            await _restoringCode.SendRestoringCode(userId);
+
+            return Ok();
+        }
+        
     }
 }

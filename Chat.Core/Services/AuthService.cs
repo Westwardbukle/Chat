@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
 using Chat.Common.Dto.User;
 using Chat.Common.Exceptions;
-using Chat.Core.Auth;
-using Chat.Core.Hashing;
-using Chat.Core.Token;
+using Chat.Core.Abstract;
 using Chat.Database.Model;
 using Chat.Database.Repository.Manager;
-using Chat.Database.Repository.User;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Core.Services
 {

@@ -1,4 +1,4 @@
-﻿namespace Chat.Core.Code
+﻿namespace Chat.Core.Abstract
 {
     public interface ICodeService
     {

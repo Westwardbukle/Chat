@@ -1,5 +1,5 @@
 ﻿using System;
-using Chat.Core.Code;
+using Chat.Core.Abstract;
 
 namespace Chat.Core.Services
 {

@@ -3,12 +3,10 @@ using System.Threading.Tasks;
 using Chat.Common.Code;
 using Chat.Common.Dto.Code;
 using Chat.Common.User;
-using Chat.Core.Code;
-using Chat.Core.Restoring;
-using Chat.Core.Smtp;
-using Chat.Core.Token;
+using Chat.Core.Abstract;
 using Chat.Database.Model;
 using Chat.Database.Repository.Code;
+using Chat.Database.Repository.Manager;
 using Chat.Database.Repository.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,40 +15,37 @@ namespace Chat.Core.Services
 {
     public class RestoringCodeServiceService : IRestoringCodeService
     {
-
-        private readonly IUserRepository _userRepository;
+        
         private readonly ICodeService _code;
         private readonly ISmtpService _smtpService;
-        private readonly ICodeRepository _codeRepository;
         private readonly ITokenService _tokenService;
+        private readonly IRepositoryManager _repository;
         
         public RestoringCodeServiceService
         (
-            IUserRepository userRepository,
             ICodeService code,
             ISmtpService smtpService,
-            ICodeRepository codeRepository,
-            ITokenService tokenService
+            ITokenService tokenService,
+            IRepositoryManager repository
         )
         {
-            _userRepository = userRepository;
             _code = code;
             _smtpService = smtpService;
-            _codeRepository = codeRepository;
             _tokenService = tokenService;
+            _repository = repository;
         }
         
         
-        public async Task<ActionResult> SendRestoringCode(UserDto userDto)
+        public async Task<ActionResult> SendRestoringCode(Guid userId)
         {
-            var user = _userRepository.GetUser(u => u.Id == userDto.Userid);
+            var user = _repository.User.GetUser(u => u.Id == userId);
 
             if (user== null)
             {
                 return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
 
-            var lastCode = _codeRepository.GetCode(c => c.Id == user.Id);
+            var lastCode = _repository.Code.GetCode(c => c.Id == user.Id);
 
             if (lastCode is null)
             {
@@ -68,12 +63,12 @@ namespace Chat.Core.Services
                     UserId = user.Id
                 };
                 
-                _codeRepository.CreateCode(newCode);
+                _repository.Code.CreateCode(newCode);
                 
                 return new StatusCodeResult(StatusCodes.Status201Created);
             }
 
-            _codeRepository.DeleteCode(lastCode);
+            _repository.Code.DeleteCode(lastCode);
             
             var mailCode = _code.GenerateRestoringCode();
             
@@ -89,14 +84,14 @@ namespace Chat.Core.Services
                 UserId = user.Id
             };
             
-             _codeRepository.CreateCode(code);
+             _repository.Code.CreateCode(code);
             
             return new StatusCodeResult(StatusCodes.Status201Created);
         }
         
         public async Task<ActionResult> CodeСonfirmation(CodeDto codeDto)
         {
-            var code = _codeRepository.GetCode(c => c.UserId == _tokenService.GetCurrentUserId());
+            var code = _repository.Code.GetCode(c => c.UserId == _tokenService.GetCurrentUserId());
 
             if (code is null) return new StatusCodeResult(StatusCodes.Status400BadRequest);
             
@@ -105,13 +100,13 @@ namespace Chat.Core.Services
                 return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
             
-            var user = _userRepository.GetUser(u => u.Id == code.Id); 
+            var user = _repository.User.GetUser(u => u.Id == code.Id); 
             user.Active = true;
             user.DateTimeActivation = DateTime.Now;
 
-            _userRepository.UpdateUser(user);
+            _repository.User.UpdateUser(user);
             
-            _codeRepository.DeleteCode(code);
+            _repository.Code.DeleteCode(code);
             
             return new StatusCodeResult(StatusCodes.Status201Created);
         }

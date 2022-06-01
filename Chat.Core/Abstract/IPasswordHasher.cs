@@ -1,4 +1,4 @@
-﻿namespace Chat.Core.Hashing
+﻿namespace Chat.Core.Abstract
 {
     public interface IPasswordHasher
     {

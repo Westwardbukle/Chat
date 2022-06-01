@@ -2,7 +2,7 @@
 using Chat.Common.Dto.Token;
 using Chat.Common.Dto.User;
 
-namespace Chat.Core.Token
+namespace Chat.Core.Abstract
 {
     public interface ITokenService
     {

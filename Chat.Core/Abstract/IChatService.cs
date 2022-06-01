@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Chat;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Chat.Core.Chat
+namespace Chat.Core.Abstract
 {
     public interface IChatService
     {

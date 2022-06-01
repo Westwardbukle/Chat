@@ -53,14 +53,6 @@ namespace Chat.Database.Repository.Chat
                 .ChatModels
                 .Include(c => c.UserChats)
                 .Where(u => u.UserChats.Any(y => y.UserId == userId));
-            
-            
-            
-            
-            /*var users = AppDbContext
-                .UserModels
-                .Include(u => u.UserChatModel)
-                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId));*/
             return chats;
         }
     }

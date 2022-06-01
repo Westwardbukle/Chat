@@ -2,7 +2,7 @@
 
 namespace Chat.Common.Dto.Message
 {
-    public class AllMessagesResponseDto
+    public class MessagesResponseDto
     {
         public string Text { get; set; }
         

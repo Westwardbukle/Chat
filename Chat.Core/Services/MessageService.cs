@@ -6,8 +6,7 @@ using AutoMapper;
 using Chat.Common.Chat;
 using Chat.Common.Dto.Message;
 using Chat.Common.Exceptions;
-using Chat.Core.Chat;
-using Chat.Core.Message;
+using Chat.Core.Abstract;
 using Chat.Database.Model;
 using Chat.Database.Repository.Chat;
 using Chat.Database.Repository.Manager;
@@ -60,7 +59,7 @@ namespace Chat.Core.Services
             
         }
 
-        public async Task<List<AllMessagesResponseDto>> GetAllMessageInChat(Guid chatId)
+        public async Task<List<MessagesResponseDto>> GetAllMessageInChat(Guid chatId)
         {
             var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
 
@@ -68,7 +67,7 @@ namespace Chat.Core.Services
 
             var allMessages = _repository.Message.FindMessageByCondition(m => m.ChatId == chatId, false);
 
-            var listMess = _mapper.Map<List<AllMessagesResponseDto>>(allMessages);
+            var listMess = _mapper.Map<List<MessagesResponseDto>>(allMessages);
 
             return listMess;
         }

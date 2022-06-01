@@ -1,13 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Chat.Common.Dto.Code;
-using Chat.Common.User;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Chat.Core.Restoring
+namespace Chat.Core.Abstract
 {
     public interface IRestoringCodeService
     {
-        Task<ActionResult> SendRestoringCode(UserDto userDto);
+        Task<ActionResult> SendRestoringCode(Guid userId);
         Task<ActionResult> CodeСonfirmation(CodeDto codeDto);
     }
 }
