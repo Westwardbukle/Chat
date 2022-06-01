@@ -81,14 +81,14 @@ namespace Chat.Core.Services
             return token;
         }
 
-        /*public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
+        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
         {
-            var users = await _repositoryManager.UserChat.FindUserChatByCondition( uc => uc.ChatId)
+            var users = _repositoryManager.User.GetAllUsersInChat(chatId);
 
             var usersDto = _mapper.Map<IEnumerable<GetAllUsersDto>>(users);
 
             return usersDto;
-        }*/
+        }
 
 
         public async Task UpdateUser(string nickname, string newNick)

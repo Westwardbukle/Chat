@@ -8,8 +8,8 @@ using Chat.Database.Model;
 namespace Chat.Database.Repository.User
 {
     public interface IUserRepository
-    { 
-        Task<IEnumerable<UserModel>> GetAllUsers(bool trackChanges);
+    {
+        IQueryable<UserModel> GetAllUsersInChat(Guid chatId);
         
         UserModel GetUser(Func<UserModel, bool> predicate);
 

@@ -12,7 +12,7 @@ namespace Chat.Core.Auth
     {
         Task Registration(RegisterUserDto registerUserDto);
         Task<string> Login(LoginUserDto loginUserDto);
-        /*Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId);*/
+        Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId);
         Task UpdateUser(string nickname, string newNick);
     }
 }

@@ -36,10 +36,13 @@ namespace Chat.Database.Repository.User
             bool trackChanges)
             => FindByCondition(expression, trackChanges);
         
-        /*public IQueryable<UserModel> GetAllUsersInChat(Guid chatId)
+        public IQueryable<UserModel> GetAllUsersInChat(Guid chatId)
         {
-            var users = AppDbContext.UserModels.Include(u => u.UserChatModel)
-                .
-        }*/
+            var users = AppDbContext
+                .UserModels
+                .Include(u => u.UserChatModel)
+                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId));
+            return users;
+        }
     }
 }

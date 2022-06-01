@@ -129,7 +129,7 @@ namespace Chat.Core.Services
             }
         }
 
-        public async Task<List<ChatResponseDto>> GetAllCommonChats()
+        public async Task<List<ChatResponseDto>> GetAllCommonChatsOfUser()
         {
             var chatModels = new List<ChatModel>();
 

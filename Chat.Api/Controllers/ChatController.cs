@@ -89,7 +89,9 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllChats()
         {
-            var chats = await _chatService.GetAllCommonChats();
+            
+            
+            var chats = await _chatService.GetAllCommonChatsOfUser();
             return Ok(chats);
         }
 

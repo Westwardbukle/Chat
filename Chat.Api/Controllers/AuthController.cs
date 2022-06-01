@@ -57,16 +57,16 @@ namespace Chat.Controllers
         public async Task<string> Login(LoginUserDto loginUserDto)
             => await _authService.Login(loginUserDto);
         
-        /*/// <summary>
-        ///  Get all users
+        /// <summary>
+        ///  Get all users in chat
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Users")]
+        [HttpGet("chats/{chatId}/users")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
-            => await _authService.GetAllUsersInChat(chatId);*/
+            => await _authService.GetAllUsersInChat(chatId);
 
         /// <summary>
         /// Update user nickname
