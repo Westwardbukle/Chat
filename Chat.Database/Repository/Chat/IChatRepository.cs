@@ -13,6 +13,7 @@ namespace Chat.Database.Repository.Chat
         Task<IEnumerable<ChatModel>>GetAllChats(bool trackChanges);
 
         ChatModel GetChat(Func<ChatModel, bool> predicate); 
+        
         void CreateChat(ChatModel item);
 
         void UpdateChat(ChatModel item);
@@ -22,7 +23,7 @@ namespace Chat.Database.Repository.Chat
         IQueryable<ChatModel> FindChatByCondition(Expression<Func<ChatModel, bool>> expression,
             bool trackChanges);
 
-        public ChatModel GetPersonalChat(Guid user1, Guid user2);
+        Task<ChatModel> GetPersonalChat(Guid user1, Guid user2);
 
         IQueryable<ChatModel> GetAllChatsOfUser(Guid userId);
     }

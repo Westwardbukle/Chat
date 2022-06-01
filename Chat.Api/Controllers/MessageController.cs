@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Message;
 using Chat.Core.Abstract;
+using Chat.Database.Model;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -44,18 +46,22 @@ namespace Chat.Controllers
             await _messageService.SendPersonalMessage(senderId, recipientId, personalMessage.Text);
 
             return StatusCode(201);
-        } 
-        
-        /*/// <summary>
-        ///  
+        }
+
+        /// <summary>
+        ///  Get messages for personal chat
         /// </summary>
         /// <param name="user1"></param>
         /// <param name="user2"></param>
         /// <returns></returns>
-        [HttpPost("{userId}/messages/{senderId}")]
+        [HttpGet("{userId}/messages/{senderId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId, string text)
-            => await _messageService.(senderId, senderId, text);*/
+        public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId)
+        {
+           var messages =  await _messageService.GetAllMessagesFromUserToUser(senderId, senderId);
+
+           return Ok(messages);
+        }  
     }
 }

@@ -157,7 +157,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllMessageInChat( Guid chatId)
         {
-            var messages = await _messageService.GetAllMessageInChat(chatId);
+            var messages = await _messageService.GetAllMessageInCommonChat(chatId);
 
             return Ok(messages);
         }
