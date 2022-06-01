@@ -83,6 +83,11 @@ namespace Chat.Core.Services
 
         public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
         {
+            if (_repositoryManager.Chat.GetChat(c => c.Id == chatId) is null)
+            {
+                throw new ChatNotFoundException();
+            }
+            
             var users = _repositoryManager.User.GetAllUsersInChat(chatId);
 
             var usersDto = _mapper.Map<IEnumerable<GetAllUsersDto>>(users);
@@ -93,6 +98,11 @@ namespace Chat.Core.Services
 
         public async Task UpdateUser(string nickname, string newNick)
         {
+            if (_repositoryManager.User.GetUser(u => u.Nickname == nickname) is null)
+            {
+                throw new UserNotFoundException();
+            }
+            
             var user = _repositoryManager.User.GetUser(u => u.Nickname == nickname);
 
             user.Nickname = newNick;

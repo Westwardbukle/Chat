@@ -23,5 +23,7 @@ namespace Chat.Database.Repository.Chat
             bool trackChanges);
 
         public ChatModel GetPersonalChat(Guid user1, Guid user2);
+
+        IQueryable<ChatModel> GetAllChatsOfUser(Guid userId);
     }
 }

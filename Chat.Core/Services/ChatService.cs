@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Chat;
@@ -129,12 +130,10 @@ namespace Chat.Core.Services
             }
         }
 
-        public async Task<List<ChatResponseDto>> GetAllCommonChatsOfUser()
+        public async Task<List<ChatResponseDto>> GetAllCommonChatsOfUser( Guid userId)
         {
-            var chatModels = new List<ChatModel>();
-
-            chatModels.AddRange( _repository.Chat.FindChatByCondition( c=> c.Type == ChatType.Common, false));
-
+            var chatModels = _repository.Chat.GetAllChatsOfUser(userId).ToList();
+            
             var result = _mapper.Map<List<ChatResponseDto>>(chatModels);
 
             return result;

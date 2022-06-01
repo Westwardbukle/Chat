@@ -46,5 +46,22 @@ namespace Chat.Database.Repository.Chat
 
         public Task<ChatModel> GetChatById(Guid id)
             => GetById(id);
+        
+        public IQueryable<ChatModel> GetAllChatsOfUser(Guid userId)
+        {
+            var chats = AppDbContext
+                .ChatModels
+                .Include(c => c.UserChats)
+                .Where(u => u.UserChats.Any(y => y.UserId == userId));
+            
+            
+            
+            
+            /*var users = AppDbContext
+                .UserModels
+                .Include(u => u.UserChatModel)
+                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId));*/
+            return chats;
+        }
     }
 }

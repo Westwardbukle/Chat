@@ -14,7 +14,7 @@ namespace Chat.Core.Chat
 
         Task InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto);
 
-        Task<List<ChatResponseDto>> GetAllCommonChatsOfUser();
+        Task<List<ChatResponseDto>> GetAllCommonChatsOfUser(Guid userid);
 
         Task UpdateChat(Guid id, string name);
 

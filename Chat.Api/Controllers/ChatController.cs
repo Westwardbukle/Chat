@@ -5,7 +5,9 @@ using Chat.Common.Dto.Chat;
 using Chat.Common.Dto.Message;
 using Chat.Core.Chat;
 using Chat.Core.Message;
+using Chat.Core.Token;
 using Chat.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,20 +15,24 @@ namespace Chat.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
+    [Authorize]
     [Route("/api/v{version:apiVersion}/chats")]
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
         private readonly IMessageService _messageService;
+        private readonly ITokenService _tokenService;
 
         public ChatController
         (
             IChatService chatService,
-            IMessageService messageService
+            IMessageService messageService,
+            ITokenService tokenService
         )
         {
             _chatService = chatService;
             _messageService = messageService;
+            _tokenService = tokenService;
         }
 
         /// <summary>
@@ -87,11 +93,12 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllChats()
+        public async Task<ActionResult> GetAllChatsOfUser()
         {
+            var userid = _tokenService.GetCurrentUserId();
             
+            var chats = await _chatService.GetAllCommonChatsOfUser(userid);
             
-            var chats = await _chatService.GetAllCommonChatsOfUser();
             return Ok(chats);
         }
 
@@ -154,7 +161,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllMessage(Guid chatId)
+        public async Task<ActionResult> GetAllMessageInChat(Guid chatId)
         {
             var messages = await _messageService.GetAllMessageInChat(chatId);
 
