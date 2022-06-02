@@ -1,6 +1,7 @@
 using System.Text;
 using AutoMapper;
 using Chat.Core.Abstract;
+using Chat.Core.Hub;
 using Chat.Core.Options;
 using Chat.Core.ProFiles;
 using Chat.Core.Services;
@@ -64,7 +65,6 @@ namespace Chat
 
             services.AddSignalR(options =>
             {
-
                 options.EnableDetailedErrors = true;
             });
             
@@ -106,7 +106,11 @@ namespace Chat
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
+            });
         }
 
         private void ConfigureAuthentication(IServiceCollection services)

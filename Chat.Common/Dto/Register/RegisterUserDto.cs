@@ -13,9 +13,11 @@ namespace Chat.Common.Dto
         [Required] 
         public DateTime DateOfBirth { get; set; }
         
+        [Required]
         [EmailAddress] 
         public string Email { get; set; }
         
+        [Required]
         [RegularExpression(Consts.PasswordPattern, ErrorMessage = Consts.ErrorPassword)]
         public string Password { get; set; }
 
