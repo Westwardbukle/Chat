@@ -62,6 +62,12 @@ namespace Chat
             var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 
+            services.AddSignalR(options =>
+            {
+
+                options.EnableDetailedErrors = true;
+            });
+            
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);

@@ -63,6 +63,11 @@ namespace Chat.Core.Services
         {
             var trueUser = _repositoryManager.User.GetUser(u => u.Nickname == loginUserDto.Nickname);
 
+            if (trueUser is null)
+            {
+                throw new UserNotFoundException();
+            }
+
             if (!_hasher.VerifyHashedPassword(loginUserDto.Password, trueUser.Password))
             {
               throw new PasswordIncorrectException();
