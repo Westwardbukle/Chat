@@ -33,37 +33,21 @@ namespace Chat.Controllers
             _messageService = messageService;
             _authService = authService;
         }
-
-        /// <summary>
-        /// Create personal chat
-        /// </summary>
-        /// <param name="commonChatDto"></param>
-        /// <returns></returns>
-        [HttpPost("type/personal")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> CreatePersonalChat(CreatePersonalChatDto createPersonalChat)
-        {
-            await _chatService.CreatePersonalChat(createPersonalChat.User1, createPersonalChat.User2);
-
-            return StatusCode(StatusCodes.Status201Created);
-        }
-
+        
         /// <summary>
         /// Create common chat
         /// </summary>
         /// <param name="commonChatDto"></param>
         /// <returns></returns>
-        [HttpPost("type/common")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
         {
-            var chats = _chatService.CreateCommonChat(commonChatDto);
+             await _chatService.CreateCommonChat(commonChatDto);
 
-            return Ok(chats);
+            return StatusCode(201);
         }
 
         /// <summary>

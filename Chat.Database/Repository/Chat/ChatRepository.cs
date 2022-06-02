@@ -18,9 +18,10 @@ namespace Chat.Database.Repository.Chat
         public ChatRepository(AppDbContext context) : base(context) {}
 
 
-        public  Task<ChatModel> GetPersonalChat(Guid user1, Guid user2)
+        public async Task<ChatModel> GetPersonalChat(Guid user1, Guid user2)
         {
-            var chat = AppDbContext.ChatModels.Include(x => x.UserChats)
+            var chat = await AppDbContext.ChatModels
+                .Include(x => x.UserChats)
                 .FirstOrDefaultAsync(x => x.UserChats.All(y => y.UserId == user1 || y.UserId == user2) && x.Type == ChatType.Personal);
             
             return chat;

@@ -59,7 +59,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId)
         {
-           var messages =  await _messageService.GetAllMessagesFromUserToUser(senderId, senderId);
+           var messages =  await _messageService.GetAllMessagesFromUserToUser(userId, senderId);
 
            return Ok(messages);
         }  

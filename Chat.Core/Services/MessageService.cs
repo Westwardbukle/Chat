@@ -78,19 +78,34 @@ namespace Chat.Core.Services
             
 
             if (personalChat is null)
-            {
+            { 
                 await _chatService.CreatePersonalChat(senderId, recipientId);
+                
+                var Chat = await _repository.Chat.GetPersonalChat(senderId, recipientId);
+                
+                var personalMessage2 = new MessageModel
+                {
+                    Text = text,
+                    UserId = senderId,
+                    ChatId = Chat.Id,
+                    DispatchTime = DateTime.Now,
+                };
+                
+                _repository.Message.CreateMessage(personalMessage2);
+                await _repository.SaveAsync();
             }
-
-            var personalMessage = new MessageModel
+            else
             {
-                Text = text,
-                UserId = senderId,
-                ChatId = personalChat.Id,
-                DispatchTime = DateTime.Now,
-            };
-            _repository.Message.CreateMessage(personalMessage);
-            await _repository.SaveAsync();
+                var personalMessage = new MessageModel
+                {
+                    Text = text,
+                    UserId = senderId,
+                    ChatId = personalChat.Id,
+                    DispatchTime = DateTime.Now,
+                };
+                _repository.Message.CreateMessage(personalMessage);
+                await _repository.SaveAsync();
+            }
         }
 
         public async Task<List<MessagesResponseDto>>  GetAllMessagesFromUserToUser(Guid userId, Guid senderId)
