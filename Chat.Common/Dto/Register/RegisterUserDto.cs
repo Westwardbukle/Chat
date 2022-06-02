@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using Chat.Common.Converter;
 using Chat.Common.Validating;
 
 namespace Chat.Common.Dto
@@ -10,6 +12,7 @@ namespace Chat.Common.Dto
         [Required] 
         public string Nickname { get; set; }
         
+        [JsonConverter(typeof(NullableDateTimeConverter))]
         [Required] 
         public DateTime DateOfBirth { get; set; }
         
