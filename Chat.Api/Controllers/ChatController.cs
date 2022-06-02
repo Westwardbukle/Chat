@@ -45,7 +45,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
         {
-             await _chatService.CreateCommonChat(commonChatDto);
+            await _chatService.CreateCommonChat(commonChatDto);
 
             return StatusCode(201);
         }
