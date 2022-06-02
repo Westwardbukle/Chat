@@ -16,17 +16,19 @@ namespace Chat.Core.Services
         private readonly IChatService _chatService;
         private readonly IMapper _mapper;
         private readonly IRepositoryManager _repository;
+        private readonly INotificationService _notificationService;
 
         public MessageService
         (
             IRepositoryManager repository,
             IChatService chatService,
-            IMapper mapper
-        )
+            IMapper mapper,
+            INotificationService notificationService)
         {
             _repository = repository;
             _chatService = chatService;
             _mapper = mapper;
+            _notificationService = notificationService;
         }
 
 
@@ -49,7 +51,8 @@ namespace Chat.Core.Services
             _repository.Message.CreateMessage(message);
             
             await _repository.SaveAsync();
-            
+
+            await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
         }
 
         public async Task<List<MessagesResponseDto>> GetAllMessageInCommonChat(Guid chatId)
