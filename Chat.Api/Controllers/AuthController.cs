@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
+using Chat.Common.Dto.Token;
 using Chat.Core.Abstract;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
@@ -58,7 +59,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<string> Login(LoginUserDto loginUserDto)
+        public async Task<TokenModel> Login(LoginUserDto loginUserDto)
             => await _authService.Login(loginUserDto);
 
 

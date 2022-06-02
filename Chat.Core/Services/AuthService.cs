@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
+using Chat.Common.Dto.Token;
 using Chat.Common.Dto.User;
 using Chat.Common.Exceptions;
 using Chat.Core.Abstract;
@@ -59,7 +60,7 @@ namespace Chat.Core.Services
         }
 
 
-        public async Task<string> Login(LoginUserDto loginUserDto)
+        public async Task<TokenModel> Login(LoginUserDto loginUserDto)
         {
             var trueUser = _repositoryManager.User.GetUser(u => u.Nickname == loginUserDto.Nickname);
 
@@ -75,7 +76,7 @@ namespace Chat.Core.Services
 
             var user = _mapper.Map<UserModelDto>(trueUser);
 
-            var token = _tokenService.CreateToken(user).Token;
+            var token = _tokenService.CreateToken(user);
 
             return token;
         }
