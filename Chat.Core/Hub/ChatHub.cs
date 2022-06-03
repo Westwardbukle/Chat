@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Chat.Core.Hub
 {
-    [Authorize]
     public class ChatHub : Microsoft.AspNetCore.SignalR.Hub, IChatHub
     {
         public async Task Send(List<Guid> ids, MessagesResponseDto message/*, string chatName*/ )
@@ -17,6 +16,11 @@ namespace Chat.Core.Hub
             var convertIds = ids.Select(x => x.ToString());
             
             await Clients.Groups(convertIds).SendAsync("Send", message);;
+        }
+        
+        public async Task Kek(string kek)
+        {
+            await Clients.Caller.SendCoreAsync("Send", null);
         }
 
         public override async Task OnConnectedAsync()

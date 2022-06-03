@@ -80,7 +80,9 @@ namespace Chat
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             services.AddHttpContextAccessor();
 
-            services.AddCors();
+            services.AddCors(o =>
+                o.AddDefaultPolicy(b =>
+                    b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -109,8 +111,9 @@ namespace Chat
 
             app.UseRouting();
 
+            //app.UseWebSockets();
 
-            app.UseCors(c => c.AllowAnyOrigin());
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
