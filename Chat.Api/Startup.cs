@@ -54,6 +54,10 @@ namespace Chat
             services.AddScoped<ICodeService, CodeService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IMessageService, MessageService>();
+            
+            
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IChatHub, ChatHub>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
@@ -75,6 +79,8 @@ namespace Chat
             services.AddControllers(options =>
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             services.AddHttpContextAccessor();
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,6 +108,9 @@ namespace Chat
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+
+            app.UseCors(c => c.AllowAnyOrigin());
 
             app.UseAuthentication();
             app.UseAuthorization();

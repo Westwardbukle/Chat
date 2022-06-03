@@ -1,31 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Message;
 using Chat.Core.Abstract;
 using Chat.Core.Hub;
+using Chat.Database.Repository.Manager;
 
 namespace Chat.Core.Services
 {
     public class NotificationService : INotificationService
     {
-        private readonly IAuthService _authService;
         private readonly IChatHub _hub;
-        public NotificationService(IAuthService authService, IChatHub hub )
+        private readonly IRepositoryManager _repository;
+        public NotificationService( IChatHub hub, IRepositoryManager repository)
         {
-            _authService = authService;
             _hub = hub;
+            _repository = repository;
         }
 
-        public Task NotifyChat(Guid chatId, MessagesResponseDto message)
+        public async Task NotifyChat(Guid chatId, MessagesResponseDto message)
         {
-           var users = _authService.GetAllUsersInChat(chatId);
+            var usersIds = _repository.User.GetAllUsersInChat(chatId).Select(x => x.Id).ToList();
 
-           //_hub.Send()
-            
-            // TODO: Уведомить все юзеров в chatId
-            
-            throw new NotImplementedException();
+            await _hub.Send(usersIds, message);
         }
+        
+        
+        
+        
+        
     }
     
 }

@@ -40,6 +40,8 @@ namespace Chat.Core.Services
 
             if (!checkUser || !checkChat) throw new UserOrChatNotFoundException();
 
+            var chat = _repository.Chat.GetChat(c => c.Id == chatId);
+
             var message = new MessageModel
             {
                 Text = text,
@@ -51,7 +53,7 @@ namespace Chat.Core.Services
             _repository.Message.CreateMessage(message);
             
             await _repository.SaveAsync();
-
+            
             await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
         }
 

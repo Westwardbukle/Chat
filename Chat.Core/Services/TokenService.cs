@@ -58,6 +58,7 @@ namespace Chat.Core.Services
             {
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new(ClaimTypes.Email, user.Email),
+                
             };
 
             return claims;
