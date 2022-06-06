@@ -1,28 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Chat.Common.Dto.Message;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.SignalR;
 
-namespace Chat.Core.Hub
+namespace Chat.Core.Hubs
 {
-    public class ChatHub : Microsoft.AspNetCore.SignalR.Hub, IChatHub
+    [Authorize]
+    public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
     {
-        public async Task Send(List<Guid> ids, MessagesResponseDto message/*, string chatName*/ )
-        {
-            var convertIds = ids.Select(x => x.ToString());
-            
-            await Clients.Groups(convertIds).SendAsync("Send", message);;
-        }
-        
-        public async Task Kek(string kek)
-        {
-            await Clients.Caller.SendCoreAsync("Send", null);
-        }
-
         public override async Task OnConnectedAsync()
         {
             var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -31,7 +16,7 @@ namespace Chat.Core.Hub
             {
                 throw new Exception("пошел нгазхуй");
             }
-            
+
             await Groups.AddToGroupAsync(Context.ConnectionId, userId);
 
             await base.OnConnectedAsync();
@@ -50,6 +35,5 @@ namespace Chat.Core.Hub
             
             await base.OnDisconnectedAsync(exception);
         }
-        
     }
 }

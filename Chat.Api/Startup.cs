@@ -1,7 +1,7 @@
 using System.Text;
 using AutoMapper;
 using Chat.Core.Abstract;
-using Chat.Core.Hub;
+using Chat.Core.Hubs;
 using Chat.Core.Options;
 using Chat.Core.ProFiles;
 using Chat.Core.Services;
@@ -57,19 +57,19 @@ namespace Chat
             
             
             services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IChatHub, ChatHub>();
+            services.AddScoped<IChatWatcher, ChatWatcher>();
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
 
-
             var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new AppProfile()); });
             var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-
+            
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
+                
             });
             
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);

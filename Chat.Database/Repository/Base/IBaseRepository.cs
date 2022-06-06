@@ -10,7 +10,7 @@ namespace Chat.Database.Repository.Base
     public interface IBaseRepository<TModel> where TModel : BaseModel
     {
          TModel GetOne(Func<TModel, bool> predicate);
-         Task<TModel> Create(TModel item);
+         Task Create(TModel item);
          IQueryable<TModel> GetAllObjects(bool trackChanges);
 
          IQueryable<TModel> FindByCondition(Expression<Func<TModel, bool>> expression,

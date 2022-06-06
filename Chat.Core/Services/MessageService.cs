@@ -40,8 +40,6 @@ namespace Chat.Core.Services
 
             if (!checkUser || !checkChat) throw new UserOrChatNotFoundException();
 
-            var chat = _repository.Chat.GetChat(c => c.Id == chatId);
-
             var message = new MessageModel
             {
                 Text = text,
@@ -50,7 +48,7 @@ namespace Chat.Core.Services
                 DispatchTime = DateTime.Now,
             };
 
-            _repository.Message.CreateMessage(message);
+            await _repository.Message.CreateMessage(message);
             
             await _repository.SaveAsync();
             
@@ -96,7 +94,7 @@ namespace Chat.Core.Services
                     DispatchTime = DateTime.Now,
                 };
                 
-                _repository.Message.CreateMessage(personalMessage2);
+                await _repository.Message.CreateMessage(personalMessage2);
                 await _repository.SaveAsync();
             }
             else
@@ -108,7 +106,7 @@ namespace Chat.Core.Services
                     ChatId = personalChat.Id,
                     DispatchTime = DateTime.Now,
                 };
-                _repository.Message.CreateMessage(personalMessage);
+                await _repository.Message.CreateMessage(personalMessage);
                 await _repository.SaveAsync();
             }
         }
