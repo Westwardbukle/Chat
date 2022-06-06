@@ -16,7 +16,7 @@ namespace Chat.Database.Repository.Base
         protected BaseRepository(AppDbContext appDbContext)
             => AppDbContext = appDbContext;
 
-        public TModel GetOne(Func<TModel, bool> predicate)
+        public TModel  GetOne(Func<TModel, bool> predicate)
             => AppDbContext.Set<TModel>().AsNoTracking().FirstOrDefault(predicate);
         
         public IQueryable<TModel> GetAllObjects(bool trackChanges)
