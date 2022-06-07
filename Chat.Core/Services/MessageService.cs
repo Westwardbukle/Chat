@@ -48,7 +48,7 @@ namespace Chat.Core.Services
                 UserId = userId,
                 Type = MessageType.Message,
                 ChatId = chatId,
-                DispatchTime = DateTime.Now,
+                DispatchTime = DateTime.Now
             };
 
             await _repository.Message.CreateMessage(message);
@@ -87,30 +87,37 @@ namespace Chat.Core.Services
             { 
                 await _chatService.CreatePersonalChat(senderId, recipientId);
                 
-                var Chat = await _repository.Chat.GetPersonalChat(senderId, recipientId);
+                var chat = await _repository.Chat.GetPersonalChat(senderId, recipientId);
                 
                 var personalMessage2 = new MessageModel
                 {
                     Text = text,
                     UserId = senderId,
-                    ChatId = Chat.Id,
+                    ChatId = chat.Id,
+                    Type = MessageType.Message,
                     DispatchTime = DateTime.Now,
                 };
                 
                 await _repository.Message.CreateMessage(personalMessage2);
                 await _repository.SaveAsync();
+                await _notificationService.NotifyChat(chat.Id, _mapper.Map<MessagesResponseDto>(personalMessage2));
             }
             else
             {
+                var chat = await _repository.Chat.GetPersonalChat(senderId, recipientId);
+                
                 var personalMessage = new MessageModel
                 {
                     Text = text,
                     UserId = senderId,
                     ChatId = personalChat.Id,
+                    Type = MessageType.Message,
                     DispatchTime = DateTime.Now,
                 };
                 await _repository.Message.CreateMessage(personalMessage);
                 await _repository.SaveAsync();
+
+                await _notificationService.NotifyChat(chat.Id, _mapper.Map<MessagesResponseDto>(personalMessage));
             }
         }
 
