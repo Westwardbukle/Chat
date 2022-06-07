@@ -21,12 +21,23 @@ namespace Chat.Database.Repository.User
                 .OrderBy(c => c.Nickname)
                 .ToListAsync();
 
+        public async Task<PagedList<UserModel>> GetAllUsersIdsInChat(Guid chatId, UsersParameters usersParameters)
+        {
+            var users = AppDbContext
+                .UserModels
+                .Include(u => u.UserChatModel)
+                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId));
+            return PagedList<UserModel>
+                .ToPagedList(users, usersParameters.PageNumber, usersParameters.PageSize);
+        }
+
         public IQueryable<UserModel> GetAllUsersIdsInChat(Guid chatId)
         {
             var users = AppDbContext
                 .UserModels
                 .Include(u => u.UserChatModel)
                 .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId));
+
             return users;
         }
 
@@ -52,7 +63,7 @@ namespace Chat.Database.Repository.User
                 .UserModels
                 .Include(u => u.UserChatModel)
                 .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
-                .Skip((usersParameters.PageNumber -1)*usersParameters.PageSize)
+                .Skip((usersParameters.PageNumber - 1) * usersParameters.PageSize)
                 .Take(usersParameters.PageSize);
             return users;
         }

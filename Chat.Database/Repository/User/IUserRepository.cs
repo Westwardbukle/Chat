@@ -9,7 +9,9 @@ namespace Chat.Database.Repository.User
 {
     public interface IUserRepository
     {
-        IQueryable<UserModel> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);
+        Task<PagedList<UserModel>> GetAllUsersIdsInChat(Guid chatId, UsersParameters usersParameters);
+        
+        /*IQueryable<UserModel> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);*/
 
         IQueryable<UserModel> GetAllUsersIdsInChat(Guid chatId);
         

@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Chat;
 using Chat.Common.Dto.Message;
 using Chat.Common.Dto.User;
+using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
 
 namespace Chat.Core.ProFiles
