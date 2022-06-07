@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using Chat.Common.Base;
+using Chat.Common.Message;
 
 namespace Chat.Database.Model
 {
@@ -12,6 +13,8 @@ namespace Chat.Database.Model
         public Guid UserId { get; set; }
         
         public Guid ChatId { get; set; }
+        
+        public MessageType Type { get; set; }
         
         public DateTime DispatchTime { get; set; }
         

@@ -7,6 +7,7 @@ using Chat.Common.Chat;
 using Chat.Common.Dto.Chat;
 using Chat.Common.Dto.Message;
 using Chat.Common.Exceptions;
+using Chat.Common.Message;
 using Chat.Common.UsersRole;
 using Chat.Core.Abstract;
 using Chat.Database.Model;
@@ -105,6 +106,8 @@ namespace Chat.Core.Services
         public async Task InviteUserToCommonChat(Guid chatId,
             InviteUserCommonChatDto inviteUserCommonChatDto)
         {
+            var currentUserId = _tokenService.GetCurrentUserId();
+            
             foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
                 var isUserExistsDb = _repository.User.GetUser(u => u.Id == userId) is not null;
@@ -121,6 +124,22 @@ namespace Chat.Core.Services
 
                     _repository.UserChat.CreateUserChat(userChat);
                     await _repository.SaveAsync();
+
+                    var user = _repository.User.GetUser(u => u.Id == userId);
+                    
+                    var notifyMessage = new MessageModel
+                    {
+                        Text = $"{user.Nickname}",
+                        UserId = currentUserId,
+                        Type = MessageType.InviteUser,
+                        ChatId = chatId,
+                        DispatchTime = DateTime.Now
+                    };
+
+                    await _repository.Message.CreateMessage(notifyMessage);
+                    await _repository.SaveAsync();
+                    
+                    await _notificationService.NotifyChat(chatId,_mapper.Map<MessagesResponseDto>(notifyMessage));
                 }
                 else
                 {
@@ -170,10 +189,11 @@ namespace Chat.Core.Services
             
             var message = new MessageModel
             {
-                Text = $"Пользователь {remoteUser.Nickname} удален из чата",
+                Text = $"{remoteUser.Nickname}",
                 UserId = userChat.UserId,
                 ChatId = chatId,
-                DispatchTime = DateTime.Now,
+                Type = MessageType.DeleteUser,
+                DispatchTime = DateTime.Now
             };
 
             await _repository.Message.CreateMessage(message);
@@ -183,7 +203,6 @@ namespace Chat.Core.Services
             await _repository.SaveAsync();
             
             await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
-
         }
     }
 }

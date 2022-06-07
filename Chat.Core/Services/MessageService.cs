@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto.Message;
 using Chat.Common.Exceptions;
+using Chat.Common.Message;
 using Chat.Core.Abstract;
 using Chat.Database.Model;
 using Chat.Database.Repository.Manager;
@@ -45,6 +46,7 @@ namespace Chat.Core.Services
             {
                 Text = text,
                 UserId = userId,
+                Type = MessageType.Message,
                 ChatId = chatId,
                 DispatchTime = DateTime.Now,
             };

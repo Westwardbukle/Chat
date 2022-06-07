@@ -12,7 +12,7 @@ namespace Chat.Common.Dto
         [Required] 
         public string Nickname { get; set; }
         
-        [JsonConverter(typeof(NullableDateTimeConverter))]
+        //[JsonConverter(typeof(NullableDateTimeConverter))]
         [Required] 
         public DateTime DateOfBirth { get; set; }
         
