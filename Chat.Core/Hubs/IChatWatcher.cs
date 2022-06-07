@@ -8,7 +8,5 @@ namespace Chat.Core.Hubs
     public interface IChatWatcher
     {
         Task NotifyNewMessageChat(List<Guid> ids, MessagesResponseDto message);
-        
-        
     }
 }

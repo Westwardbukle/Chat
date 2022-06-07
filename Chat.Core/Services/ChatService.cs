@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Chat;
 using Chat.Common.Dto.Chat;
+using Chat.Common.Dto.Message;
 using Chat.Common.Exceptions;
 using Chat.Common.UsersRole;
 using Chat.Core.Abstract;
@@ -17,15 +18,18 @@ namespace Chat.Core.Services
     {
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
+        private readonly ITokenService _tokenService;
 
         public ChatService
         (
             IRepositoryManager repository,
-            IMapper mapper
-        )
+            IMapper mapper, INotificationService notificationService, ITokenService tokenService)
         {
             _repository = repository;
             _mapper = mapper;
+            _notificationService = notificationService;
+            _tokenService = tokenService;
         }
 
 
@@ -144,17 +148,42 @@ namespace Chat.Core.Services
             await _repository.SaveAsync();
         }
 
-        public async Task RemoveUserInChat(Guid userId, Guid chatId)
+        public async Task RemoveUserInChat(Guid remoteUserId, Guid chatId)
         {
+            var userId = _tokenService.GetCurrentUserId();
+            
+            var remoteUserChat = _repository.UserChat.GetOneUserChat(u => u.UserId == remoteUserId && u.ChatId == chatId);
+
             var userChat = _repository.UserChat.GetOneUserChat(u => u.UserId == userId && u.ChatId == chatId);
 
-            if (userChat is null)
+            if (remoteUserChat is null || userChat is null)
             {
                 throw new UserChatNotFoundException();
             }
 
-            _repository.UserChat.DeleteUserChat(userChat);
+            if (userChat.Role != Role.Administrator)
+            {
+                throw new YouAreNotAdministratorException();
+            }
+
+            var remoteUser = _repository.User.GetUser(u => u.Id == userId);
+            
+            var message = new MessageModel
+            {
+                Text = $"Пользователь {remoteUser.Nickname} удален из чата",
+                UserId = userChat.UserId,
+                ChatId = chatId,
+                DispatchTime = DateTime.Now,
+            };
+
+            await _repository.Message.CreateMessage(message);
             await _repository.SaveAsync();
+
+            _repository.UserChat.DeleteUserChat(remoteUserChat);
+            await _repository.SaveAsync();
+            
+            await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
+
         }
     }
 }

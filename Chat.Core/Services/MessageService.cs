@@ -23,7 +23,8 @@ namespace Chat.Core.Services
             IRepositoryManager repository,
             IChatService chatService,
             IMapper mapper,
-            INotificationService notificationService)
+            INotificationService notificationService
+        )
         {
             _repository = repository;
             _chatService = chatService;

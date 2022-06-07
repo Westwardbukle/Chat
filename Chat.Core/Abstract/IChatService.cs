@@ -17,6 +17,6 @@ namespace Chat.Core.Abstract
 
         Task UpdateChat(Guid id, string name);
 
-        Task RemoveUserInChat(Guid userId, Guid chatId);
+        Task RemoveUserInChat(Guid remoteUserId, Guid chatId);
     }
 }

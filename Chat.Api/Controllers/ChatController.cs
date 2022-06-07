@@ -21,19 +21,22 @@ namespace Chat.Controllers
         private readonly IChatService _chatService;
         private readonly IMessageService _messageService;
         private readonly IAuthService _authService;
+        private readonly ITokenService _tokenService;
 
         public ChatController
         (
             IChatService chatService,
             IMessageService messageService,
-            IAuthService authService
+            IAuthService authService,
+            ITokenService tokenService
         )
         {
             _chatService = chatService;
             _messageService = messageService;
             _authService = authService;
+            _tokenService = tokenService;
         }
-        
+
         /// <summary>
         /// Create common chat
         /// </summary>
@@ -67,7 +70,7 @@ namespace Chat.Controllers
 
             return StatusCode(StatusCodes.Status201Created);
         }
-        
+
         /// <summary>
         ///  Get all users in chat
         /// </summary>
@@ -78,7 +81,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
             => await _authService.GetAllUsersInChat(chatId);
-        
+
 
         /// <summary>
         /// UpdateChat
@@ -90,7 +93,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> UpdateChat( Guid chatId, [FromBody] NewNameChatDto newNameChat)
+        public async Task<ActionResult> UpdateChat(Guid chatId, [FromBody] NewNameChatDto newNameChat)
         {
             await _chatService.UpdateChat(chatId, newNameChat.Name);
 
@@ -100,16 +103,16 @@ namespace Chat.Controllers
         /// <summary>
         /// Delete user in chat
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="remoteUserId"></param>
         /// <param name="chatId"></param>
         /// <returns></returns>
-        [HttpDelete("{chatId}/users/{userId}")]
+        [HttpDelete("{chatId}/users/{remoteUserId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> RemoveUserInChat( Guid userId,  Guid chatId)
+        public async Task<ActionResult> RemoveUserInChat(Guid remoteUserId, Guid chatId)
         {
-            await _chatService.RemoveUserInChat(userId, chatId);
+            await _chatService.RemoveUserInChat(remoteUserId, chatId);
 
             return Ok();
         }
@@ -123,7 +126,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> SendMessage( Guid chatId, SendMessageDto sendMessage)
+        public async Task<ActionResult> SendMessage(Guid chatId, SendMessageDto sendMessage)
         {
             await _messageService.SendMessage(sendMessage.UserId, chatId, sendMessage.Text);
 
@@ -139,7 +142,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllMessageInChat( Guid chatId)
+        public async Task<ActionResult> GetAllMessageInChat(Guid chatId)
         {
             var messages = await _messageService.GetAllMessageInCommonChat(chatId);
 
