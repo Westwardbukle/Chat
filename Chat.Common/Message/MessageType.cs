@@ -4,6 +4,7 @@
     {
         Message =1,
         InviteUser =2,
-        DeleteUser = 3
+        DeleteUser = 3,
+        UpdateChat = 4
     }
 }

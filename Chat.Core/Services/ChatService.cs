@@ -38,7 +38,7 @@ namespace Chat.Core.Services
         {
             var chatId = Guid.NewGuid();
 
-            List<UserChatModel> userchats = new List<UserChatModel>();
+            var userChats = new List<UserChatModel>();
 
             if (_repository.User.GetUser(u => u.Id == user1) is null ||
                 _repository.User.GetUser(u => u.Id == user2) is null)
@@ -52,7 +52,7 @@ namespace Chat.Core.Services
                 ChatId = chatId,
                 Role = Role.Creator,
             };
-            userchats.Add(userChat1);
+            userChats.Add(userChat1);
 
             var userChat2 = new UserChatModel
             {
@@ -60,13 +60,13 @@ namespace Chat.Core.Services
                 ChatId = chatId,
                 Role = Role.Creator,
             };
-            userchats.Add(userChat2);
+            userChats.Add(userChat2);
 
             var chat = new ChatModel
             {
                 Name = null,
                 Type = ChatType.Personal,
-                UserChats = userchats,
+                UserChats = userChats,
             };
 
             _repository.Chat.CreateChat(chat);
@@ -159,12 +159,28 @@ namespace Chat.Core.Services
 
         public async Task UpdateChat(Guid id, string name)
         {
+            var changeUser= _tokenService.GetCurrentUserId();
+            
             var chat = _repository.Chat.GetChat(c => c.Id == id);
 
             chat.Name = name;
 
             _repository.Chat.UpdateChat(chat);
             await _repository.SaveAsync();
+
+            var notifyMessage = new MessageModel
+            {
+                Text = name,
+                UserId = changeUser,
+                ChatId = id,
+                Type = MessageType.UpdateChat,
+                DispatchTime = DateTime.Now,
+            };
+
+            await _repository.Message.CreateMessage(notifyMessage);
+            await _repository.SaveAsync();
+            
+            await _notificationService.NotifyChat(id, _mapper.Map<MessagesResponseDto>(notifyMessage));
         }
 
         public async Task RemoveUserInChat(Guid remoteUserId, Guid chatId)
