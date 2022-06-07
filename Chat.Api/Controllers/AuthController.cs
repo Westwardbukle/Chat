@@ -2,11 +2,14 @@
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
 using Chat.Common.Dto.Token;
+using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
+
 
 namespace Chat.Controllers
 {
@@ -72,11 +75,11 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllChatsOfUser()
+        public async Task<ActionResult> GetAllChatsOfUser([FromQuery] ChatsParameters chatsParameters)
         {
             var userid = _tokenService.GetCurrentUserId();
 
-            var chats = await _chatService.GetAllCommonChatsOfUser(userid);
+            var chats = await _chatService.GetAllCommonChatsOfUser(userid, chatsParameters);
 
             return Ok(chats);
         }

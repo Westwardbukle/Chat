@@ -7,6 +7,7 @@ using Chat.Common.Dto.Login;
 using Chat.Common.Dto.Token;
 using Chat.Common.Dto.User;
 using Chat.Common.Exceptions;
+using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
 using Chat.Database.Model;
 using Chat.Database.Repository.Manager;
@@ -81,14 +82,14 @@ namespace Chat.Core.Services
             return token;
         }
 
-        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
+        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
         {
             if (_repositoryManager.Chat.GetChat(c => c.Id == chatId) is null)
             {
                 throw new ChatNotFoundException();
             }
             
-            var users = _repositoryManager.User.GetAllUsersInChat(chatId);
+            var users = _repositoryManager.User.GetAllUsersInChat(chatId, usersParameters);
 
             var usersDto = _mapper.Map<IEnumerable<GetAllUsersDto>>(users);
 

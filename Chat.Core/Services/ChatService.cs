@@ -8,6 +8,7 @@ using Chat.Common.Dto.Chat;
 using Chat.Common.Dto.Message;
 using Chat.Common.Exceptions;
 using Chat.Common.Message;
+using Chat.Common.RequestFeatures;
 using Chat.Common.UsersRole;
 using Chat.Core.Abstract;
 using Chat.Database.Model;
@@ -148,9 +149,9 @@ namespace Chat.Core.Services
             }
         }
 
-        public async Task<List<ChatResponseDto>> GetAllCommonChatsOfUser( Guid userId)
+        public async Task<List<ChatResponseDto>> GetAllCommonChatsOfUser( Guid userId, ChatsParameters chatsParameters)
         {
-            var chatModels = _repository.Chat.GetAllChatsOfUser(userId).ToList();
+            var chatModels = _repository.Chat.GetAllChatsOfUser(userId, chatsParameters).ToList();
             
             var result = _mapper.Map<List<ChatResponseDto>>(chatModels);
 

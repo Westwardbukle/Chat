@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
 using Chat.Database.Repository.Base;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,15 @@ namespace Chat.Database.Repository.User
                 .OrderBy(c => c.Nickname)
                 .ToListAsync();
 
+        public IQueryable<UserModel> GetAllUsersIdsInChat(Guid chatId)
+        {
+            var users = AppDbContext
+                .UserModels
+                .Include(u => u.UserChatModel)
+                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId));
+            return users;
+        }
+
         public UserModel GetUser(Func<UserModel, bool> predicate)
             => GetOne(predicate);
 
@@ -36,12 +46,14 @@ namespace Chat.Database.Repository.User
             bool trackChanges)
             => FindByCondition(expression, trackChanges);
         
-        public IQueryable<UserModel> GetAllUsersInChat(Guid chatId)
+        public IQueryable<UserModel> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
         {
             var users = AppDbContext
                 .UserModels
                 .Include(u => u.UserChatModel)
-                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId));
+                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
+                .Skip((usersParameters.PageNumber -1)*usersParameters.PageSize)
+                .Take(usersParameters.PageSize);
             return users;
         }
     }

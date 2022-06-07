@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Message;
+using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
 using Chat.Core.Hubs;
 using Chat.Database.Repository.Manager;
@@ -21,7 +22,7 @@ namespace Chat.Core.Services
 
         public async Task NotifyChat(Guid chatId, MessagesResponseDto message)
         {
-            var usersIds = _repository.User.GetAllUsersInChat(chatId).Select(x => x.Id).ToList();
+            var usersIds = _repository.User.GetAllUsersIdsInChat(chatId).Select(x => x.Id).ToList();
 
             await _chatWatcher.NotifyNewMessageChat(usersIds, message);
         }

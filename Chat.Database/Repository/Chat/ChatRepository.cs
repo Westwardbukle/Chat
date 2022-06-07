@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.Chat;
+using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
 using Chat.Database.Repository.Base;
 using Microsoft.EntityFrameworkCore;
@@ -45,12 +46,14 @@ namespace Chat.Database.Repository.Chat
         public Task<ChatModel> GetChatById(Guid id)
             => GetById(id);
         
-        public IQueryable<ChatModel> GetAllChatsOfUser(Guid userId)
+        public IQueryable<ChatModel> GetAllChatsOfUser(Guid userId, ChatsParameters chatsParameters)
         {
             var chats = AppDbContext
                 .ChatModels
                 .Include(c => c.UserChats)
-                .Where(u => u.UserChats.Any(y => y.UserId == userId));
+                .Where(u => u.UserChats.Any(y => y.UserId == userId))
+                .Skip((chatsParameters.PageNumber - 1) * chatsParameters.PageSize)
+                .Take(chatsParameters.PageSize);
             return chats;
         }
     }

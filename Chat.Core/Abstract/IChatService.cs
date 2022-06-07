@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Chat;
+using Chat.Common.RequestFeatures;
 
 namespace Chat.Core.Abstract
 {
@@ -13,7 +14,7 @@ namespace Chat.Core.Abstract
 
         Task InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto);
 
-        Task<List<ChatResponseDto>> GetAllCommonChatsOfUser(Guid userid);
+        Task<List<ChatResponseDto>> GetAllCommonChatsOfUser(Guid userid, ChatsParameters chatsParameters);
 
         Task UpdateChat(Guid id, string name);
 

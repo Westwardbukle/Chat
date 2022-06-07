@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Chat.Common.Dto.Chat;
 using Chat.Common.Dto.Message;
 using Chat.Common.Dto.User;
+using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
@@ -79,8 +80,8 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId)
-            => await _authService.GetAllUsersInChat(chatId);
+        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId, [FromQuery] UsersParameters usersParameters)
+            => await _authService.GetAllUsersInChat(chatId, usersParameters);
 
 
         /// <summary>

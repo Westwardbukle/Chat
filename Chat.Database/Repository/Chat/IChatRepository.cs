@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
 using Chat.Database.Repository.Base;
 
@@ -25,6 +26,6 @@ namespace Chat.Database.Repository.Chat
 
         Task<ChatModel> GetPersonalChat(Guid user1, Guid user2);
 
-        IQueryable<ChatModel> GetAllChatsOfUser(Guid userId);
+        IQueryable<ChatModel> GetAllChatsOfUser(Guid userId, ChatsParameters chatsParameters);
     }
 }
