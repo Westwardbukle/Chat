@@ -5,6 +5,7 @@ using AutoMapper;
 using Chat.Common.Dto.Message;
 using Chat.Common.Exceptions;
 using Chat.Common.Message;
+using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
 using Chat.Database.Model;
 using Chat.Database.Repository.Manager;
@@ -57,13 +58,13 @@ namespace Chat.Core.Services
             await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
         }
 
-        public async Task<List<MessagesResponseDto>> GetAllMessageInCommonChat(Guid chatId)
+        public async Task<List<MessagesResponseDto>> GetAllMessageInCommonChat(Guid chatId, MessagesFeatures messagesFeatures)
         {
             var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
 
             if (chatIsReal) throw new ChatNotFoundException();
 
-            var allMessages = _repository.Message.FindMessagesByCondition(m => m.ChatId == chatId, false);
+            var allMessages = _repository.Message.FindMessagesByCondition(m => m.ChatId == chatId, false, messagesFeatures);
 
             var listMess = _mapper.Map<List<MessagesResponseDto>>(allMessages);
 
@@ -120,7 +121,7 @@ namespace Chat.Core.Services
             }
         }
 
-        public async Task<List<MessagesResponseDto>>  GetAllMessagesFromUserToUser(Guid userId, Guid senderId)
+        public async Task<List<MessagesResponseDto>>  GetAllMessagesFromUserToUser(Guid userId, Guid senderId, MessagesFeatures messagesFeatures)
         {
             if (_repository.User.GetUser(u => u.Id == userId) is null || _repository.User.GetUser(u => u.Id == senderId) is null)
             {
@@ -134,7 +135,7 @@ namespace Chat.Core.Services
                 throw new ChatNotFoundException();
             }
             
-            var messages = _repository.Message.FindMessagesByCondition(m => m.ChatId == chat.Id, false);
+            var messages = _repository.Message.FindMessagesByCondition(m => m.ChatId == chat.Id, false, messagesFeatures);
 
 
             var allMessages = _mapper.Map<List<MessagesResponseDto>>(messages);

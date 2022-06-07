@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Message;
+using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
 using Chat.Database.Model;
 using Chat.Validation;
@@ -57,9 +58,9 @@ namespace Chat.Controllers
         [HttpGet("{userId}/messages/{senderId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId)
+        public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId, [FromQuery] MessagesFeatures messagesFeatures)
         {
-           var messages =  await _messageService.GetAllMessagesFromUserToUser(userId, senderId);
+           var messages =  await _messageService.GetAllMessagesFromUserToUser(userId, senderId, messagesFeatures);
 
            return Ok(messages);
         }  

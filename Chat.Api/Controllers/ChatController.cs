@@ -143,9 +143,9 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllMessageInChat(Guid chatId)
+        public async Task<ActionResult> GetAllMessageInChat(Guid chatId, [FromQuery] MessagesFeatures messagesFeatures)
         {
-            var messages = await _messageService.GetAllMessageInCommonChat(chatId);
+            var messages = await _messageService.GetAllMessageInCommonChat(chatId, messagesFeatures );
 
             return Ok(messages);
         }
