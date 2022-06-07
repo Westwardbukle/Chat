@@ -14,7 +14,6 @@ namespace Chat.Database.Model
         
         public Role Role { get; set; }
         
-        
         [ForeignKey(nameof(UserId))]
         public UserModel Users { get; set; }
 

@@ -7,7 +7,7 @@ using Chat.Common.Base;
 
 namespace Chat.Database.Repository.Base
 {
-    public interface IBaseRepository<TModel> where TModel : BaseModel
+    /*public interface IBaseRepository<TModel> where TModel : BaseModel
     {
          TModel GetOne(Func<TModel, bool> predicate);
          Task Create(TModel item);
@@ -19,5 +19,5 @@ namespace Chat.Database.Repository.Base
          Task<TModel> Update(TModel item);
          Task<List<TModel>> UpdateRange(List<TModel> item);
          Task<TModel> Delete(Guid id);
-    }
+    }*/
 }

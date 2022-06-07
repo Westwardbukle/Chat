@@ -2,12 +2,9 @@
 using System.Threading.Tasks;
 using Chat.Common.Code;
 using Chat.Common.Dto.Code;
-using Chat.Common.User;
 using Chat.Core.Abstract;
 using Chat.Database.Model;
-using Chat.Database.Repository.Code;
 using Chat.Database.Repository.Manager;
-using Chat.Database.Repository.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

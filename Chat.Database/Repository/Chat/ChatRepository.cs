@@ -4,11 +4,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.Chat;
-using Chat.Common.Exceptions;
-using Chat.Common.UsersRole;
 using Chat.Database.Model;
 using Chat.Database.Repository.Base;
-using Chat.Database.Repository.Manager;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Repository.Chat

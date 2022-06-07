@@ -69,7 +69,6 @@ namespace Chat
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
-                
             });
             
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
@@ -110,9 +109,7 @@ namespace Chat
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            //app.UseWebSockets();
-
+            
             app.UseCors();
 
             app.UseAuthentication();

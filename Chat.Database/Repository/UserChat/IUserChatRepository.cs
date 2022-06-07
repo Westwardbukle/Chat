@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using Chat.Database.Model;
-using Chat.Database.Repository.Base;
 
 namespace Chat.Database.Repository.UserChat
 {

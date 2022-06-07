@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Chat.Common.Validating;
 using Chat.Core.Abstract;
 using MailKit.Net.Smtp;

@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Database.Model;
 using Chat.Database.Repository.Base;
-using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Repository.Message
 {
