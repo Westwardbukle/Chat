@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Message;
 using Chat.Common.RequestFeatures;
@@ -61,8 +62,10 @@ namespace Chat.Controllers
         public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId, [FromQuery] MessagesFeatures messagesFeatures)
         {
            var messages =  await _messageService.GetAllMessagesFromUserToUser(userId, senderId, messagesFeatures);
+           
+           Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(messages.MetaData));
 
-           return Ok(messages);
+           return Ok(messages.Data);
         }  
     }
 }

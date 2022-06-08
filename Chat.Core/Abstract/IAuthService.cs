@@ -14,7 +14,8 @@ namespace Chat.Core.Abstract
     {
         Task Registration(RegisterUserDto registerUserDto);
         Task<TokenModel> Login(LoginUserDto loginUserDto);
-        Task<(List<GetAllUsersDto>, MetaData metaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);
+        Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId,
+            UsersParameters usersParameters);
         Task UpdateUser(string nickname, string newNick);
     }
 }

@@ -10,8 +10,12 @@ namespace Chat.Core.Abstract
     public interface IMessageService
     {
         Task SendMessage(Guid userId, Guid chatId, string text);
-        Task<List<MessagesResponseDto>> GetAllMessageInCommonChat(Guid chatId, MessagesFeatures messagesFeatures);
+
+        Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId,
+            MessagesFeatures messagesFeatures);
         Task SendPersonalMessage(Guid senderId, Guid recipientId, string text);
-        Task<List<MessagesResponseDto>>GetAllMessagesFromUserToUser(Guid userId, Guid senderId, MessagesFeatures messagesFeatures);
+
+        Task<(List<MessagesResponseDto> Data, MetaData MetaData )> GetAllMessagesFromUserToUser(Guid userId,
+            Guid senderId, MessagesFeatures messagesFeatures);
     }
 }

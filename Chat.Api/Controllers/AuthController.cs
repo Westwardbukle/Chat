@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text.Json;
+using System.Threading.Tasks;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Login;
 using Chat.Common.Dto.Token;
@@ -80,8 +81,10 @@ namespace Chat.Controllers
             var userid = _tokenService.GetCurrentUserId();
 
             var chats = await _chatService.GetAllCommonChatsOfUser(userid, chatsParameters);
+            
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(chats.MetaData));
 
-            return Ok(chats);
+            return Ok(chats.Data);
         }
 
         /// <summary>

@@ -18,11 +18,14 @@ namespace Chat.Database.Repository.Message
         public Task CreateMessage(MessageModel item)
             => Create(item);
 
-        public IQueryable<MessageModel> FindMessagesByCondition(Expression<Func<MessageModel, bool>> expression,
+        public async Task<PagedList<MessageModel>> FindMessagesByCondition(Expression<Func<MessageModel, bool>> expression,
             bool trackChanges, MessagesFeatures messagesFeatures)
-            => FindByCondition(expression, trackChanges)
-                .Skip((messagesFeatures.PageNumber - 1) * messagesFeatures.PageSize)
-                .Take(messagesFeatures.PageSize);
+        {
+            var messages = FindByCondition(expression, trackChanges);
+            
+            return PagedList<MessageModel>
+                    .ToPagedList(messages, messagesFeatures.PageNumber, messagesFeatures.PageSize);
+        } 
 
         public MessageModel GetOneMessage(Func<MessageModel, bool> predicate)
             => GetOne(predicate);

@@ -82,14 +82,13 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<List<GetAllUsersDto>> GetAllUsersInChat(Guid chatId,
-            [FromBody] [FromQuery] UsersParameters usersParameters)
+        public async Task<ActionResult> GetAllUsersInChat(Guid chatId, [FromQuery] UsersParameters usersParameters)
         {
             var result = await _authService.GetAllUsersInChat(chatId, usersParameters);
             
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.MetaData));
             
-            return result.Item1;
+            return Ok(result.Data);
         } 
 
 
@@ -156,8 +155,10 @@ namespace Chat.Controllers
         public async Task<ActionResult> GetAllMessageInChat(Guid chatId, [FromQuery] MessagesFeatures messagesFeatures)
         {
             var messages = await _messageService.GetAllMessageInCommonChat(chatId, messagesFeatures );
-
-            return Ok(messages);
+            
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(messages.MetaData));
+            
+            return Ok(messages.Data);
         }
     }
 }

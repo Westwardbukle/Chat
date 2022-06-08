@@ -26,6 +26,6 @@ namespace Chat.Database.Repository.Chat
 
         Task<ChatModel> GetPersonalChat(Guid user1, Guid user2);
 
-        IQueryable<ChatModel> GetAllChatsOfUser(Guid userId, ChatsParameters chatsParameters);
+        Task<PagedList<ChatModel>> GetAllChatsOfUser(Guid userId, ChatsParameters chatsParameters);
     }
 }

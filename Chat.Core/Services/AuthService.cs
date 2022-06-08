@@ -83,7 +83,7 @@ namespace Chat.Core.Services
             return token;
         }
 
-        public async Task<(List<GetAllUsersDto>, MetaData metaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
+        public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
         {
             if (_repositoryManager.Chat.GetChat(c => c.Id == chatId) is null)
             {

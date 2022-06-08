@@ -18,19 +18,20 @@ namespace Chat.Core.Services
         private readonly IMapper _mapper;
         private readonly IRepositoryManager _repository;
         private readonly INotificationService _notificationService;
+        private readonly ITokenService _tokenService;
 
         public MessageService
         (
             IRepositoryManager repository,
             IChatService chatService,
             IMapper mapper,
-            INotificationService notificationService
-        )
+            INotificationService notificationService, ITokenService tokenService)
         {
             _repository = repository;
             _chatService = chatService;
             _mapper = mapper;
             _notificationService = notificationService;
+            _tokenService = tokenService;
         }
 
 
@@ -58,17 +59,17 @@ namespace Chat.Core.Services
             await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
         }
 
-        public async Task<List<MessagesResponseDto>> GetAllMessageInCommonChat(Guid chatId, MessagesFeatures messagesFeatures)
+        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId, MessagesFeatures messagesFeatures)
         {
             var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
 
             if (chatIsReal) throw new ChatNotFoundException();
 
-            var allMessages = _repository.Message.FindMessagesByCondition(m => m.ChatId == chatId, false, messagesFeatures);
+            var allMessages = await _repository.Message.FindMessagesByCondition(m => m.ChatId == chatId, false, messagesFeatures);
 
             var listMess = _mapper.Map<List<MessagesResponseDto>>(allMessages);
 
-            return listMess;
+            return (Data: listMess, MetaData: allMessages.MetaData);
         }
 
 
@@ -121,7 +122,7 @@ namespace Chat.Core.Services
             }
         }
 
-        public async Task<List<MessagesResponseDto>>  GetAllMessagesFromUserToUser(Guid userId, Guid senderId, MessagesFeatures messagesFeatures)
+        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData )>  GetAllMessagesFromUserToUser(Guid userId, Guid senderId, MessagesFeatures messagesFeatures)
         {
             if (_repository.User.GetUser(u => u.Id == userId) is null || _repository.User.GetUser(u => u.Id == senderId) is null)
             {
@@ -135,12 +136,11 @@ namespace Chat.Core.Services
                 throw new ChatNotFoundException();
             }
             
-            var messages = _repository.Message.FindMessagesByCondition(m => m.ChatId == chat.Id, false, messagesFeatures);
-
-
+            var messages = await _repository.Message.FindMessagesByCondition(m => m.ChatId == chat.Id, false, messagesFeatures);
+            
             var allMessages = _mapper.Map<List<MessagesResponseDto>>(messages);
             
-            return allMessages;
+            return (allMessages, messages.MetaData);
         }
     }
 }

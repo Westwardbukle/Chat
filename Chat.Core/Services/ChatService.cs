@@ -149,13 +149,13 @@ namespace Chat.Core.Services
             }
         }
 
-        public async Task<List<ChatResponseDto>> GetAllCommonChatsOfUser( Guid userId, ChatsParameters chatsParameters)
+        public async Task<(List<ChatResponseDto> Data , MetaData MetaData)> GetAllCommonChatsOfUser( Guid userId, ChatsParameters chatsParameters)
         {
-            var chatModels = _repository.Chat.GetAllChatsOfUser(userId, chatsParameters).ToList();
+            var chatModels = await _repository.Chat.GetAllChatsOfUser(userId, chatsParameters);
             
             var result = _mapper.Map<List<ChatResponseDto>>(chatModels);
 
-            return result;
+            return (Data : result, MetaData: chatModels.MetaData);
         }
 
         public async Task UpdateChat(Guid id, string name)

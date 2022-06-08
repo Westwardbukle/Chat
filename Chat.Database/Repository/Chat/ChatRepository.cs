@@ -46,15 +46,14 @@ namespace Chat.Database.Repository.Chat
         public Task<ChatModel> GetChatById(Guid id)
             => GetById(id);
         
-        public IQueryable<ChatModel> GetAllChatsOfUser(Guid userId, ChatsParameters chatsParameters)
+        public async Task<PagedList<ChatModel>> GetAllChatsOfUser(Guid userId, ChatsParameters chatsParameters)
         {
             var chats = AppDbContext
                 .ChatModels
                 .Include(c => c.UserChats)
-                .Where(u => u.UserChats.Any(y => y.UserId == userId))
-                .Skip((chatsParameters.PageNumber - 1) * chatsParameters.PageSize)
-                .Take(chatsParameters.PageSize);
-            return chats;
+                .Where(u => u.UserChats.Any(y => y.UserId == userId));
+            return PagedList<ChatModel>
+                .ToPagedList(chats, chatsParameters.PageNumber, chatsParameters.PageSize);
         }
     }
 }
