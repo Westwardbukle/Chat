@@ -12,10 +12,10 @@ namespace Chat.Core.Abstract
         Task SendMessage(Guid userId, Guid chatId, string text);
 
         Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId,
-            MessagesFeatures messagesFeatures);
+            MessagesParameters messagesParameters);
         Task SendPersonalMessage(Guid senderId, Guid recipientId, string text);
 
         Task<(List<MessagesResponseDto> Data, MetaData MetaData )> GetAllMessagesFromUserToUser(Guid userId,
-            Guid senderId, MessagesFeatures messagesFeatures);
+            Guid senderId, MessagesParameters messagesParameters);
     }
 }

@@ -12,6 +12,6 @@ namespace Chat.Database.Repository.Message
         public Task CreateMessage(MessageModel item);
 
         Task<PagedList<MessageModel>> FindMessagesByCondition(Expression<Func<MessageModel, bool>> expression,
-            bool trackChanges, MessagesFeatures messagesFeatures);
+            bool trackChanges, MessagesParameters messagesParameters);
     }
 }

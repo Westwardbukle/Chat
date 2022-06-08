@@ -1,7 +1,8 @@
-﻿namespace Chat.Common.RequestFeatures
+﻿using System;
+
+namespace Chat.Common.RequestFeatures
 {
     public sealed class ChatsParameters : RequestParameters
     {
-        
     }
 }

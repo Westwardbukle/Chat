@@ -2,7 +2,7 @@
 
 namespace Chat.Common.RequestFeatures
 {
-    public sealed class UsersParameters : RequestParameters
+    public class MessagesParameters : RequestParameters
     {
         public DateTime MinDate { get; set; }
         public DateTime MaxDate { get; set; }

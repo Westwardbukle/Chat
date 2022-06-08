@@ -59,9 +59,9 @@ namespace Chat.Controllers
         [HttpGet("{userId}/messages/{senderId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId, [FromQuery] MessagesFeatures messagesFeatures)
+        public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId, [FromQuery] MessagesParameters messagesParameters)
         {
-           var messages =  await _messageService.GetAllMessagesFromUserToUser(userId, senderId, messagesFeatures);
+           var messages =  await _messageService.GetAllMessagesFromUserToUser(userId, senderId, messagesParameters);
            
            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(messages.MetaData));
 

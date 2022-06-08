@@ -26,7 +26,7 @@ namespace Chat.Database.Repository.User
             var users = AppDbContext
                 .UserModels
                 .Include(u => u.UserChatModel)
-                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId));
+                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId && u.DateOfBirth >= usersParameters.MinDate && u.DateOfBirth <= usersParameters.MaxDate));
             return PagedList<UserModel>
                 .ToPagedList(users, usersParameters.PageNumber, usersParameters.PageSize);
         }

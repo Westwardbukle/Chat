@@ -152,9 +152,9 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> GetAllMessageInChat(Guid chatId, [FromQuery] MessagesFeatures messagesFeatures)
+        public async Task<ActionResult> GetAllMessageInChat(Guid chatId, [FromQuery] MessagesParameters messagesParameters)
         {
-            var messages = await _messageService.GetAllMessageInCommonChat(chatId, messagesFeatures );
+            var messages = await _messageService.GetAllMessageInCommonChat(chatId, messagesParameters );
             
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(messages.MetaData));
             
