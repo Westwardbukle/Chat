@@ -53,19 +53,26 @@ namespace Chat.Core.Services
             };
 
             await _repository.Message.CreateMessage(message);
-            
+
             await _repository.SaveAsync();
-            
+
             await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
         }
 
-        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId, MessagesParameters messagesParameters)
+        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId,
+            MessagesParameters messagesParameters)
         {
+            /*if (!messagesParameters.ValidDateRange)
+            {
+                throw new MaxDateRangeBadRequestException();
+            }*/
+            
             var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
 
             if (chatIsReal) throw new ChatNotFoundException();
 
-            var allMessages = await _repository.Message.FindMessagesByCondition(m => m.ChatId == chatId, false, messagesParameters);
+            var allMessages = await _repository.Message.FindMessagesByCondition(
+                m => m.ChatId == chatId, false, messagesParameters);
 
             var listMess = _mapper.Map<List<MessagesResponseDto>>(allMessages);
 
@@ -77,19 +84,19 @@ namespace Chat.Core.Services
         {
             if (_repository.User.GetUser(u => u.Id == senderId) is null)
                 throw new UserNotFoundException();
-            
+
             if (_repository.User.GetUser(u => u.Id == recipientId) is null)
                 throw new UserNotFoundException();
 
             var personalChat = await _repository.Chat.GetPersonalChat(senderId, recipientId);
-            
+
 
             if (personalChat is null)
-            { 
+            {
                 await _chatService.CreatePersonalChat(senderId, recipientId);
-                
+
                 var chat = await _repository.Chat.GetPersonalChat(senderId, recipientId);
-                
+
                 var personalMessage2 = new MessageModel
                 {
                     Text = text,
@@ -98,7 +105,7 @@ namespace Chat.Core.Services
                     Type = MessageType.Message,
                     DispatchTime = DateTime.Now,
                 };
-                
+
                 await _repository.Message.CreateMessage(personalMessage2);
                 await _repository.SaveAsync();
                 await _notificationService.NotifyChat(chat.Id, _mapper.Map<MessagesResponseDto>(personalMessage2));
@@ -106,7 +113,7 @@ namespace Chat.Core.Services
             else
             {
                 var chat = await _repository.Chat.GetPersonalChat(senderId, recipientId);
-                
+
                 var personalMessage = new MessageModel
                 {
                     Text = text,
@@ -122,24 +129,27 @@ namespace Chat.Core.Services
             }
         }
 
-        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData )>  GetAllMessagesFromUserToUser(Guid userId, Guid senderId, MessagesParameters messagesParameters)
+        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData )> GetAllMessagesFromUserToUser(
+            Guid userId, Guid senderId, MessagesParameters messagesParameters)
         {
-            if (_repository.User.GetUser(u => u.Id == userId) is null || _repository.User.GetUser(u => u.Id == senderId) is null)
+            if (_repository.User.GetUser(u => u.Id == userId) is null ||
+                _repository.User.GetUser(u => u.Id == senderId) is null)
             {
                 throw new UserNotFoundException();
             }
-            
+
             var chat = await _repository.Chat.GetPersonalChat(userId, senderId);
-            
+
             if (chat is null)
             {
                 throw new ChatNotFoundException();
             }
-            
-            var messages = await _repository.Message.FindMessagesByCondition(m => m.ChatId == chat.Id, false, messagesParameters);
-            
+
+            var messages =
+                await _repository.Message.FindMessagesByCondition(m => m.ChatId == chat.Id, false, messagesParameters);
+
             var allMessages = _mapper.Map<List<MessagesResponseDto>>(messages);
-            
+
             return (allMessages, messages.MetaData);
         }
     }
