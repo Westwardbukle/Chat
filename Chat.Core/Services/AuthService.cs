@@ -11,6 +11,7 @@ using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
 using Chat.Database.Model;
 using Chat.Database.Repository.Manager;
+using MimeKit;
 
 namespace Chat.Core.Services
 {
@@ -49,7 +50,7 @@ namespace Chat.Core.Services
                 Id = id,
                 DateCreated = DateTime.Now,
                 Nickname = registerUserDto.Nickname,
-                DateofBirth = registerUserDto.DateOfBirth,
+                DateOfBirth = registerUserDto.DateOfBirth,
                 Email = registerUserDto.Email,
                 Password = _hasher.HashPassword(registerUserDto.Password),
                 Active = false,
@@ -82,7 +83,7 @@ namespace Chat.Core.Services
             return token;
         }
 
-        public async Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
+        public async Task<(List<GetAllUsersDto>, MetaData metaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
         {
             if (_repositoryManager.Chat.GetChat(c => c.Id == chatId) is null)
             {
@@ -90,10 +91,10 @@ namespace Chat.Core.Services
             }
             
             var users = await _repositoryManager.User.GetAllUsersIdsInChat(chatId, usersParameters);
+            
+            var usersDto = _mapper.Map<List<GetAllUsersDto>>(users);
 
-            var usersDto = _mapper.Map<IEnumerable<GetAllUsersDto>>(users);
-
-            return usersDto;
+            return (usersDto, users.MetaData);
         }
 
 

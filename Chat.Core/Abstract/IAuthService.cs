@@ -6,6 +6,7 @@ using Chat.Common.Dto.Login;
 using Chat.Common.Dto.Token;
 using Chat.Common.Dto.User;
 using Chat.Common.RequestFeatures;
+using Chat.Database.Model;
 
 namespace Chat.Core.Abstract
 {
@@ -13,7 +14,7 @@ namespace Chat.Core.Abstract
     {
         Task Registration(RegisterUserDto registerUserDto);
         Task<TokenModel> Login(LoginUserDto loginUserDto);
-        Task<IEnumerable<GetAllUsersDto>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);
+        Task<(List<GetAllUsersDto>, MetaData metaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);
         Task UpdateUser(string nickname, string newNick);
     }
 }
