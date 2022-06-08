@@ -199,7 +199,7 @@ namespace Chat.Core.Services
 
             if (userChat.Role != Role.Administrator)
             {
-                throw new YouAreNotAdministratorException();
+                throw new PermissionDemied();
             }
 
             var remoteUser = _repository.User.GetUser(u => u.Id == userId);

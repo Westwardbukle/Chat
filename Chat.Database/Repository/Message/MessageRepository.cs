@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Immutable;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
 using Chat.Database.Repository.Base;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Chat.Database.Repository.Message
 {
@@ -26,7 +23,8 @@ namespace Chat.Database.Repository.Message
         {
             var messages = FindByCondition(expression, trackChanges);
 
-            messages = messages.Filter(messagesParameters);
+            messages = messages
+                .Filter(messagesParameters);
 
             return PagedList<MessageModel>
                 .ToPagedList(messages, messagesParameters.PageNumber, messagesParameters.PageSize);

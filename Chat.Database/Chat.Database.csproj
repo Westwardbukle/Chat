@@ -14,8 +14,4 @@
       <ProjectReference Include="..\Chat.Common\Chat.Common.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Extentions\Utility" />
-    </ItemGroup>
-
 </Project>

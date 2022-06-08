@@ -62,11 +62,6 @@ namespace Chat.Core.Services
         public async Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId,
             MessagesParameters messagesParameters)
         {
-            /*if (!messagesParameters.ValidDateRange)
-            {
-                throw new MaxDateRangeBadRequestException();
-            }*/
-            
             var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
 
             if (chatIsReal) throw new ChatNotFoundException();
