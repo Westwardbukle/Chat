@@ -18,20 +18,18 @@ namespace Chat.Core.Services
         private readonly IMapper _mapper;
         private readonly IRepositoryManager _repository;
         private readonly INotificationService _notificationService;
-        private readonly ITokenService _tokenService;
 
         public MessageService
         (
             IRepositoryManager repository,
             IChatService chatService,
             IMapper mapper,
-            INotificationService notificationService, ITokenService tokenService)
+            INotificationService notificationService)
         {
             _repository = repository;
             _chatService = chatService;
             _mapper = mapper;
             _notificationService = notificationService;
-            _tokenService = tokenService;
         }
 
 
@@ -41,7 +39,9 @@ namespace Chat.Core.Services
 
             var checkChat = _repository.Chat.GetChat(c => c.Id == chatId) is not null;
 
-            if (!checkUser || !checkChat) throw new UserOrChatNotFoundException();
+            if (!checkUser) throw new UserNotFoundException();
+            
+            if (!checkChat) throw new ChatNotFoundException();
 
             var message = new MessageModel
             {
@@ -58,23 +58,7 @@ namespace Chat.Core.Services
 
             await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
         }
-
-        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId,
-            MessagesParameters messagesParameters)
-        {
-            var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
-
-            if (chatIsReal) throw new ChatNotFoundException();
-
-            var allMessages = await _repository.Message.FindMessagesByCondition(
-                m => m.ChatId == chatId, false, messagesParameters);
-
-            var listMess = _mapper.Map<List<MessagesResponseDto>>(allMessages);
-
-            return (Data: listMess, MetaData: allMessages.MetaData);
-        }
-
-
+        
         public async Task SendPersonalMessage(Guid senderId, Guid recipientId, string text)
         {
             if (_repository.User.GetUser(u => u.Id == senderId) is null)

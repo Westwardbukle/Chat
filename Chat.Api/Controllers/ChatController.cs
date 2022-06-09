@@ -22,22 +22,10 @@ namespace Chat.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
-        private readonly IMessageService _messageService;
-        private readonly IAuthService _authService;
-        private readonly ITokenService _tokenService;
 
-        public ChatController
-        (
-            IChatService chatService,
-            IMessageService messageService,
-            IAuthService authService,
-            ITokenService tokenService
-        )
+        public ChatController(IChatService chatService)
         {
             _chatService = chatService;
-            _messageService = messageService;
-            _authService = authService;
-            _tokenService = tokenService;
         }
 
         /// <summary>
@@ -53,7 +41,7 @@ namespace Chat.Controllers
         {
             await _chatService.CreateCommonChat(commonChatDto);
 
-            return StatusCode(201);
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         /// <summary>
@@ -84,7 +72,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllUsersInChat(Guid chatId, [FromQuery] UsersParameters usersParameters)
         {
-            var result = await _authService.GetAllUsersInChat(chatId, usersParameters);
+            var result = await _chatService.GetAllUsersInChat(chatId, usersParameters);
             
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.MetaData));
             
@@ -126,23 +114,7 @@ namespace Chat.Controllers
 
             return Ok();
         }
-
-        /// <summary>
-        /// Send message in common chat
-        /// </summary>
-        /// <param name="commonChatDto"></param>
-        /// <returns></returns>
-        [HttpPost("{chatId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> SendMessage(Guid chatId, SendMessageDto sendMessage)
-        {
-            await _messageService.SendMessage(sendMessage.UserId, chatId, sendMessage.Text);
-
-            return StatusCode(StatusCodes.Status201Created);
-        }
-
+        
         /// <summary>
         /// Get all messages in chat
         /// </summary>
@@ -154,7 +126,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllMessageInChat(Guid chatId, [FromQuery] MessagesParameters messagesParameters)
         {
-            var messages = await _messageService.GetAllMessageInCommonChat(chatId, messagesParameters );
+            var messages = await _chatService.GetAllMessageInCommonChat(chatId, messagesParameters );
             
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(messages.MetaData));
             

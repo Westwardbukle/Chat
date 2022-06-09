@@ -7,7 +7,7 @@ namespace Chat.Core.Abstract
 {
     public interface IRestoringCodeService
     {
-        Task<ActionResult> SendRestoringCode(Guid userId);
-        Task<ActionResult> CodeСonfirmation(CodeDto codeDto);
+        Task SendRestoringCode(Guid userId);
+        Task ConfirmEmailCode(CodeDto codeDto);
     }
 }

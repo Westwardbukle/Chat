@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Chat;
 using Chat.Common.Dto.Chat;
 using Chat.Common.Dto.Message;
+using Chat.Common.Dto.User;
 using Chat.Common.Exceptions;
 using Chat.Common.Message;
 using Chat.Common.RequestFeatures;
@@ -220,6 +220,40 @@ namespace Chat.Core.Services
             await _repository.SaveAsync();
             
             await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
+        }
+        
+        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId,
+            MessagesParameters messagesParameters)
+        {
+            var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
+
+            if (chatIsReal) throw new ChatNotFoundException();
+
+            var allMessages = await _repository.Message.FindMessagesByCondition(
+                m => m.ChatId == chatId, false, messagesParameters);
+
+            var listMess = _mapper.Map<List<MessagesResponseDto>>(allMessages);
+
+            return (Data: listMess, MetaData: allMessages.MetaData);
+        }
+        
+        public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
+        {
+            if (!usersParameters.ValidDateRange)
+            {
+                throw new MaxDateRangeBadRequestException();
+            }
+            
+            if (_repository.Chat.GetChat(c => c.Id == chatId) is null)
+            {
+                throw new ChatNotFoundException();
+            }
+            
+            var users = await _repository.User.GetAllUsersIdsInChat(chatId, usersParameters);
+            
+            var usersDto = _mapper.Map<List<GetAllUsersDto>>(users);
+
+            return (usersDto, users.MetaData);
         }
     }
 }

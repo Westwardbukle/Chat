@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Message;
 using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
-using Chat.Database.Model;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -35,8 +32,8 @@ namespace Chat.Controllers
         /// <summary>
         /// Send Personal message
         /// </summary>
-        /// <param name="user1"></param>
-        /// <param name="user2"></param>
+        /// <param name="recipientId"></param>
+        /// <param name="personalMessage"></param>
         /// <returns></returns>
         [Authorize]
         [HttpPost("users/{recipientId}/messages")]
@@ -53,8 +50,9 @@ namespace Chat.Controllers
         /// <summary>
         ///  Get messages for personal chat
         /// </summary>
-        /// <param name="user1"></param>
-        /// <param name="user2"></param>
+        /// <param name="userId"></param>
+        /// <param name="senderId"></param>
+        /// <param name="messagesParameters"></param>
         /// <returns></returns>
         [HttpGet("{userId}/messages/{senderId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -66,6 +64,23 @@ namespace Chat.Controllers
            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(messages.MetaData));
 
            return Ok(messages.Data);
-        }  
+        }
+
+        /// <summary>
+        /// Send message in common chat
+        /// </summary>
+        /// <param name="chatId"></param>
+        /// <param name="sendMessage"></param>
+        /// <returns></returns>
+        [HttpPost("{chatId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult> SendMessage(Guid chatId, SendMessageDto sendMessage)
+        {
+            await _messageService.SendMessage(sendMessage.UserId, chatId, sendMessage.Text);
+
+            return StatusCode(StatusCodes.Status201Created);
+        }
     }
 }

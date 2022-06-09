@@ -26,8 +26,8 @@ namespace Chat.Controllers
             _restoringCode = restoringCode;
             _tokenService = tokenService;
         }
-        
-        
+
+
         /// <summary>
         /// Email confirmation code
         /// </summary>
@@ -39,9 +39,13 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> EmailСonfirmation(CodeDto codeDto)
-            => await _restoringCode.CodeСonfirmation(codeDto);
+        {
+            await _restoringCode.ConfirmEmailCode(codeDto);
 
-
+            return StatusCode(201);
+        }
+             
+        
         /// <summary>
         /// sending code on Email
         /// </summary>
