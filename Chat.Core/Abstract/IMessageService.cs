@@ -9,10 +9,10 @@ namespace Chat.Core.Abstract
 {
     public interface IMessageService
     {
-        Task SendMessage(Guid userId, Guid chatId, string text);
+        Task<MessagesResponseDto> SendMessage(Guid userId, Guid chatId, string text);
 
         
-        Task SendPersonalMessage(Guid senderId, Guid recipientId, string text);
+        Task<MessagesResponseDto> SendPersonalMessage(Guid senderId, Guid recipientId, string text);
 
         Task<(List<MessagesResponseDto> Data, MetaData MetaData )> GetAllMessagesFromUserToUser(Guid userId,
             Guid senderId, MessagesParameters messagesParameters);

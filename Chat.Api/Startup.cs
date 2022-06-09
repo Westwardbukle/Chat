@@ -54,6 +54,7 @@ namespace Chat
             services.AddScoped<ICodeService, CodeService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IUserService, UserService>();
             
             
             services.AddScoped<INotificationService, NotificationService>();

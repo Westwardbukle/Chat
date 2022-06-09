@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Chat.Common.Dto.Chat;
-using Chat.Common.Dto.Message;
-using Chat.Common.Dto.User;
 using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
-using Chat.Database.Model;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -39,9 +35,9 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
         {
-            await _chatService.CreateCommonChat(commonChatDto);
+           var chat = await _chatService.CreateCommonChat(commonChatDto);
 
-            return StatusCode(StatusCodes.Status201Created);
+            return Created("", chat);
         }
 
         /// <summary>
@@ -57,9 +53,9 @@ namespace Chat.Controllers
         public async Task<ActionResult> InviteUserToCommonChat(Guid chatId,
             InviteUserCommonChatDto inviteUserCommonChatDto)
         {
-            await _chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto);
+            var userChat = await _chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto);
 
-            return StatusCode(StatusCodes.Status201Created);
+            return Created("", userChat);
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace Chat.Core.Services
         }
 
 
-        public async Task SendMessage(Guid userId, Guid chatId, string text)
+        public async Task<MessagesResponseDto> SendMessage(Guid userId, Guid chatId, string text)
         {
             var checkUser = _repository.User.GetUser(u => u.Id == userId) is not null;
 
@@ -56,10 +56,14 @@ namespace Chat.Core.Services
 
             await _repository.SaveAsync();
 
-            await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
+            var messageDto = _mapper.Map<MessagesResponseDto>(message);
+
+            await _notificationService.NotifyChat(chatId, messageDto);
+            
+            return messageDto;
         }
         
-        public async Task SendPersonalMessage(Guid senderId, Guid recipientId, string text)
+        public async Task<MessagesResponseDto> SendPersonalMessage(Guid senderId, Guid recipientId, string text)
         {
             if (_repository.User.GetUser(u => u.Id == senderId) is null)
                 throw new UserNotFoundException();
@@ -86,8 +90,13 @@ namespace Chat.Core.Services
                 };
 
                 await _repository.Message.CreateMessage(personalMessage2);
-                await _repository.SaveAsync();
-                await _notificationService.NotifyChat(chat.Id, _mapper.Map<MessagesResponseDto>(personalMessage2));
+                await _repository.SaveAsync(); 
+                
+                var messageDto = _mapper.Map<MessagesResponseDto>(personalMessage2);
+                
+                await _notificationService.NotifyChat(chat.Id, messageDto);
+                
+                return messageDto;
             }
             else
             {
@@ -103,8 +112,12 @@ namespace Chat.Core.Services
                 };
                 await _repository.Message.CreateMessage(personalMessage);
                 await _repository.SaveAsync();
+                
+                var messageDto = _mapper.Map<MessagesResponseDto>(personalMessage);
 
-                await _notificationService.NotifyChat(chat.Id, _mapper.Map<MessagesResponseDto>(personalMessage));
+                await _notificationService.NotifyChat(chat.Id, messageDto);
+                
+                return messageDto;
             }
         }
 

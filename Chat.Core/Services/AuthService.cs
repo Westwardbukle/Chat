@@ -33,7 +33,7 @@ namespace Chat.Core.Services
             _repositoryManager = repositoryManager;
         }
 
-        public async Task Registration(RegisterUserDto registerUserDto)
+        public async Task<UserRegisterResponseDto> Registration(RegisterUserDto registerUserDto)
         {
             var id = Guid.NewGuid();
 
@@ -56,6 +56,10 @@ namespace Chat.Core.Services
 
             _repositoryManager.User.CreateUser(user);
             await _repositoryManager.SaveAsync();
+            
+            var returnUser =  _mapper.Map<UserRegisterResponseDto>(user);
+
+            return returnUser;
         }
 
 

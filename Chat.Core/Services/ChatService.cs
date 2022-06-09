@@ -6,6 +6,7 @@ using Chat.Common.Chat;
 using Chat.Common.Dto.Chat;
 using Chat.Common.Dto.Message;
 using Chat.Common.Dto.User;
+using Chat.Common.Dto.UserChat;
 using Chat.Common.Exceptions;
 using Chat.Common.Message;
 using Chat.Common.RequestFeatures;
@@ -74,7 +75,7 @@ namespace Chat.Core.Services
             await _repository.SaveAsync();
         }
 
-        public async Task CreateCommonChat(CreateCommonChatDto commonChatDto)
+        public async Task<ChatResponseDto> CreateCommonChat(CreateCommonChatDto commonChatDto)
         {
             if (_repository.User.GetUser(u => u.Id == commonChatDto.AdminId) is null)
             {
@@ -102,13 +103,19 @@ namespace Chat.Core.Services
 
             _repository.Chat.CreateChat(chat);
             await _repository.SaveAsync();
+
+
+            var chatDto = _mapper.Map<ChatResponseDto>(chat);
+            return chatDto;
         }
 
-        public async Task InviteUserToCommonChat(Guid chatId,
+        public async Task<List<UserChatResponseDto>> InviteUserToCommonChat(Guid chatId,
             InviteUserCommonChatDto inviteUserCommonChatDto)
         {
             var currentUserId = _tokenService.GetCurrentUserId();
-            
+
+            var userchats= new List<UserChatResponseDto>();
+
             foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
                 var isUserExistsDb = _repository.User.GetUser(u => u.Id == userId) is not null;
@@ -141,12 +148,13 @@ namespace Chat.Core.Services
                     await _repository.SaveAsync();
                     
                     await _notificationService.NotifyChat(chatId,_mapper.Map<MessagesResponseDto>(notifyMessage));
-                }
-                else
-                {
-                    throw new UserNotFoundException();
+                    
+                    var userChatDto = _mapper.Map<UserChatResponseDto>(userChat);
+                    userchats.Add(userChatDto);
                 }
             }
+
+            return userchats;
         }
 
         public async Task<(List<ChatResponseDto> Data , MetaData MetaData)> GetAllCommonChatsOfUser( Guid userId, ChatsParameters chatsParameters)

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Chat.Common.Dto.Code;
-using Chat.Common.User;
 using Chat.Core.Abstract;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authorization;
@@ -40,9 +39,9 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> EmailСonfirmation(CodeDto codeDto)
         {
-            await _restoringCode.ConfirmEmailCode(codeDto);
-
-            return StatusCode(201);
+             await _restoringCode.ConfirmEmailCode(codeDto);
+             
+             return Ok();
         }
              
         

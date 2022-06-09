@@ -36,9 +36,9 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Registration(RegisterUserDto registerUserDto)
         {
-            await _authService.Registration(registerUserDto);
-
-            return StatusCode(201);
+           var user = await _authService.Registration(registerUserDto);
+           
+           return Created("", user);
         }
 
 

@@ -42,9 +42,9 @@ namespace Chat.Controllers
         public async Task<ActionResult> SendPersonalMessage(Guid recipientId,[FromBody] PersonalMessageDto personalMessage)
         {
             var senderId = _tokenService.GetCurrentUserId();
-            await _messageService.SendPersonalMessage(senderId, recipientId, personalMessage.Text);
+            var message = await _messageService.SendPersonalMessage(senderId, recipientId, personalMessage.Text);
 
-            return StatusCode(201);
+            return Created("", message);
         }
 
         /// <summary>
@@ -78,9 +78,9 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> SendMessage(Guid chatId, SendMessageDto sendMessage)
         {
-            await _messageService.SendMessage(sendMessage.UserId, chatId, sendMessage.Text);
+           var message =  await _messageService.SendMessage(sendMessage.UserId, chatId, sendMessage.Text);
 
-            return StatusCode(StatusCodes.Status201Created);
+            return Created("", message);
         }
     }
 }
