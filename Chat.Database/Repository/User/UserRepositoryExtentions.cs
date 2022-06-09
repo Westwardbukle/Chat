@@ -65,5 +65,13 @@ namespace Chat.Database.Repository.User
 
             return employees.OrderBy(orderQuery);
         }
+        public static IQueryable<UserModel> Search(this IQueryable<UserModel> employees,
+            string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return employees;
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+            return employees.Where(e => e.Nickname.ToLower().Contains(lowerCaseTerm));
+        }
     }
 }

@@ -8,6 +8,8 @@ namespace Chat.Common.RequestFeatures
         public DateTime? MaxDate { get; set; }
 
         public Guid? UserId { get; set; } 
+        
+        //public string? SearchTerm { get; set; }
 
     }
 }

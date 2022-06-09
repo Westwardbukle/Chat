@@ -29,6 +29,7 @@ namespace Chat.Database.Repository.User
                 .UserModels
                 .Include(u => u.UserChatModel)
                 .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
+                .Search(usersParameters.SearchTerm)
                 .Filter(usersParameters)
                 .Sort(usersParameters.OrderBy);
 

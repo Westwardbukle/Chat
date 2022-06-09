@@ -21,9 +21,7 @@ namespace Chat.Database.Repository.Message
             Expression<Func<MessageModel, bool>> expression,
             bool trackChanges, MessagesParameters messagesParameters)
         {
-            var messages = FindByCondition(expression, trackChanges);
-
-            messages = messages
+            var messages = FindByCondition(expression, trackChanges)
                 .Filter(messagesParameters)
                 .SortMessages(messagesParameters.OrderBy);
 
