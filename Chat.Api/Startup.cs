@@ -38,7 +38,7 @@ namespace Chat
             var appOptions = Configuration.GetSection(AppOptions.App).Get<AppOptions>();
             services.AddSingleton(appOptions);
 
-            ConfigureAuthentication(services);
+            services.ConfigureAuthentication(Configuration);
 
             services.ConfigureSwagger();
 
@@ -46,19 +46,28 @@ namespace Chat
 
             services.ConfigureRepositoryManager();
 
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IRestoringCodeService, RestoringCodeServiceService>();
-            services.AddScoped<IPasswordHasher, PasswordHasherService>();
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<ISmtpService, SmtpService>();
-            services.AddScoped<ICodeService, CodeService>();
-            services.AddScoped<IChatService, ChatService>();
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IUserService, UserService>();
-            
-            
-            services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IChatWatcher, ChatWatcher>();
+            services.ConfigureAuthService();
+
+            services.ConfigureRestoringCodeService();
+
+            services.ConfigurePasswordService();
+
+            services.ConfigureTokenService();
+
+            services.ConfigureSmtpService();
+
+            services.ConfigureCodeService();
+
+            services.ConfigureChatService();
+
+            services.ConfigureMessageService();
+
+            services.ConfigureUserService();
+
+            services.ConfigureNotificationService();
+
+            services.ConfigureChatWatcher();
+
 
             var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
@@ -66,12 +75,9 @@ namespace Chat
             var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new AppProfile()); });
             var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-            
-            services.AddSignalR(options =>
-            {
-                options.EnableDetailedErrors = true;
-            });
-            
+
+            services.AddSignalR(options => { options.EnableDetailedErrors = true; });
+
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
@@ -110,7 +116,7 @@ namespace Chat
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
             app.UseCors();
 
             app.UseAuthentication();
@@ -121,26 +127,6 @@ namespace Chat
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chat");
             });
-        }
-
-        private void ConfigureAuthentication(IServiceCollection services)
-        {
-            var key = Encoding.ASCII.GetBytes(Configuration["AppOptions:SecretKey"]);
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(x =>
-                {
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateAudience = false,
-                        ValidateLifetime = false,
-                        ValidateIssuer = false,
-                        RequireExpirationTime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key)
-                    };
-                    x.SaveToken = true;
-                });
         }
     }
 }
