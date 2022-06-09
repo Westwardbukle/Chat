@@ -24,23 +24,24 @@ namespace Chat.Database.Repository.Message
             var messages = FindByCondition(expression, trackChanges);
 
             messages = messages
-                .Filter(messagesParameters);
+                .Filter(messagesParameters)
+                .SortMessages(messagesParameters.OrderBy);
 
             return PagedList<MessageModel>
                 .ToPagedList(messages, messagesParameters.PageNumber, messagesParameters.PageSize);
         }
         
-        public async Task<PagedList<MessageModel>> GetMessages(bool trackChanges, MessagesParameters messagesParameters)
+        /*public async Task<PagedList<MessageModel>> GetMessages(bool trackChanges, MessagesParameters messagesParameters)
         {
             var messages = await GetAllObjects(trackChanges)
                 .Filter(messagesParameters)
-                //.Sort()
+                .SortMessages(messagesParameters.OrderBy)
                 .Paginate(messagesParameters)
                 .ToListAsync();
 
             return PagedList<MessageModel>
                 .ToPagedList(messages, messagesParameters.PageNumber, messagesParameters.PageSize);
-        }
+        }*/
 
         public MessageModel GetOneMessage(Func<MessageModel, bool> predicate)
             => GetOne(predicate);

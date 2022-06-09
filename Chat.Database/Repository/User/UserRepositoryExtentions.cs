@@ -10,12 +10,10 @@ namespace Chat.Database.Repository.User
 {
     public static class UserRepositoryExtentions
     {
-        public static IQueryable<UserModel> Sort(this IQueryable<UserModel> employees, string
-            orderByQueryString)
+        public static string CreateOrderQuery<T>(string orderByQueryString)
         {
-            if (string.IsNullOrWhiteSpace(orderByQueryString))
-                return employees.OrderBy(e => e.Nickname);
             var orderParams = orderByQueryString.Trim().Split(',');
+            
             var propertyInfos = typeof(UserModel).GetProperties(BindingFlags.Public |
                                                                BindingFlags.Instance);
             var orderQueryBuilder = new StringBuilder();
@@ -24,17 +22,19 @@ namespace Chat.Database.Repository.User
                 if (string.IsNullOrWhiteSpace(param))
                     continue;
                 var propertyFromQueryName = param.Split(" ")[0];
+                
                 var objectProperty = propertyInfos.FirstOrDefault(pi =>
                     pi.Name.Equals(propertyFromQueryName, StringComparison.InvariantCultureIgnoreCase));
+                
                 if (objectProperty == null)
                     continue;
+                
                 var direction = param.EndsWith(" desc") ? "descending" : "ascending";
+                
                 orderQueryBuilder.Append($"{objectProperty.Name.ToString()} {direction},");
             }
             var orderQuery = orderQueryBuilder.ToString().TrimEnd(',', ' ');
-            if (string.IsNullOrWhiteSpace(orderQuery))
-                return employees.OrderBy(e => e.Nickname);
-            return employees.OrderBy(orderQuery);
+            return orderQuery;
         }
         
         public static IQueryable<UserModel> Filter(this IQueryable<UserModel> messages,
@@ -51,6 +51,19 @@ namespace Chat.Database.Repository.User
             }
             
             return messages;
+        }
+        
+        public static IQueryable<UserModel> Sort(this IQueryable<UserModel> employees, string orderByQueryString)
+        {
+            if (string.IsNullOrWhiteSpace(orderByQueryString))
+                return employees.OrderBy(e => e.Nickname);
+
+            var orderQuery = CreateOrderQuery<UserModel>(orderByQueryString);
+
+            if (string.IsNullOrWhiteSpace(orderQuery))
+                return employees.OrderBy(e => e.Nickname);
+
+            return employees.OrderBy(orderQuery);
         }
     }
 }

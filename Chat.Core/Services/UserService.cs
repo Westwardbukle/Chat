@@ -23,11 +23,6 @@ namespace Chat.Core.Services
 
         public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
         {
-            if (!usersParameters.ValidDateRange)
-            {
-                throw new MaxDateRangeBadRequestException();
-            }
-            
             if (_repositoryManager.Chat.GetChat(c => c.Id == chatId) is null)
             {
                 throw new ChatNotFoundException();

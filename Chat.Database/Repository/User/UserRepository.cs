@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
@@ -30,6 +31,7 @@ namespace Chat.Database.Repository.User
                 .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
                 .Filter(usersParameters)
                 .Sort(usersParameters.OrderBy);
+
             return PagedList<UserModel>
                 .ToPagedList(users, usersParameters.PageNumber, usersParameters.PageSize);
         }
