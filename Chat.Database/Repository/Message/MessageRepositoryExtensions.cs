@@ -3,7 +3,6 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 using System.Text;
-using Chat.Common.Base;
 using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
 

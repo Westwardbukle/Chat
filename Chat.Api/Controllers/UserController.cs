@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
@@ -11,6 +12,7 @@ namespace Chat.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
+    [Route("/api/v{version:apiVersion}/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly ITokenService _tokenService;
@@ -59,6 +61,23 @@ namespace Chat.Controllers
         {
             await _userService.UpdateUser(nickname, newNick);
             return NoContent();
+        }
+
+        /// <summary>
+        ///  Get user
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("Users/{nickname}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> GetUser(string nickname)
+        {
+            var user = await _userService.GetOneUser(nickname);
+
+            return Ok(user);
         }
     }
 }

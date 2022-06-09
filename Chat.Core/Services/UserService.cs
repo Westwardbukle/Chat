@@ -50,5 +50,17 @@ namespace Chat.Core.Services
 
             await _repositoryManager.SaveAsync();
         }
+
+        public async Task<GetAllUsersDto> GetOneUser(string nickName)
+        {
+            var user = _repositoryManager.User.GetUser(u => u.Nickname == nickName);
+
+            if (user is null)
+            {
+                throw new UserNotFoundException();
+            }
+
+            return _mapper.Map<GetAllUsersDto>(user);
+        }
     }
 }

@@ -12,5 +12,7 @@ namespace Chat.Core.Abstract
             UsersParameters usersParameters);
 
         Task UpdateUser(string nickname, string newNick);
+
+        Task<GetAllUsersDto> GetOneUser(string nickName);
     }
 }
