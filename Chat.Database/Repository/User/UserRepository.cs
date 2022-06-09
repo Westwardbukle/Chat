@@ -7,6 +7,7 @@ using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
 using Chat.Database.Repository.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Chat.Database.Repository.User
 {
@@ -21,17 +22,19 @@ namespace Chat.Database.Repository.User
                 .OrderBy(c => c.Nickname)
                 .ToListAsync();
 
-        public async Task<PagedList<UserModel>> GetAllUsersIdsInChat(Guid chatId, UsersParameters usersParameters)
+        public async Task<PagedList<UserModel>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
         {
             var users = AppDbContext
                 .UserModels
                 .Include(u => u.UserChatModel)
-                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId && u.DateOfBirth >= usersParameters.MinDate && u.DateOfBirth <= usersParameters.MaxDate));
+                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
+                .Filter(usersParameters)
+                .Sort(usersParameters.OrderBy);
             return PagedList<UserModel>
                 .ToPagedList(users, usersParameters.PageNumber, usersParameters.PageSize);
         }
 
-        public IQueryable<UserModel> GetAllUsersIdsInChat(Guid chatId)
+        public IQueryable<UserModel> GetAllUsersIdsInChatForNotify(Guid chatId)
         {
             var users = AppDbContext
                 .UserModels
@@ -56,16 +59,5 @@ namespace Chat.Database.Repository.User
         public IQueryable<UserModel> FindUserByCondition(Expression<Func<UserModel, bool>> expression,
             bool trackChanges)
             => FindByCondition(expression, trackChanges);
-        
-        public IQueryable<UserModel> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
-        {
-            var users = AppDbContext
-                .UserModels
-                .Include(u => u.UserChatModel)
-                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
-                .Skip((usersParameters.PageNumber - 1) * usersParameters.PageSize)
-                .Take(usersParameters.PageSize);
-            return users;
-        }
     }
 }

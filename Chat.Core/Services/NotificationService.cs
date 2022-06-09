@@ -22,7 +22,7 @@ namespace Chat.Core.Services
 
         public async Task NotifyChat(Guid chatId, MessagesResponseDto message)
         {
-            var usersIds = _repository.User.GetAllUsersIdsInChat(chatId).Select(x => x.Id).ToList();
+            var usersIds = _repository.User.GetAllUsersIdsInChatForNotify(chatId).Select(x => x.Id).ToList();
 
             await _chatWatcher.NotifyNewMessageChat(usersIds, message);
         }

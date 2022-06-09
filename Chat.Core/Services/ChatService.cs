@@ -257,7 +257,7 @@ namespace Chat.Core.Services
                 throw new ChatNotFoundException();
             }
             
-            var users = await _repository.User.GetAllUsersIdsInChat(chatId, usersParameters);
+            var users = await _repository.User.GetAllUsersInChat(chatId, usersParameters);
             
             var usersDto = _mapper.Map<List<GetAllUsersDto>>(users);
 

@@ -9,11 +9,11 @@ namespace Chat.Database.Repository.User
 {
     public interface IUserRepository
     {
-        Task<PagedList<UserModel>> GetAllUsersIdsInChat(Guid chatId, UsersParameters usersParameters);
+        Task<PagedList<UserModel>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);
         
         /*IQueryable<UserModel> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);*/
 
-        IQueryable<UserModel> GetAllUsersIdsInChat(Guid chatId);
+        IQueryable<UserModel> GetAllUsersIdsInChatForNotify(Guid chatId);
         
         UserModel GetUser(Func<UserModel, bool> predicate);
 
