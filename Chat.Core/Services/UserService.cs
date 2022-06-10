@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Chat.Common.Dto.Friend;
 using Chat.Common.Dto.User;
 using Chat.Common.Exceptions;
 using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
-using Chat.Database.Repository.Manager;
+using Chat.Database.AbstractRepository;
+using Chat.Database.Model;
 
 namespace Chat.Core.Services
 {
@@ -14,11 +16,13 @@ namespace Chat.Core.Services
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
 
-        public UserService(IRepositoryManager repositoryManager, IMapper mapper)
+        public UserService(IRepositoryManager repositoryManager, IMapper mapper, ITokenService tokenService)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
@@ -61,6 +65,25 @@ namespace Chat.Core.Services
             }
 
             return _mapper.Map<GetAllUsersDto>(user);
+        }
+        
+        public async Task<FriendResponseDto> SendFriendRequest(Guid recipientId)
+        {
+            var senderId = _tokenService.GetCurrentUserId();
+            
+            var friendRequest = new FriendModel
+            {
+                UserId = senderId,
+                FriendId = recipientId,
+                Confirmed = false,
+            };
+
+            await _repositoryManager.Friend.CreateFriendRequest(friendRequest);
+            await _repositoryManager.SaveAsync();
+            
+            
+            
+            return _mapper.Map<FriendResponseDto>(friendRequest);
         }
     }
 }

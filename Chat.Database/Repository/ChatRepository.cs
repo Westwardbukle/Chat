@@ -5,11 +5,11 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.Chat;
 using Chat.Common.RequestFeatures;
+using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
-using Chat.Database.Repository.Base;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chat.Database.Repository.Chat
+namespace Chat.Database.Repository
 {
     public class ChatRepository : BaseRepository<ChatModel>, IChatRepository
     {

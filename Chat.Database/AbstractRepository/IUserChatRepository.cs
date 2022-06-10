@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Chat.Database.Model;
 
-namespace Chat.Database.Repository.UserChat
+namespace Chat.Database.AbstractRepository
 {
     public interface IUserChatRepository
     {

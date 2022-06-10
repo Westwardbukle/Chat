@@ -9,7 +9,8 @@ using Chat.Core.Hubs;
 using Chat.Core.ProFiles;
 using Chat.Core.Services;
 using Chat.Database;
-using Chat.Database.Repository.Manager;
+using Chat.Database.AbstractRepository;
+using Chat.Database.Repository;
 using Chat.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -109,6 +110,7 @@ namespace Chat.Extentions
             services.ConfigureUserService();
             services.ConfigureNotificationService();
             services.ConfigureChatWatcher();
+            services.ConfigureFriendService();
         }
 
         public static void ConfigureDbContext(this IServiceCollection services,IConfiguration configuration)
@@ -168,6 +170,8 @@ namespace Chat.Extentions
         
         public static void ConfigureChatWatcher(this IServiceCollection services)
             => services.AddScoped<IChatWatcher, ChatWatcher>();
-        
+
+        public static void ConfigureFriendService(this IServiceCollection services)
+            => services.AddScoped<IFriendService, FriendService>();
     }
 }

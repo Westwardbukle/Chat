@@ -4,8 +4,8 @@ using Chat.Common.Code;
 using Chat.Common.Dto.Code;
 using Chat.Common.Exceptions;
 using Chat.Core.Abstract;
+using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
-using Chat.Database.Repository.Manager;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

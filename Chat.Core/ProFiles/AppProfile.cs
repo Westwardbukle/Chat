@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Chat.Common.Dto;
 using Chat.Common.Dto.Chat;
+using Chat.Common.Dto.Friend;
 using Chat.Common.Dto.Message;
 using Chat.Common.Dto.User;
 using Chat.Common.Dto.UserChat;
@@ -25,6 +26,9 @@ namespace Chat.Core.ProFiles
 
 
             CreateMap<UserChatModel, UserChatResponseDto>();
+
+
+            CreateMap<FriendModel, FriendResponseDto>();
             
             
             // Return list chats, in ChatService, GetAllChats method

@@ -5,7 +5,7 @@ using Chat.Common.Dto.Message;
 using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
 using Chat.Core.Hubs;
-using Chat.Database.Repository.Manager;
+using Chat.Database.AbstractRepository;
 
 namespace Chat.Core.Services
 {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
-using Chat.Database.Repository.Base;
 
-namespace Chat.Database.Repository.UserChat
+namespace Chat.Database.Repository
 {
     public class UserChatRepository : BaseRepository<UserChatModel>, IUserChatRepository
     {

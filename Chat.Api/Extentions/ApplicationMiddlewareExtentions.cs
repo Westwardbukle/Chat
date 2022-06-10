@@ -22,6 +22,7 @@ namespace Chat.Extentions
                         {
                             NotFoundException => StatusCodes.Status404NotFound,
                             BadRequestException => StatusCodes.Status400BadRequest,
+                            PermissionDeniedException => StatusCodes.Status403Forbidden,
                             _ => StatusCodes.Status500InternalServerError
                         };
 

@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Chat.Database.Repository.Chat;
-using Chat.Database.Repository.Code;
-using Chat.Database.Repository.Message;
-using Chat.Database.Repository.User;
-using Chat.Database.Repository.UserChat;
+using Chat.Database.AbstractRepository;
 
-namespace Chat.Database.Repository.Manager
+namespace Chat.Database.Repository
 {
     public sealed class RepositoryManager : IRepositoryManager
     {
@@ -16,10 +12,12 @@ namespace Chat.Database.Repository.Manager
         private readonly Lazy<IMessageRepository> _messageRepository;
         private readonly Lazy<ICodeRepository> _codeRepository;
         private readonly Lazy<IUserChatRepository> _userChatRepository;
+        private readonly Lazy<IFriendRepository> _friendRepository;
 
         public RepositoryManager(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
+            _friendRepository = new Lazy<IFriendRepository>(() => new FriendRepository(appDbContext));
             _chatRepository = new Lazy<IChatRepository>(() => new ChatRepository(appDbContext));
             _userRepository = new Lazy<IUserRepository>(() => new UserRepository(appDbContext));
             _codeRepository = new Lazy<ICodeRepository>(() => new CodeRepository(appDbContext));
@@ -32,6 +30,8 @@ namespace Chat.Database.Repository.Manager
         public ICodeRepository Code => _codeRepository.Value;
         public IMessageRepository Message => _messageRepository.Value;
         public IUserChatRepository UserChat => _userChatRepository.Value;
+
+        public IFriendRepository Friend => _friendRepository.Value;
 
         public async Task SaveAsync() => await _appDbContext.SaveChangesAsync();
     }

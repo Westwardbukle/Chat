@@ -9,6 +9,8 @@ namespace Chat.Database
         
         public DbSet<CodeModel> CodeModels { get; set; }
         
+        public DbSet<FriendModel> FriendModels { get; set; }
+        
         public DbSet<ChatModel> ChatModels { get; set; }
         
         public DbSet<MessageModel> MessageModels { get; set; }

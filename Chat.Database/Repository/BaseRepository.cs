@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.Base;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
-namespace Chat.Database.Repository.Base
+namespace Chat.Database.Repository
 {
     public abstract class BaseRepository<TModel>
         where TModel : BaseModel

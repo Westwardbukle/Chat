@@ -15,8 +15,4 @@
       <ProjectReference Include="..\Chat.Common\Chat.Common.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Repository\Chat" />
-    </ItemGroup>
-
 </Project>

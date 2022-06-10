@@ -2,11 +2,11 @@
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
+using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
-using Chat.Database.Repository.Base;
-using Microsoft.EntityFrameworkCore;
+using Chat.Database.Repository.Message;
 
-namespace Chat.Database.Repository.Message
+namespace Chat.Database.Repository
 {
     public class MessageRepository : BaseRepository<MessageModel>, IMessageRepository
     {

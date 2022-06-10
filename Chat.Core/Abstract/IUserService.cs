@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Chat.Common.Dto.Friend;
 using Chat.Common.Dto.User;
 using Chat.Common.RequestFeatures;
 
@@ -14,5 +15,7 @@ namespace Chat.Core.Abstract
         Task UpdateUser(string nickname, string newNick);
 
         Task<GetAllUsersDto> GetOneUser(string nickName);
+
+        Task<FriendResponseDto> SendFriendRequest(Guid recipientId);
     }
 }

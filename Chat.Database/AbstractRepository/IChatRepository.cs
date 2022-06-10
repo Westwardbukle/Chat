@@ -5,9 +5,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
-using Chat.Database.Repository.Base;
 
-namespace Chat.Database.Repository.Chat
+namespace Chat.Database.AbstractRepository
 {
     public interface IChatRepository 
     {

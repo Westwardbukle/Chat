@@ -12,8 +12,8 @@ using Chat.Common.Message;
 using Chat.Common.RequestFeatures;
 using Chat.Common.UsersRole;
 using Chat.Core.Abstract;
+using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
-using Chat.Database.Repository.Manager;
 
 namespace Chat.Core.Services
 {
@@ -207,7 +207,7 @@ namespace Chat.Core.Services
 
             if (userChat.Role != Role.Administrator)
             {
-                throw new PermissionDemied();
+                throw new IncorrectUserException();
             }
 
             var remoteUser = _repository.User.GetUser(u => u.Id == userId);

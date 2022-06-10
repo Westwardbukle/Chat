@@ -20,6 +20,11 @@ namespace Chat.Database.Model
         
         public DateTime? DateTimeActivation { get; set; }
         
+        
+        
+
+        public ICollection<FriendModel> FriendModels { get; set; }
+
         public ICollection<MessageModel> MessageModels { get; set; }
         
         public ICollection<UserChatModel> UserChatModel { get; set; }

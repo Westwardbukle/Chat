@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
 
-namespace Chat.Database.Repository.Message
+namespace Chat.Database.AbstractRepository
 {
     public interface IMessageRepository 
     {

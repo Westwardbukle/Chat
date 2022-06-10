@@ -1,7 +1,7 @@
 ﻿using System;
 using Chat.Database.Model;
 
-namespace Chat.Database.Repository.Code
+namespace Chat.Database.AbstractRepository
 {
     public interface ICodeRepository
     {

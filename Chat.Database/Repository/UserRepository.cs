@@ -4,11 +4,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
+using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
-using Chat.Database.Repository.Base;
+using Chat.Database.Repository.User;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chat.Database.Repository.User
+namespace Chat.Database.Repository
 {
     public class UserRepository: BaseRepository<UserModel>, IUserRepository
     {
@@ -48,11 +49,11 @@ namespace Chat.Database.Repository.User
         public UserModel GetUser(Func<UserModel, bool> predicate)
             => GetOne(predicate);
 
-        public void CreateUser(UserModel item)
-            => Create(item);
+        public async void CreateUser(UserModel item)
+            => await Create(item);
 
-        public void UpdateUser(UserModel item)
-            => Update(item);
+        public  void UpdateUser(UserModel item)
+            =>  Update(item);
 
         public Task<UserModel> GetUserById(Guid id)
             => GetById(id);

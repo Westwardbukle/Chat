@@ -1,11 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Chat.Database.Repository.Chat;
-using Chat.Database.Repository.Code;
-using Chat.Database.Repository.Message;
 using Chat.Database.Repository.User;
-using Chat.Database.Repository.UserChat;
 
-namespace Chat.Database.Repository.Manager
+namespace Chat.Database.AbstractRepository
 {
     public interface IRepositoryManager
     {
@@ -18,6 +14,8 @@ namespace Chat.Database.Repository.Manager
         IMessageRepository Message { get; }
 
         IUserChatRepository UserChat { get; }
+        
+        IFriendRepository Friend { get; }
 
         Task SaveAsync();
     }

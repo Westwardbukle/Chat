@@ -1,8 +1,8 @@
 ﻿using System;
+using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
-using Chat.Database.Repository.Base;
 
-namespace Chat.Database.Repository.Code
+namespace Chat.Database.Repository
 {
     public class CodeRepository : BaseRepository<CodeModel>, ICodeRepository
     {

@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
@@ -30,7 +32,7 @@ namespace Chat.Controllers
         /// </summary>
         /// <returns>List with chat names</returns>
         [Authorize]
-        [HttpGet("Users/{userid}/chats")]
+        [HttpGet("{userid}/chats")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -52,7 +54,7 @@ namespace Chat.Controllers
         /// <param name="newNick"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPut("Users/{nickname}")]
+        [HttpPut("{nickname}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -68,7 +70,7 @@ namespace Chat.Controllers
         /// <param name="nickname"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpGet("Users/{nickname}")]
+        [HttpGet("{nickname}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -77,6 +79,23 @@ namespace Chat.Controllers
             var user = await _userService.GetOneUser(nickname);
 
             return Ok(user);
+        }
+        
+        /// <summary>
+        /// Send requset user
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="personalMessage"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("{recipientId}/request")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> SendFriendRequest([Required]Guid recipientId)
+        {
+            var request = await _userService.SendFriendRequest(recipientId);
+
+            return Created("",request);
         }
     }
 }

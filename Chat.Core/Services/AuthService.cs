@@ -7,8 +7,8 @@ using Chat.Common.Dto.Token;
 using Chat.Common.Dto.User;
 using Chat.Common.Exceptions;
 using Chat.Core.Abstract;
+using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
-using Chat.Database.Repository.Manager;
 
 namespace Chat.Core.Services
 {
