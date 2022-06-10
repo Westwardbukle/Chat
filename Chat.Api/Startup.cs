@@ -42,7 +42,7 @@ namespace Chat
 
             services.ConfigureSwagger();
 
-            services.AddScoped<ValidationFilterAttribute>();
+            services.ConfigureFilters();
 
             services.ConfigureRepositoryManager();
             
@@ -50,7 +50,7 @@ namespace Chat
 
             services.ConfigureDbContext(Configuration);
             
-            services.MapperConfiguration();
+            services.ConfigureMapper();
             
             services.AddSignalR(options => { options.EnableDetailedErrors = true; });
 

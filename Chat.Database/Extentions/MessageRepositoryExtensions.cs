@@ -88,8 +88,5 @@ namespace Chat.Database.Repository.Message
             .Skip((parameters.PageNumber - 1) * parameters.PageSize)
             .Take(parameters.PageSize);
     }*/
-    
-    
-    
-    
+ 
 }

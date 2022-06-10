@@ -21,7 +21,7 @@ namespace Chat.Database.Repository.Message
             Expression<Func<MessageModel, bool>> expression,
             bool trackChanges, MessagesParameters messagesParameters)
         {
-            var messages = FindByCondition(expression, trackChanges)
+            var messages =  FindByCondition(expression, trackChanges)
                 .Search(messagesParameters.SearchTerm)
                 .Filter(messagesParameters)
                 .SortMessages(messagesParameters.OrderBy);
@@ -29,20 +29,5 @@ namespace Chat.Database.Repository.Message
             return PagedList<MessageModel>
                 .ToPagedList(messages, messagesParameters.PageNumber, messagesParameters.PageSize);
         }
-        
-        /*public async Task<PagedList<MessageModel>> GetMessages(bool trackChanges, MessagesParameters messagesParameters)
-        {
-            var messages = await GetAllObjects(trackChanges)
-                .Filter(messagesParameters)
-                .SortMessages(messagesParameters.OrderBy)
-                .Paginate(messagesParameters)
-                .ToListAsync();
-
-            return PagedList<MessageModel>
-                .ToPagedList(messages, messagesParameters.PageNumber, messagesParameters.PageSize);
-        }*/
-
-        public MessageModel GetOneMessage(Func<MessageModel, bool> predicate)
-            => GetOne(predicate);
     }
 }

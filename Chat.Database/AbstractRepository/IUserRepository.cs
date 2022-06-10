@@ -11,8 +11,6 @@ namespace Chat.Database.Repository.User
     {
         Task<PagedList<UserModel>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);
         
-        /*IQueryable<UserModel> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);*/
-
         IQueryable<UserModel> GetAllUsersIdsInChatForNotify(Guid chatId);
         
         UserModel GetUser(Func<UserModel, bool> predicate);
@@ -21,9 +19,9 @@ namespace Chat.Database.Repository.User
 
         void UpdateUser(UserModel item);
 
-        Task<UserModel> GetUserById(Guid id);
+        /*Task<UserModel> GetUserById(Guid id);
 
         IQueryable<UserModel> FindUserByCondition(Expression<Func<UserModel, bool>> expression,
-            bool trackChanges);
+            bool trackChanges);*/
     }
 }

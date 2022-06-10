@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Core.Abstract;
