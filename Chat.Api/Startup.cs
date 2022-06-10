@@ -45,37 +45,13 @@ namespace Chat
             services.AddScoped<ValidationFilterAttribute>();
 
             services.ConfigureRepositoryManager();
+            
+            services.ConfigureServices();
 
-            services.ConfigureAuthService();
-
-            services.ConfigureRestoringCodeService();
-
-            services.ConfigurePasswordService();
-
-            services.ConfigureTokenService();
-
-            services.ConfigureSmtpService();
-
-            services.ConfigureCodeService();
-
-            services.ConfigureChatService();
-
-            services.ConfigureMessageService();
-
-            services.ConfigureUserService();
-
-            services.ConfigureNotificationService();
-
-            services.ConfigureChatWatcher();
-
-
-            var con = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<AppDbContext>(_ => _.UseNpgsql(con));
-
-            var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new AppProfile()); });
-            var mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
-
+            services.ConfigureDbContext(Configuration);
+            
+            services.MapperConfiguration();
+            
             services.AddSignalR(options => { options.EnableDetailedErrors = true; });
 
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
@@ -85,10 +61,8 @@ namespace Chat
             services.AddControllers(options =>
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             services.AddHttpContextAccessor();
-
-            services.AddCors(o =>
-                o.AddDefaultPolicy(b =>
-                    b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+            
+            services.ConfigureCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

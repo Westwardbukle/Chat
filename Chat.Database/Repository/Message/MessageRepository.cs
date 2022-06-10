@@ -22,6 +22,7 @@ namespace Chat.Database.Repository.Message
             bool trackChanges, MessagesParameters messagesParameters)
         {
             var messages = FindByCondition(expression, trackChanges)
+                .Search(messagesParameters.SearchTerm)
                 .Filter(messagesParameters)
                 .SortMessages(messagesParameters.OrderBy);
 

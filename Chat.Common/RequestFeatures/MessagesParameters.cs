@@ -9,7 +9,7 @@ namespace Chat.Common.RequestFeatures
 
         public Guid? UserId { get; set; } 
         
-        //public string? SearchTerm { get; set; }
+        public string? SearchTerm { get; set; }
 
     }
 }
