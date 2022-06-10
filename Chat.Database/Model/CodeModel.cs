@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Chat.Database.Model
 {
     [Table("Code")]
-    [Index(nameof(UserId), nameof(Code), nameof(CodePurpose), IsUnique = true)]
+    [Microsoft.EntityFrameworkCore.Index(nameof(UserId), nameof(Code), nameof(CodePurpose), IsUnique = true)]
     public class CodeModel : BaseModel
     {
         

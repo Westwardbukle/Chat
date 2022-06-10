@@ -4,7 +4,7 @@ using Chat.Common.Base;
 
 namespace Chat.Database.Model
 {
-    /*[Table("Friend")]*/
+    [Table("Friend")]
     public class FriendModel : BaseModel
     {
         public Guid UserId { get; set; }

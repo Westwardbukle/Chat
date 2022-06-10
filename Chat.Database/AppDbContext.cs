@@ -1,4 +1,5 @@
 ﻿using Chat.Database.Model;
+using Chat.Database.TablesConfiguration;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database
@@ -22,5 +23,14 @@ namespace Chat.Database
             Database.EnsureCreated();
         }
         
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new ChatModelsConfiguration());
+            modelBuilder.ApplyConfiguration(new CodeModelConfiguration());
+            modelBuilder.ApplyConfiguration(new FriendModelConfiguration());
+            modelBuilder.ApplyConfiguration(new MessageModelConfiguration());
+            modelBuilder.ApplyConfiguration(new UserChatModelConfiguration());
+            modelBuilder.ApplyConfiguration(new UserModelsConfiguration());
+        }
     }
 }
