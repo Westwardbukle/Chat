@@ -21,22 +21,37 @@ namespace Chat.Database.Extensions
 
             if (string.IsNullOrWhiteSpace(orderQuery))
                 return items.OrderBy(defaultOrderProperty);
+            
+            
 
             return items.OrderBy(orderQuery);
         }
         
-        public static IQueryable<TSource> Filter<TSource>(this IQueryable<TSource> items, FriendParameters friendParameters) where  TSource : BaseModel
+        public static IQueryable<TSource> Filter<TSource>(this IQueryable<TSource> items, FriendParameters parameters) where  TSource : BaseModel
         {
-            if (friendParameters.MaxDate.HasValue)
+            if (parameters.MaxDate.HasValue)
             {
-                items = items.Where(m => m.DateCreated <= friendParameters.MaxDate.Value);
+                items = items.Where(m => m.DateCreated <= parameters.MaxDate.Value);
             }
 
-            if (friendParameters.MinDate.HasValue)
+            if (parameters.MinDate.HasValue)
             {
-                items = items.Where(m => m.DateCreated >= friendParameters.MinDate.Value);
+                items = items.Where(m => m.DateCreated >= parameters.MinDate.Value);
             }
             return items;
+        }
+        
+        public static IQueryable<TSource> Search<TSource>(this IQueryable<TSource> items,
+            string searchTerm, Expression<Func<TSource, string>> searchProperty)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return items;
+            
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+
+            var propertyGetter = searchProperty.Compile();
+
+            return items.Where(e => propertyGetter(e).ToLower().Contains(lowerCaseTerm));
         }
         
         public static string CreateOrderQuery<T>(string orderByQueryString)

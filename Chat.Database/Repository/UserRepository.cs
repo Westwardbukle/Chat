@@ -28,9 +28,9 @@ namespace Chat.Database.Repository
                 .UserModels
                 .Include(u => u.UserChatModel)
                 .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
-                .Search(usersParameters.SearchTerm)
+                .Search(usersParameters.SearchTerm, x => x.Nickname)
                 .Filter(usersParameters)
-                .SortUsers(usersParameters.OrderBy);
+                .Sort(usersParameters.OrderBy, x => x.Nickname);
 
             return PagedList<UserModel>
                 .ToPagedList(users, usersParameters.PageNumber, usersParameters.PageSize);

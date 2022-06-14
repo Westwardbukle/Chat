@@ -23,25 +23,5 @@ namespace Chat.Database.Extensions
             return messages;
         }
         
-        public static IQueryable<UserModel> SortUsers(this IQueryable<UserModel> employees, string orderByQueryString)
-        {
-            if (string.IsNullOrWhiteSpace(orderByQueryString))
-                return employees.OrderBy(e => e.Nickname);
-
-            var orderQuery = BaseExtensions.CreateOrderQuery<UserModel>(orderByQueryString);
-
-            if (string.IsNullOrWhiteSpace(orderQuery))
-                return employees.OrderBy(e => e.Nickname);
-
-            return employees.OrderBy(orderQuery);
-        }
-        public static IQueryable<UserModel> Search(this IQueryable<UserModel> employees,
-            string searchTerm)
-        {
-            if (string.IsNullOrWhiteSpace(searchTerm))
-                return employees;
-            var lowerCaseTerm = searchTerm.Trim().ToLower();
-            return employees.Where(e => e.Nickname.ToLower().Contains(lowerCaseTerm));
-        }
     }
 }
