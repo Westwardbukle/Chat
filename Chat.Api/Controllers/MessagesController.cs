@@ -14,12 +14,12 @@ namespace Chat.Controllers
     [ApiVersion("1.0")]
     [ApiController]
     [Route("/api/v{version:apiVersion}/[controller]")]
-    public class MessageController : ControllerBase
+    public class MessagesController : ControllerBase
     {
         private readonly IMessageService _messageService;
         private readonly ITokenService _tokenService;
 
-        public MessageController
+        public MessagesController
         (
             IMessageService messageService,
             ITokenService tokenService

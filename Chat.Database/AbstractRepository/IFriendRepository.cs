@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Chat.Common.RequestFeatures;
 using Chat.Database.Model;
 
 namespace Chat.Database.AbstractRepository
@@ -13,5 +15,10 @@ namespace Chat.Database.AbstractRepository
         void DeleteRequest(FriendModel friend);
 
         void UpdateRequest(FriendModel friend);
+
+        Task<PagedList<FriendModel>> GetAllFriends(Guid userId, bool trackChanges,
+            FriendParameters friendParameters);
+
+        Task<PagedList<FriendModel>> GelAllRequest(Guid userId, bool trackChanges, FriendParameters friendParameters);
     }
 }

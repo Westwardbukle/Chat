@@ -11,12 +11,12 @@ namespace Chat.Controllers
     [ApiVersion("1.0")]
     [ApiController]
     [Route("/api/v{version:apiVersion}/[controller]")]
-    public class RestoreCodeController : ControllerBase
+    public class RestoreCodesController : ControllerBase
     {
         private readonly IRestoringCodeService _restoringCode;
         private readonly ITokenService _tokenService;
         
-        public RestoreCodeController
+        public RestoreCodesController
         (
             IRestoringCodeService restoringCode,
             ITokenService tokenService

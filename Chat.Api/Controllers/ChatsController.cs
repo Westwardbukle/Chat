@@ -15,11 +15,11 @@ namespace Chat.Controllers
     [ApiController]
     [Authorize]
     [Route("/api/v{version:apiVersion}/chats")]
-    public class ChatController : ControllerBase
+    public class ChatsController : ControllerBase
     {
         private readonly IChatService _chatService;
 
-        public ChatController(IChatService chatService)
+        public ChatsController(IChatService chatService)
         {
             _chatService = chatService;
         }
