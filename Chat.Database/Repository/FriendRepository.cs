@@ -6,7 +6,7 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Database.AbstractRepository;
-using Chat.Database.Extentions;
+using Chat.Database.Extensions;
 using Chat.Database.Model;
 
 namespace Chat.Database.Repository
@@ -36,20 +36,9 @@ namespace Chat.Database.Repository
             var friends = GetAllObjects(trackChanges)
                 .Where(f => f.FriendId == userId)
                 .Filter(friendParameters)
-                .Search(friendParameters.ActiveTerm)
-                .SortFriends(friendParameters.OrderBy);
+                .SearchActiveFriend(friendParameters.ActiveTerm)
+                .Sort(friendParameters.OrderBy, x => x.DateCreated);
 
-            return PagedList<FriendModel>.ToPagedList(friends, friendParameters.PageNumber, friendParameters.PageSize);
-        }
-
-        public async Task<PagedList<FriendModel>> GelAllRequest(Guid userId, bool trackChanges , FriendParameters friendParameters)
-        {
-            var friends = GetAllObjects(trackChanges)
-                .Where(f => f.Confirmed == false && f.FriendId == userId)
-                .Filter(friendParameters)
-                .Search(friendParameters.ActiveTerm)
-                .SortFriends(friendParameters.OrderBy);
-            
             return PagedList<FriendModel>.ToPagedList(friends, friendParameters.PageNumber, friendParameters.PageSize);
         }
     }

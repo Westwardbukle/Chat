@@ -3,8 +3,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Database.AbstractRepository;
+using Chat.Database.Extensions;
 using Chat.Database.Model;
-using Chat.Database.Repository.Message;
 
 namespace Chat.Database.Repository
 {
@@ -24,7 +24,7 @@ namespace Chat.Database.Repository
             var messages =  FindByCondition(expression, trackChanges)
                 .Search(messagesParameters.SearchTerm)
                 .Filter(messagesParameters)
-                .SortMessages(messagesParameters.OrderBy);
+                .Sort(messagesParameters.OrderBy, x => x.DateCreated);
 
             return PagedList<MessageModel>
                 .ToPagedList(messages, messagesParameters.PageNumber, messagesParameters.PageSize);

@@ -104,7 +104,7 @@ namespace Chat.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        [HttpDelete("{userId}/friends/{unverifiedFriend}")]
+        [HttpDelete("{userId}/friends/{friendId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> DeleteRequest(Guid userId ,Guid friendId)
@@ -134,12 +134,12 @@ namespace Chat.Controllers
         /// </summary>
         /// <returns> </returns>
         [Authorize]
-        [HttpPut("{userId}/friends/{unverifiedFriend}")]
+        [HttpPut("{userId}/friends/{unverifiedFriendId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> ConfirmationRequest(Guid unverifiedFriend, Guid userId)
+        public async Task<ActionResult> ConfirmationRequest(Guid unverifiedFriendId, Guid userId)
         {
-            var request =   await _friendService.ConfirmFriendRequest(unverifiedFriend, userId);
+            var request =   await _friendService.ConfirmFriendRequest(unverifiedFriendId, userId);
 
             return Ok(request);
         }

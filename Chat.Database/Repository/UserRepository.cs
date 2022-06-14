@@ -5,8 +5,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Database.AbstractRepository;
+using Chat.Database.Extensions;
 using Chat.Database.Model;
-using Chat.Database.Repository.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Repository
@@ -30,7 +30,7 @@ namespace Chat.Database.Repository
                 .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
                 .Search(usersParameters.SearchTerm)
                 .Filter(usersParameters)
-                .Sort(usersParameters.OrderBy);
+                .SortUsers(usersParameters.OrderBy);
 
             return PagedList<UserModel>
                 .ToPagedList(users, usersParameters.PageNumber, usersParameters.PageSize);

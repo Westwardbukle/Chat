@@ -19,6 +19,6 @@ namespace Chat.Database.AbstractRepository
         Task<PagedList<FriendModel>> GetAllFriends(Guid userId, bool trackChanges,
             FriendParameters friendParameters);
 
-        Task<PagedList<FriendModel>> GelAllRequest(Guid userId, bool trackChanges, FriendParameters friendParameters);
+        /*Task<PagedList<FriendModel>> GelAllRequest(Guid userId, bool trackChanges, FriendParameters friendParameters);*/
     }
 }

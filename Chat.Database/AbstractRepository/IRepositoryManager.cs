@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Chat.Database.Repository.User;
 
 namespace Chat.Database.AbstractRepository
 {
