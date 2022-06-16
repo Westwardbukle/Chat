@@ -71,7 +71,7 @@ namespace Chat.Core.Services
                 UserChats = userChats,
             };
 
-            _repository.Chat.CreateChat(chat);
+            await _repository.Chat.CreateChat(chat);
             await _repository.SaveAsync();
         }
 
@@ -81,7 +81,7 @@ namespace Chat.Core.Services
             {
                 throw new UserNotFoundException();
             }
-            
+
             var chatId = Guid.NewGuid();
 
             var userChat = new UserChatModel
@@ -101,7 +101,7 @@ namespace Chat.Core.Services
 
             chat.UserChats.Add(userChat);
 
-            _repository.Chat.CreateChat(chat);
+            await _repository.Chat.CreateChat(chat);
             await _repository.SaveAsync();
 
 
@@ -114,7 +114,7 @@ namespace Chat.Core.Services
         {
             var currentUserId = _tokenService.GetCurrentUserId();
 
-            var userchats= new List<UserChatResponseDto>();
+            var userchats = new List<UserChatResponseDto>();
 
             foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
@@ -134,7 +134,7 @@ namespace Chat.Core.Services
                     await _repository.SaveAsync();
 
                     var user = _repository.User.GetUser(u => u.Id == userId);
-                    
+
                     var notifyMessage = new MessageModel
                     {
                         Text = $"{user.Nickname}",
@@ -146,9 +146,9 @@ namespace Chat.Core.Services
 
                     await _repository.Message.CreateMessage(notifyMessage);
                     await _repository.SaveAsync();
-                    
-                    await _notificationService.NotifyChat(chatId,_mapper.Map<MessagesResponseDto>(notifyMessage));
-                    
+
+                    await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(notifyMessage));
+
                     var userChatDto = _mapper.Map<UserChatResponseDto>(userChat);
                     userchats.Add(userChatDto);
                 }
@@ -157,20 +157,21 @@ namespace Chat.Core.Services
             return userchats;
         }
 
-        public async Task<(List<ChatResponseDto> Data , MetaData MetaData)> GetAllCommonChatsOfUser( Guid userId, ChatsParameters chatsParameters)
+        public async Task<(List<ChatResponseDto> Data, MetaData MetaData)> GetAllCommonChatsOfUser(Guid userId,
+            ChatsParameters chatsParameters)
         {
             var chatModels = await _repository.Chat.GetAllChatsOfUser(userId, chatsParameters);
-            
+
             var result = _mapper.Map<List<ChatResponseDto>>(chatModels);
 
-            return (Data : result, MetaData: chatModels.MetaData);
+            return (Data: result, MetaData: chatModels.MetaData);
         }
 
         public async Task UpdateChat(Guid id, string name)
         {
-            var changeUser= _tokenService.GetCurrentUserId();
-            
-            var chat = _repository.Chat.GetChat(c => c.Id == id);
+            var changeUser = _tokenService.GetCurrentUserId();
+
+            var chat = await _repository.Chat.GetChat(id);
 
             chat.Name = name;
 
@@ -188,15 +189,16 @@ namespace Chat.Core.Services
 
             await _repository.Message.CreateMessage(notifyMessage);
             await _repository.SaveAsync();
-            
+
             await _notificationService.NotifyChat(id, _mapper.Map<MessagesResponseDto>(notifyMessage));
         }
 
         public async Task RemoveUserInChat(Guid remoteUserId, Guid chatId)
         {
             var userId = _tokenService.GetCurrentUserId();
-            
-            var remoteUserChat = _repository.UserChat.GetOneUserChat(u => u.UserId == remoteUserId && u.ChatId == chatId);
+
+            var remoteUserChat =
+                _repository.UserChat.GetOneUserChat(u => u.UserId == remoteUserId && u.ChatId == chatId);
 
             var userChat = _repository.UserChat.GetOneUserChat(u => u.UserId == userId && u.ChatId == chatId);
 
@@ -211,7 +213,7 @@ namespace Chat.Core.Services
             }
 
             var remoteUser = _repository.User.GetUser(u => u.Id == userId);
-            
+
             var message = new MessageModel
             {
                 Text = $"{remoteUser.Nickname}",
@@ -226,14 +228,14 @@ namespace Chat.Core.Services
 
             _repository.UserChat.DeleteUserChat(remoteUserChat);
             await _repository.SaveAsync();
-            
+
             await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
         }
-        
+
         public async Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId,
             MessagesParameters messagesParameters)
         {
-            var chatIsReal = _repository.Chat.GetChat(c => c.Id == chatId) is null;
+            var chatIsReal = await _repository.Chat.GetChat(chatId) is null;
 
             if (chatIsReal) throw new ChatNotFoundException();
 
@@ -244,16 +246,17 @@ namespace Chat.Core.Services
 
             return (Data: listMess, MetaData: allMessages.MetaData);
         }
-        
-        public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
+
+        public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId,
+            UsersParameters usersParameters)
         {
-            if (_repository.Chat.GetChat(c => c.Id == chatId) is null)
+            if ( await _repository.Chat.GetChat(chatId) is null)
             {
                 throw new ChatNotFoundException();
             }
-            
+
             var users = await _repository.User.GetAllUsersInChat(chatId, usersParameters);
-            
+
             var usersDto = _mapper.Map<List<GetAllUsersDto>>(users);
 
             return (usersDto, users.MetaData);

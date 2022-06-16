@@ -5,6 +5,7 @@ using Chat.Common.RequestFeatures;
 using Chat.Database.AbstractRepository;
 using Chat.Database.Extensions;
 using Chat.Database.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Repository
 {
@@ -14,17 +15,18 @@ namespace Chat.Database.Repository
         {
         }
 
-        public Task CreateMessage(MessageModel item)
-            => Create(item);
+        public async Task CreateMessage(MessageModel item)
+            =>  await CreateAsync(item);
 
         public async Task<PagedList<MessageModel>> FindMessagesByCondition(
             Expression<Func<MessageModel, bool>> expression,
             bool trackChanges, MessagesParameters messagesParameters)
         {
-            var messages =  FindByCondition(expression, trackChanges)
-                .Search(messagesParameters.SearchTerm)
+            var messages = await FindByCondition(expression, trackChanges)
+                .Search(messagesParameters.SearchTerm, m => m.Text)
                 .Filter(messagesParameters)
-                .Sort(messagesParameters.OrderBy, x => x.DateCreated);
+                .Sort(messagesParameters.OrderBy, x => x.DateCreated)
+                .ToListAsync();
 
             return PagedList<MessageModel>
                 .ToPagedList(messages, messagesParameters.PageNumber, messagesParameters.PageSize);

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Chat.Common.Chat;
 using Chat.Common.RequestFeatures;
 using Chat.Database.AbstractRepository;
+using Chat.Database.Extensions;
 using Chat.Database.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,45 +15,40 @@ namespace Chat.Database.Repository
 {
     public class ChatRepository : BaseRepository<ChatModel>, IChatRepository
     {
-        public ChatRepository(AppDbContext context) : base(context) {}
+        public ChatRepository(AppDbContext context) : base(context)
+        {
+        }
 
 
         public async Task<ChatModel> GetPersonalChat(Guid user1, Guid user2)
         {
             var chat = await AppDbContext.ChatModels
                 .Include(x => x.UserChats)
-                .FirstOrDefaultAsync(x => x.UserChats.All(y => y.UserId == user1 || y.UserId == user2) && x.Type == ChatType.Personal);
-            
+                .FirstOrDefaultAsync(x => x.UserChats.All(y => y.UserId == user1 || y.UserId == user2)
+                                          && x.Type == ChatType.Personal);
+
             return chat;
         }
 
-        public async Task<IEnumerable<ChatModel>> GetAllChats(bool trackChanges)
-            => await GetAllObjects(trackChanges)
-                .OrderBy(c => c.Name)
-                .ToListAsync();
+        public async Task<ChatModel> GetChat(Guid chatId)
+            => await AppDbContext.ChatModels.FirstOrDefaultAsync(x => x.Id == chatId);
 
-        public IQueryable<ChatModel> FindChatByCondition(Expression<Func<ChatModel, bool>> expression,
-            bool trackChanges)
-            => FindByCondition(expression, trackChanges);
-
-        public ChatModel GetChat(Func<ChatModel, bool> predicate)
-            => GetOne(predicate);
-
-        public void CreateChat(ChatModel item)
-            => Create(item);
+        public async Task CreateChat(ChatModel item)
+            => await CreateAsync(item);
 
         public void UpdateChat(ChatModel item)
             => Update(item);
 
-        public Task<ChatModel> GetChatById(Guid id)
-            => GetById(id);
-        
         public async Task<PagedList<ChatModel>> GetAllChatsOfUser(Guid userId, ChatsParameters chatsParameters)
         {
-            var chats = AppDbContext
+            var chats = await AppDbContext
                 .ChatModels
                 .Include(c => c.UserChats)
-                .Where(u => u.UserChats.Any(y => y.UserId == userId));
+                .Where(u => u.UserChats.Any(y => y.UserId == userId))
+                .Filter(chatsParameters)
+                .Search(chatsParameters.SearchTerm, c => c.Name)
+                .Sort(chatsParameters.OrderBy, c => c.DateCreated)
+                .ToListAsync();
             return PagedList<ChatModel>
                 .ToPagedList(chats, chatsParameters.PageNumber, chatsParameters.PageSize);
         }

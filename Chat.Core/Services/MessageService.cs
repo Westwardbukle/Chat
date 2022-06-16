@@ -37,7 +37,7 @@ namespace Chat.Core.Services
         {
             var checkUser = _repository.User.GetUser(u => u.Id == userId) is not null;
 
-            var checkChat = _repository.Chat.GetChat(c => c.Id == chatId) is not null;
+            var checkChat = await _repository.Chat.GetChat(chatId) is not null;
 
             if (!checkUser) throw new UserNotFoundException();
             
@@ -141,7 +141,7 @@ namespace Chat.Core.Services
                 await _repository.Message.FindMessagesByCondition(m => m.ChatId == chat.Id, false, messagesParameters);
 
             var allMessages = _mapper.Map<List<MessagesResponseDto>>(messages);
-
+            
             return (allMessages, messages.MetaData);
         }
     }

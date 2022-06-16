@@ -7,7 +7,7 @@ namespace Chat.Database.Extensions
 {
     public static class UserRepositoryExtensions
     {
-        public static IQueryable<UserModel> Filter(this IQueryable<UserModel> messages,
+        /*public static IQueryable<UserModel> Filter(this IQueryable<UserModel> messages,
             UsersParameters usersParameters)
         {
             if (usersParameters.MaxDate.HasValue)
@@ -21,6 +21,15 @@ namespace Chat.Database.Extensions
             }
             
             return messages;
+        }*/
+        
+        public static IQueryable<UserModel> SearchUser(this IQueryable<UserModel> employees,
+            string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return employees;
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+            return employees.Where(e => e.Nickname.ToLower().Contains(lowerCaseTerm));
         }
         
     }

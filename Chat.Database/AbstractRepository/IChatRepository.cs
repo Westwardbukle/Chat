@@ -10,18 +10,18 @@ namespace Chat.Database.AbstractRepository
 {
     public interface IChatRepository 
     {
-        Task<IEnumerable<ChatModel>>GetAllChats(bool trackChanges);
+        /*Task<IEnumerable<ChatModel>>GetAllChats(bool trackChanges);*/
 
-        ChatModel GetChat(Func<ChatModel, bool> predicate); 
-        
-        void CreateChat(ChatModel item);
+        Task<ChatModel> GetChat(Guid chatId);
+
+        Task CreateChat(ChatModel item);
 
         void UpdateChat(ChatModel item);
         
-        Task<ChatModel> GetChatById(Guid id);
+        /*Task<ChatModel> GetChatById(Guid id);*/
 
-        IQueryable<ChatModel> FindChatByCondition(Expression<Func<ChatModel, bool>> expression,
-            bool trackChanges);
+        /*IQueryable<ChatModel> FindChatByCondition(Expression<Func<ChatModel, bool>> expression,
+            bool trackChanges);*/
 
         Task<ChatModel> GetPersonalChat(Guid user1, Guid user2);
 

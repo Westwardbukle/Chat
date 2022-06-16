@@ -12,7 +12,8 @@ namespace Chat.Core.Abstract
 
         Task<FriendResponseDto> RejectFriendRequest(Guid userId, Guid requestId);
 
-        Task<List<FriendResponseDto>> GetAllFriendsOfUser(Guid userId, FriendParameters friendParameters);
+        Task<(List<FriendResponseDto> Data, MetaData MetaData )> GetAllFriendsOfUser(Guid userId,
+            FriendParameters friendParameters);
 
         //Task<List<FriendResponseDto>> GetAllFriendsRequest(FriendParameters friendParameters);
     }

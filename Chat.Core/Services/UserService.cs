@@ -27,7 +27,7 @@ namespace Chat.Core.Services
 
         public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
         {
-            if (_repositoryManager.Chat.GetChat(c => c.Id == chatId) is null)
+            if (_repositoryManager.Chat.GetChat( chatId) is null)
             {
                 throw new ChatNotFoundException();
             }
@@ -80,8 +80,6 @@ namespace Chat.Core.Services
 
             await _repositoryManager.Friend.CreateFriendRequest(friendRequest);
             await _repositoryManager.SaveAsync();
-            
-            
             
             return _mapper.Map<FriendResponseDto>(friendRequest);
         }

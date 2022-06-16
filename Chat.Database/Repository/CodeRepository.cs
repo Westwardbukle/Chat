@@ -14,7 +14,7 @@ namespace Chat.Database.Repository
             => GetOne(predicate);
 
         public void CreateCode(CodeModel item)
-            => Create(item);
+            => CreateAsync(item);
         
         public void DeleteCode(CodeModel item)
             => Delete(item);

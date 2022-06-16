@@ -7,7 +7,7 @@ namespace Chat.Database.Extensions
 {
     public static class MessageRepositoryExtensions
     {
-        public static IQueryable<MessageModel> Filter(this IQueryable<MessageModel> messages,
+        /*public static IQueryable<MessageModel> Filter(this IQueryable<MessageModel> messages,
             MessagesParameters messagesParameters)
         {
             if (messagesParameters.MaxDate.HasValue)
@@ -26,7 +26,7 @@ namespace Chat.Database.Extensions
             }
 
             return messages;
-        }
+        }*/
         
         /*public static IQueryable<MessageModel> SortMessages(this IQueryable<MessageModel> employees, string orderByQueryString)
         {
@@ -41,13 +41,13 @@ namespace Chat.Database.Extensions
             return employees.OrderBy(orderQuery);
         }*/
         
-        public static IQueryable<MessageModel> Search(this IQueryable<MessageModel> employees,
+        /*public static IQueryable<MessageModel> Search(this IQueryable<MessageModel> employees,
             string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return employees;
             var lowerCaseTerm = searchTerm.Trim().ToLower();
             return employees.Where(e => e.Text.ToLower().Contains(lowerCaseTerm));
-        }
+        }*/
     }
 }

@@ -8,10 +8,5 @@ namespace Chat.Database.Extensions
 {
     public static class FriendRepositoryExtensions
     {
-        public static IQueryable<FriendModel> SearchActiveFriend(this IQueryable<FriendModel> employees,
-            bool? searchTerm)
-        {
-            return searchTerm is null ? employees : employees.Where(e => e.Confirmed == searchTerm);
-        }
     }
 }

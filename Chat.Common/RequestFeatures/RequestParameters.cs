@@ -1,4 +1,6 @@
-﻿namespace Chat.Common.RequestFeatures
+﻿using System;
+
+namespace Chat.Common.RequestFeatures
 {
     public abstract class RequestParameters
     {
@@ -11,6 +13,9 @@
             get { return _pageSize; }
             set { _pageSize = (value > maxPageSize) ? maxPageSize : value; }
         }
+        
+        public DateTime? MinDate { get; set; }
+        public DateTime? MaxDate { get; set; }
         
         public string? OrderBy { get; set; }
     }

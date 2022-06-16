@@ -125,8 +125,10 @@ namespace Chat.Controllers
         public async Task<ActionResult> GetAllUsersFriends(Guid userId ,[FromQuery]FriendParameters friendParameters)
         {
             var request =  await _friendService.GetAllFriendsOfUser(userId , friendParameters);
+            
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(request.MetaData));
 
-            return Ok(request);
+            return Ok(request.Data);
         }
         
         /// <summary>

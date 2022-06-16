@@ -15,7 +15,7 @@ namespace Chat.Database.Repository
             => GetOne(predicate);
 
         public void CreateUserChat(UserChatModel item)
-            => Create(item);
+            => CreateAsync(item);
 
         public void DeleteUserChat(UserChatModel item)
             => Delete(item);

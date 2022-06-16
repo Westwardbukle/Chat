@@ -5,6 +5,7 @@ using Chat.Common.RequestFeatures;
 using Chat.Database.AbstractRepository;
 using Chat.Database.Extensions;
 using Chat.Database.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Repository
 {
@@ -15,7 +16,7 @@ namespace Chat.Database.Repository
         }
 
         public async Task CreateFriendRequest(FriendModel friend)
-            => await Create(friend);
+            => await CreateAsync(friend);
 
 
         public FriendModel GetRequest(Func<FriendModel, bool> predicate)
@@ -30,13 +31,25 @@ namespace Chat.Database.Repository
         public async Task<PagedList<FriendModel>> GetAllFriends(Guid userId, bool trackChanges,
             FriendParameters friendParameters)
         {
-            var friends = GetAllObjects(trackChanges)
+            if (friendParameters.ActiveTerm.HasValue)
+            {
+                var friends = await AppDbContext.FriendModels
+                    .Where(f => f.FriendId == userId && f.Confirmed == friendParameters.ActiveTerm)
+                    .Filter(friendParameters)
+                    .Sort(friendParameters.OrderBy, f => f.DateCreated)
+                    .ToListAsync();
+
+                return PagedList<FriendModel>.ToPagedList(friends, friendParameters.PageNumber,
+                    friendParameters.PageSize);
+            }
+
+            var friends1 = await AppDbContext.FriendModels
                 .Where(f => f.FriendId == userId)
                 .Filter(friendParameters)
-                .SearchActiveFriend(friendParameters.ActiveTerm)
-                .Sort(friendParameters.OrderBy, x => x.DateCreated);
+                .Sort(friendParameters.OrderBy, f => f.DateCreated)
+                .ToListAsync();
 
-            return PagedList<FriendModel>.ToPagedList(friends, friendParameters.PageNumber, friendParameters.PageSize);
+            return PagedList<FriendModel>.ToPagedList(friends1, friendParameters.PageNumber, friendParameters.PageSize);
         }
     }
 }

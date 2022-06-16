@@ -17,10 +17,10 @@ namespace Chat.Database.Repository
         {
         }
 
-        public async Task<IEnumerable<UserModel>> GetAllUsers(bool trackChanges) 
+        /*public async Task<IEnumerable<UserModel>> GetAllUsers(bool trackChanges) 
             => await GetAllObjects(trackChanges)
                 .OrderBy(c => c.Nickname)
-                .ToListAsync();
+                .ToListAsync();*/
 
         public async Task<PagedList<UserModel>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
         {
@@ -28,9 +28,9 @@ namespace Chat.Database.Repository
                 .UserModels
                 .Include(u => u.UserChatModel)
                 .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
-                .Search(usersParameters.SearchTerm, x => x.Nickname)
                 .Filter(usersParameters)
-                .Sort(usersParameters.OrderBy, x => x.Nickname);
+                .Sort(usersParameters.OrderBy, x => x.Nickname)
+                .Search(usersParameters.SearchTerm, u => u.Nickname);
 
             return PagedList<UserModel>
                 .ToPagedList(users, usersParameters.PageNumber, usersParameters.PageSize);
@@ -49,17 +49,17 @@ namespace Chat.Database.Repository
         public UserModel GetUser(Func<UserModel, bool> predicate)
             => GetOne(predicate);
 
-        public async void CreateUser(UserModel item)
-            => await Create(item);
+        public async Task CreateUser(UserModel item)
+            => await CreateAsync(item);
 
         public  void UpdateUser(UserModel item)
             =>  Update(item);
 
-        public Task<UserModel> GetUserById(Guid id)
+        /*public Task<UserModel> GetUserById(Guid id)
             => GetById(id);
 
         public IQueryable<UserModel> FindUserByCondition(Expression<Func<UserModel, bool>> expression,
             bool trackChanges)
-            => FindByCondition(expression, trackChanges);
+            => FindByCondition(expression, trackChanges);*/
     }
 }

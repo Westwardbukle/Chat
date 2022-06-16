@@ -54,10 +54,10 @@ namespace Chat.Core.Services
                 DateTimeActivation = null,
             };
 
-            _repositoryManager.User.CreateUser(user);
+            await _repositoryManager.User.CreateUser(user);
             await _repositoryManager.SaveAsync();
-            
-            var returnUser =  _mapper.Map<UserRegisterResponseDto>(user);
+
+            var returnUser = _mapper.Map<UserRegisterResponseDto>(user);
 
             return returnUser;
         }
@@ -74,7 +74,7 @@ namespace Chat.Core.Services
 
             if (!_hasher.VerifyHashedPassword(loginUserDto.Password, trueUser.Password))
             {
-              throw new PasswordIncorrectException();
+                throw new PasswordIncorrectException();
             }
 
             var user = _mapper.Map<UserModelDto>(trueUser);

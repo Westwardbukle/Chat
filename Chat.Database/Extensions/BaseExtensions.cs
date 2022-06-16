@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using Chat.Common.Base;
 using Chat.Common.RequestFeatures;
-using Chat.Database.Model;
 
 namespace Chat.Database.Extensions
 {
@@ -27,30 +26,28 @@ namespace Chat.Database.Extensions
             return items.OrderBy(orderQuery);
         }
         
-        public static IQueryable<TSource> Filter<TSource>(this IQueryable<TSource> items, FriendParameters parameters) where  TSource : BaseModel
+        public static IQueryable<TSource> Filter<TSource>(this IQueryable<TSource> items, RequestParameters parameters) where  TSource : BaseModel
         {
-            if (parameters.MaxDate.HasValue)
-            {
-                items = items.Where(m => m.DateCreated <= parameters.MaxDate.Value);
-            }
-
             if (parameters.MinDate.HasValue)
             {
                 items = items.Where(m => m.DateCreated >= parameters.MinDate.Value);
+            }
+            
+            if (parameters.MaxDate.HasValue)
+            {
+                items = items.Where(m => m.DateCreated <= parameters.MaxDate.Value);
             }
             return items;
         }
         
         public static IQueryable<TSource> Search<TSource>(this IQueryable<TSource> items,
-            string searchTerm, Expression<Func<TSource, string>> searchProperty)
+            string searchTerm, Func<TSource, string> propertyGetter)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return items;
             
             var lowerCaseTerm = searchTerm.Trim().ToLower();
-
-            var propertyGetter = searchProperty.Compile();
-
+            
             return items.Where(e => propertyGetter(e).ToLower().Contains(lowerCaseTerm));
         }
         

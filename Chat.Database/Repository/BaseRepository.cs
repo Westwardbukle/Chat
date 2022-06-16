@@ -16,28 +16,35 @@ namespace Chat.Database.Repository
         protected BaseRepository(AppDbContext appDbContext)
             => AppDbContext = appDbContext;
 
-        public TModel  GetOne(Func<TModel, bool> predicate)
+        /*public async Task<TModel>  GetOneToId(Guid id) 
+            => await AppDbContext.Set<TModel>().AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);*/
+            
+        
+        public TModel GetOne(Func<TModel, bool> predicate)
             => AppDbContext.Set<TModel>().AsNoTracking().FirstOrDefault(predicate);
         
+        
         public IQueryable<TModel> GetAllObjects(bool trackChanges)
-            => !trackChanges ?
-                AppDbContext.Set<TModel>()
-                    .AsNoTracking() :
-                AppDbContext.Set<TModel>();
-        
+            => !trackChanges
+                ? AppDbContext.Set<TModel>()
+                    .AsNoTracking()
+                : AppDbContext.Set<TModel>();
+
+
         public IQueryable<TModel> FindByCondition(Expression<Func<TModel, bool>> expression,
-            bool trackChanges) => 
-            !trackChanges ?
-                AppDbContext.Set<TModel>()
+            bool trackChanges)
+            => !trackChanges
+                ? AppDbContext.Set<TModel>()
                     .Where(expression)
-                    .AsNoTracking() :
-                AppDbContext.Set<TModel>()
+                    .AsNoTracking()
+                : AppDbContext.Set<TModel>()
                     .Where(expression);
-        
-        public async Task Create(TModel item) => await AppDbContext.Set<TModel>().AddAsync(item);
-        
+
+
+        public async Task CreateAsync(TModel item) => await AppDbContext.Set<TModel>().AddAsync(item);
+
         public void Update(TModel item) => AppDbContext.Set<TModel>().Update(item);
-        
+
         public async Task<List<TModel>> UpdateRange(List<TModel> item)
         {
             AppDbContext.Set<TModel>().UpdateRange(item);
@@ -47,7 +54,7 @@ namespace Chat.Database.Repository
 
         public async Task<TModel> GetById(Guid id)
             => await AppDbContext.Set<TModel>().FindAsync(id);
-        
+
         public void Delete(TModel item) => AppDbContext.Set<TModel>().Remove(item);
     }
 }

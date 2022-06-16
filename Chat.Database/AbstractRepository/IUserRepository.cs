@@ -14,13 +14,9 @@ namespace Chat.Database.AbstractRepository
         
         UserModel GetUser(Func<UserModel, bool> predicate);
 
-        void CreateUser(UserModel item);
+        Task CreateUser(UserModel item);
 
         void UpdateUser(UserModel item);
-
-        /*Task<UserModel> GetUserById(Guid id);
-
-        IQueryable<UserModel> FindUserByCondition(Expression<Func<UserModel, bool>> expression,
-            bool trackChanges);*/
+        
     }
 }
