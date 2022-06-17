@@ -46,7 +46,7 @@ namespace Chat.Core.Services
                 throw new UserNotFoundException();
             }
             
-            var user = _repositoryManager.User.GetUser(u => u.Nickname == nickname);
+            var user = await _repositoryManager.User.GetUser(u => u.Nickname == nickname);
 
             user.Nickname = newNick;
             
@@ -57,7 +57,7 @@ namespace Chat.Core.Services
 
         public async Task<GetAllUsersDto> GetOneUser(string nickName)
         {
-            var user = _repositoryManager.User.GetUser(u => u.Nickname == nickName);
+            var user = await _repositoryManager.User.GetUser(u => u.Nickname == nickName);
 
             if (user is null)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
 using Chat.Database.AbstractRepository;
@@ -19,8 +20,8 @@ namespace Chat.Database.Repository
             => await CreateAsync(friend);
 
 
-        public FriendModel GetRequest(Func<FriendModel, bool> predicate)
-            => GetOne(predicate);
+        public async Task<FriendModel>  GetRequest(Expression<Func<FriendModel, bool>> predicate)
+            => await GetOne(predicate);
 
         public void DeleteRequest(FriendModel friend)
             => Delete(friend);

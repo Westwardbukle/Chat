@@ -16,50 +16,41 @@ namespace Chat.Database.Repository
         public UserRepository(AppDbContext context) : base(context)
         {
         }
-
-        /*public async Task<IEnumerable<UserModel>> GetAllUsers(bool trackChanges) 
-            => await GetAllObjects(trackChanges)
-                .OrderBy(c => c.Nickname)
-                .ToListAsync();*/
-
+        
         public async Task<PagedList<UserModel>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
         {
-            var users = AppDbContext
+            var users = await AppDbContext
                 .UserModels
                 .Include(u => u.UserChatModel)
                 .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
                 .Filter(usersParameters)
                 .Sort(usersParameters.OrderBy, x => x.Nickname)
-                .Search(usersParameters.SearchTerm, u => u.Nickname);
+                .Search(usersParameters.SearchTerm, u => u.Nickname)
+                .ToListAsync();
 
             return PagedList<UserModel>
                 .ToPagedList(users, usersParameters.PageNumber, usersParameters.PageSize);
         }
 
-        public IQueryable<UserModel> GetAllUsersIdsInChatForNotify(Guid chatId)
+        public async Task<List<Guid>>  GetAllUsersIdsInChatForNotify(Guid chatId)
         {
-            var users = AppDbContext
+            var users = await AppDbContext
                 .UserModels
                 .Include(u => u.UserChatModel)
-                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId));
+                .Where(u => u.UserChatModel.Any(y => y.ChatId == chatId))
+                .Select(u => u.Id)
+                .ToListAsync();
 
             return users;
         }
 
-        public UserModel GetUser(Func<UserModel, bool> predicate)
-            => GetOne(predicate);
+        public async Task<UserModel>  GetUser(Expression <Func<UserModel, bool>> predicate)
+            => await GetOne(predicate);
 
         public async Task CreateUser(UserModel item)
             => await CreateAsync(item);
 
         public  void UpdateUser(UserModel item)
             =>  Update(item);
-
-        /*public Task<UserModel> GetUserById(Guid id)
-            => GetById(id);
-
-        public IQueryable<UserModel> FindUserByCondition(Expression<Func<UserModel, bool>> expression,
-            bool trackChanges)
-            => FindByCondition(expression, trackChanges);*/
     }
 }

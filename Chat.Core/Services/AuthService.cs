@@ -37,7 +37,7 @@ namespace Chat.Core.Services
         {
             var id = Guid.NewGuid();
 
-            if (_repositoryManager.User.GetUser(u => u.Nickname == registerUserDto.Nickname) is not null)
+            if ( _repositoryManager.User.GetUser(u => u.Nickname == registerUserDto.Nickname) is not null)
             {
                 throw new UserExistException();
             }
@@ -65,7 +65,7 @@ namespace Chat.Core.Services
 
         public async Task<TokenModel> Login(LoginUserDto loginUserDto)
         {
-            var trueUser = _repositoryManager.User.GetUser(u => u.Nickname == loginUserDto.Nickname);
+            var trueUser = await _repositoryManager.User.GetUser(u => u.Nickname == loginUserDto.Nickname);
 
             if (trueUser is null)
             {

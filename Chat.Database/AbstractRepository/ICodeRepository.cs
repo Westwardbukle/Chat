@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Chat.Database.Model;
 
 namespace Chat.Database.AbstractRepository
 {
     public interface ICodeRepository
     {
-        CodeModel GetCode(Func<CodeModel, bool> predicate);
-        public void CreateCode(CodeModel item);
+        Task<CodeModel> GetCode(Expression<Func<CodeModel, bool>> predicate);
+        Task CreateCode(CodeModel item);
         public void DeleteCode(CodeModel item);
     }
 }

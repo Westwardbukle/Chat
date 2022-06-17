@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
 
@@ -10,11 +12,11 @@ namespace Chat.Database.Repository
         {
         }
 
-        public CodeModel GetCode(Func<CodeModel, bool> predicate)
-            => GetOne(predicate);
+        public async Task<CodeModel>  GetCode(Expression<Func<CodeModel, bool>> predicate)
+            => await GetOne(predicate);
 
-        public void CreateCode(CodeModel item)
-            => CreateAsync(item);
+        public async Task CreateCode(CodeModel item)
+            => await CreateAsync(item);
         
         public void DeleteCode(CodeModel item)
             => Delete(item);

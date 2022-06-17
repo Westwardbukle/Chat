@@ -35,14 +35,14 @@ namespace Chat.Core.Services
 
         public async Task SendRestoringCode(Guid userId)
         {
-            var user = _repository.User.GetUser(u => u.Id == userId);
+            var user = await _repository.User.GetUser(u => u.Id == userId);
 
             if (user == null)
             {
                 throw new UserNotFoundException();
             }
 
-            var lastCode = _repository.Code.GetCode(c => c.Id == user.Id);
+            var lastCode = await _repository.Code.GetCode(c => c.Id == user.Id);
 
             if (lastCode is null)
             {
@@ -60,8 +60,7 @@ namespace Chat.Core.Services
                     UserId = user.Id
                 };
 
-                _repository.Code.CreateCode(newCode);
-                
+                await _repository.Code.CreateCode(newCode);
             }
 
             _repository.Code.DeleteCode(lastCode);
@@ -80,19 +79,19 @@ namespace Chat.Core.Services
                 UserId = user.Id
             };
 
-            _repository.Code.CreateCode(code);
+            await _repository.Code.CreateCode(code);
         }
 
         public async Task ConfirmEmailCode(CodeDto codeDto)
         {
-            var user = _repository.User.GetUser(u => u.Id == _tokenService.GetCurrentUserId());
+            var user = await _repository.User.GetUser(u => u.Id == _tokenService.GetCurrentUserId());
 
             if (user is null)
             {
                 throw new UserNotFoundException();
             }
-            
-            var code = _repository.Code.GetCode(c => c.UserId == user.Id);
+
+            var code = await _repository.Code.GetCode(c => c.UserId == user.Id);
 
             if (code is null) throw new ActivationСodeТotFoundException();
 
@@ -107,7 +106,7 @@ namespace Chat.Core.Services
             }
 
             await ActivateEmailUser(user);
-            
+
             _repository.Code.DeleteCode(code);
             await _repository.SaveAsync();
         }

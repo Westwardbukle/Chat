@@ -39,7 +39,7 @@ namespace Chat.Core.Services
                 throw new IncorrectUserException();
             }
 
-            var request = _repository.Friend.GetRequest(r => r.UserId == userId && r.FriendId == unverifiedFriend);
+            var request = await _repository.Friend.GetRequest(r => r.UserId == userId && r.FriendId == unverifiedFriend);
 
             if (request.FriendId != _tokenService.GetCurrentUserId())
             {
@@ -56,7 +56,7 @@ namespace Chat.Core.Services
 
         public async Task<FriendResponseDto> RejectFriendRequest(Guid userId, Guid requestId)
         {
-            var request = _repository.Friend.GetRequest(r => r.UserId == userId && r.FriendId == requestId);
+            var request = await _repository.Friend.GetRequest(r => r.UserId == userId && r.FriendId == requestId);
 
             if (request.FriendId != _tokenService.GetCurrentUserId())
             {

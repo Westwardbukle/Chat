@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 using Chat.Common.Chat;
 using Chat.Common.RequestFeatures;
@@ -15,18 +12,14 @@ namespace Chat.Database.Repository
 {
     public class ChatRepository : BaseRepository<ChatModel>, IChatRepository
     {
-        public ChatRepository(AppDbContext context) : base(context)
-        {
-        }
-
-
+        public ChatRepository(AppDbContext context) : base(context) {}
+        
         public async Task<ChatModel> GetPersonalChat(Guid user1, Guid user2)
         {
             var chat = await AppDbContext.ChatModels
                 .Include(x => x.UserChats)
                 .FirstOrDefaultAsync(x => x.UserChats.All(y => y.UserId == user1 || y.UserId == user2)
                                           && x.Type == ChatType.Personal);
-
             return chat;
         }
 

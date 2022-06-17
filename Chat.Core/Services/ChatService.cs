@@ -114,7 +114,7 @@ namespace Chat.Core.Services
         {
             var currentUserId = _tokenService.GetCurrentUserId();
 
-            var userchats = new List<UserChatResponseDto>();
+            var userChats = new List<UserChatResponseDto>();
 
             foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
@@ -130,10 +130,10 @@ namespace Chat.Core.Services
                         Role = Role.User
                     };
 
-                    _repository.UserChat.CreateUserChat(userChat);
+                    await _repository.UserChat.CreateUserChat(userChat);
                     await _repository.SaveAsync();
 
-                    var user = _repository.User.GetUser(u => u.Id == userId);
+                    var user = await _repository.User.GetUser(u => u.Id == userId);
 
                     var notifyMessage = new MessageModel
                     {
@@ -150,11 +150,11 @@ namespace Chat.Core.Services
                     await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(notifyMessage));
 
                     var userChatDto = _mapper.Map<UserChatResponseDto>(userChat);
-                    userchats.Add(userChatDto);
+                    userChats.Add(userChatDto);
                 }
             }
 
-            return userchats;
+            return userChats;
         }
 
         public async Task<(List<ChatResponseDto> Data, MetaData MetaData)> GetAllCommonChatsOfUser(Guid userId,
@@ -198,9 +198,9 @@ namespace Chat.Core.Services
             var userId = _tokenService.GetCurrentUserId();
 
             var remoteUserChat =
-                _repository.UserChat.GetOneUserChat(u => u.UserId == remoteUserId && u.ChatId == chatId);
+               await _repository.UserChat.GetOneUserChat(u => u.UserId == remoteUserId && u.ChatId == chatId);
 
-            var userChat = _repository.UserChat.GetOneUserChat(u => u.UserId == userId && u.ChatId == chatId);
+            var userChat = await _repository.UserChat.GetOneUserChat(u => u.UserId == userId && u.ChatId == chatId);
 
             if (remoteUserChat is null || userChat is null)
             {
@@ -212,7 +212,7 @@ namespace Chat.Core.Services
                 throw new IncorrectUserException();
             }
 
-            var remoteUser = _repository.User.GetUser(u => u.Id == userId);
+            var remoteUser = await _repository.User.GetUser(u => u.Id == userId);
 
             var message = new MessageModel
             {

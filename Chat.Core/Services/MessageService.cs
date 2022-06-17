@@ -35,7 +35,7 @@ namespace Chat.Core.Services
 
         public async Task<MessagesResponseDto> SendMessage(Guid userId, Guid chatId, string text)
         {
-            var checkUser = _repository.User.GetUser(u => u.Id == userId) is not null;
+            var checkUser = await _repository.User.GetUser(u => u.Id == userId) is not null;
 
             var checkChat = await _repository.Chat.GetChat(chatId) is not null;
 

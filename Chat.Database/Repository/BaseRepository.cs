@@ -15,15 +15,11 @@ namespace Chat.Database.Repository
 
         protected BaseRepository(AppDbContext appDbContext)
             => AppDbContext = appDbContext;
+        
+        public async Task<TModel> GetOne(Expression<Func<TModel, bool>> predicate)
+            => await AppDbContext.Set<TModel>().AsNoTracking().FirstOrDefaultAsync(predicate);
 
-        /*public async Task<TModel>  GetOneToId(Guid id) 
-            => await AppDbContext.Set<TModel>().AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);*/
-            
-        
-        public TModel GetOne(Func<TModel, bool> predicate)
-            => AppDbContext.Set<TModel>().AsNoTracking().FirstOrDefault(predicate);
-        
-        
+
         public IQueryable<TModel> GetAllObjects(bool trackChanges)
             => !trackChanges
                 ? AppDbContext.Set<TModel>()
