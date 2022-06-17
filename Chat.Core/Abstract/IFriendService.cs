@@ -8,11 +8,11 @@ namespace Chat.Core.Abstract
 {
     public interface IFriendService
     {
-        Task<FriendResponseDto> ConfirmFriendRequest(Guid unverifiedFriend, Guid userId);
+        Task<FriendResponseDto> ConfirmFriendRequestAsync(Guid unverifiedFriend, Guid userId);
 
-        Task<FriendResponseDto> RejectFriendRequest(Guid userId, Guid requestId);
+        Task<FriendResponseDto> RejectFriendRequestAsync(Guid userId, Guid requestId);
 
-        Task<(List<FriendResponseDto> Data, MetaData MetaData )> GetAllFriendsOfUser(Guid userId,
+        Task<(List<FriendResponseDto> Data, MetaData MetaData )> GetAllFriendsOfUserAsync(Guid userId,
             FriendParameters friendParameters);
 
         //Task<List<FriendResponseDto>> GetAllFriendsRequest(FriendParameters friendParameters);

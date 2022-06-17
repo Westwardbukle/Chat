@@ -39,7 +39,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> EmailСonfirmation(CodeDto codeDto)
         {
-             await _restoringCode.ConfirmEmailCode(codeDto);
+             await _restoringCode.ConfirmEmailCodeAsync(codeDto);
              
              return Ok();
         }
@@ -59,7 +59,7 @@ namespace Chat.Controllers
         public async Task<ActionResult> RecoveryСode()
         {
             var userId = _tokenService.GetCurrentUserId();
-            await _restoringCode.SendRestoringCode(userId);
+            await _restoringCode.SendRestoringCodeAsync(userId);
 
             return Ok();
         }

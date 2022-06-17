@@ -8,7 +8,7 @@ namespace Chat.Core.Abstract
 {
     public interface IAuthService
     {
-        Task<UserRegisterResponseDto> Registration(RegisterUserDto registerUserDto);
-        Task<TokenModel> Login(LoginUserDto loginUserDto);
+        Task<UserRegisterResponseDto> RegistrationAsync(RegisterUserDto registerUserDto);
+        Task<TokenModel> LoginAsync(LoginUserDto loginUserDto);
     }
 }

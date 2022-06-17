@@ -42,7 +42,7 @@ namespace Chat.Controllers
         public async Task<ActionResult> SendPersonalMessage(Guid recipientId,[FromBody] PersonalMessageDto personalMessage)
         {
             var senderId = _tokenService.GetCurrentUserId();
-            var message = await _messageService.SendPersonalMessage(senderId, recipientId, personalMessage.Text);
+            var message = await _messageService.SendPersonalMessageAsync(senderId, recipientId, personalMessage.Text);
 
             return Created("", message);
         }
@@ -59,7 +59,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> GetAllMessagesFromUserToUser(Guid userId, Guid senderId, [FromQuery] MessagesParameters messagesParameters)
         {
-           var messages =  await _messageService.GetAllMessagesFromUserToUser(userId, senderId, messagesParameters);
+           var messages =  await _messageService.GetAllMessagesFromUserToUserAsync(userId, senderId, messagesParameters);
            
            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(messages.MetaData));
 
@@ -78,7 +78,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> SendMessage(Guid chatId, SendMessageDto sendMessage)
         {
-           var message =  await _messageService.SendMessage(sendMessage.UserId, chatId, sendMessage.Text);
+           var message =  await _messageService.SendMessageAsync(sendMessage.UserId, chatId, sendMessage.Text);
 
             return Created("", message);
         }

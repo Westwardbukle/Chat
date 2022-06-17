@@ -36,7 +36,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Registration(RegisterUserDto registerUserDto)
         {
-           var user = await _authService.Registration(registerUserDto);
+           var user = await _authService.RegistrationAsync(registerUserDto);
            
            return Created("", user);
         }
@@ -52,6 +52,6 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<TokenModel> Login(LoginUserDto loginUserDto)
-            => await _authService.Login(loginUserDto);
+            => await _authService.LoginAsync(loginUserDto);
     }
 }

@@ -9,15 +9,15 @@ namespace Chat.Database.AbstractRepository
 {
     public interface IFriendRepository
     {
-        Task CreateFriendRequest(FriendModel friend);
+        Task CreateFriendRequestAsync(FriendModel friend);
 
-        Task<FriendModel> GetRequest(Expression<Func<FriendModel, bool>> predicate);
+        Task<FriendModel> GetRequestAsync(Expression<Func<FriendModel, bool>> predicate);
 
         void DeleteRequest(FriendModel friend);
 
         void UpdateRequest(FriendModel friend);
 
-        Task<PagedList<FriendModel>> GetAllFriends(Guid userId, bool trackChanges,
+        Task<PagedList<FriendModel>> GetAllFriendsAsync(Guid userId, bool trackChanges,
             FriendParameters friendParameters);
 
         /*Task<PagedList<FriendModel>> GelAllRequest(Guid userId, bool trackChanges, FriendParameters friendParameters);*/

@@ -7,8 +7,8 @@ namespace Chat.Database.AbstractRepository
 {
     public interface ICodeRepository
     {
-        Task<CodeModel> GetCode(Expression<Func<CodeModel, bool>> predicate);
-        Task CreateCode(CodeModel item);
+        Task<CodeModel> GetCodeAsync(Expression<Func<CodeModel, bool>> predicate);
+        Task CreateCodeAsync(CodeModel item);
         public void DeleteCode(CodeModel item);
     }
 }

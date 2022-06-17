@@ -12,17 +12,13 @@ namespace Chat.Database.Repository
         public UserChatRepository(AppDbContext context) : base(context) {}
 
 
-        public async Task<UserChatModel>  GetOneUserChat(Expression<Func<UserChatModel, bool>> expression)
-            => await GetOne(expression);
+        public async Task<UserChatModel>  GetOneUserChatAsync(Expression<Func<UserChatModel, bool>> expression)
+            => await GetOneAsync(expression);
         
-        public async Task CreateUserChat(UserChatModel item)
+        public async Task CreateUserChatAsync(UserChatModel item)
             => await CreateAsync(item);
 
         public void DeleteUserChat(UserChatModel item)
             => Delete(item);
-
-        /*public IQueryable<UserChatModel> FindUserChatByCondition(Expression<Func<UserChatModel, bool>> expression,
-            bool trackChanges)
-            => FindByCondition(expression, trackChanges);*/
     }
 }

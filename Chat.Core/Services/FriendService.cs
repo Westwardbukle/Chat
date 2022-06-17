@@ -32,14 +32,14 @@ namespace Chat.Core.Services
             _notification = notification;
         }
 
-        public async Task<FriendResponseDto> ConfirmFriendRequest(Guid unverifiedFriend, Guid userId)
+        public async Task<FriendResponseDto> ConfirmFriendRequestAsync(Guid unverifiedFriend, Guid userId)
         {
             if (_tokenService.GetCurrentUserId() != unverifiedFriend)
             {
                 throw new IncorrectUserException();
             }
 
-            var request = await _repository.Friend.GetRequest(r => r.UserId == userId && r.FriendId == unverifiedFriend);
+            var request = await _repository.Friend.GetRequestAsync(r => r.UserId == userId && r.FriendId == unverifiedFriend);
 
             if (request.FriendId != _tokenService.GetCurrentUserId())
             {
@@ -54,9 +54,9 @@ namespace Chat.Core.Services
             return _mapper.Map<FriendResponseDto>(request);
         }
 
-        public async Task<FriendResponseDto> RejectFriendRequest(Guid userId, Guid requestId)
+        public async Task<FriendResponseDto> RejectFriendRequestAsync(Guid userId, Guid requestId)
         {
-            var request = await _repository.Friend.GetRequest(r => r.UserId == userId && r.FriendId == requestId);
+            var request = await _repository.Friend.GetRequestAsync(r => r.UserId == userId && r.FriendId == requestId);
 
             if (request.FriendId != _tokenService.GetCurrentUserId())
             {
@@ -70,7 +70,7 @@ namespace Chat.Core.Services
         }
 
 
-        public async Task<(List<FriendResponseDto> Data, MetaData MetaData )> GetAllFriendsOfUser(Guid userId,
+        public async Task<(List<FriendResponseDto> Data, MetaData MetaData )> GetAllFriendsOfUserAsync(Guid userId,
             FriendParameters friendParameters)
         {
             if (_tokenService.GetCurrentUserId() != userId)
@@ -78,7 +78,7 @@ namespace Chat.Core.Services
                 throw new IncorrectUserException();
             }
 
-            var allFriends = await _repository.Friend.GetAllFriends(userId, false, friendParameters);
+            var allFriends = await _repository.Friend.GetAllFriendsAsync(userId, false, friendParameters);
 
             
             var usersFriends = _mapper.Map<List<FriendResponseDto>>(allFriends);

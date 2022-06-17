@@ -42,7 +42,7 @@ namespace Chat.Controllers
         {
             var userid = _tokenService.GetCurrentUserId();
 
-            var chats = await _chatService.GetAllCommonChatsOfUser(userid, chatsParameters);
+            var chats = await _chatService.GetAllCommonChatsOfUserAsync(userid, chatsParameters);
             
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(chats.MetaData));
 
@@ -62,7 +62,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateUser(string nickname, string newNick)
         {
-            await _userService.UpdateUser(nickname, newNick);
+            await _userService.UpdateUserAsync(nickname, newNick);
             return NoContent();
         }
 
@@ -78,7 +78,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> GetUser(string nickname)
         {
-            var user = await _userService.GetOneUser(nickname);
+            var user = await _userService.GetOneUserAsync(nickname);
 
             return Ok(user);
         }
@@ -95,7 +95,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> SendFriendRequest([Required]Guid recipientId)
         {
-            var request = await _userService.SendFriendRequest(recipientId);
+            var request = await _userService.SendFriendRequestAsync(recipientId);
 
             return Created("",request);
         }
@@ -109,7 +109,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> DeleteRequest(Guid userId ,Guid friendId)
         {
-            var request =  await _friendService.RejectFriendRequest(userId,friendId);
+            var request =  await _friendService.RejectFriendRequestAsync(userId,friendId);
 
             return Ok(request);
         }
@@ -124,7 +124,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> GetAllUsersFriends(Guid userId ,[FromQuery]FriendParameters friendParameters)
         {
-            var request =  await _friendService.GetAllFriendsOfUser(userId , friendParameters);
+            var request =  await _friendService.GetAllFriendsOfUserAsync(userId , friendParameters);
             
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(request.MetaData));
 
@@ -141,7 +141,7 @@ namespace Chat.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> ConfirmationRequest(Guid unverifiedFriendId, Guid userId)
         {
-            var request =   await _friendService.ConfirmFriendRequest(unverifiedFriendId, userId);
+            var request =   await _friendService.ConfirmFriendRequestAsync(unverifiedFriendId, userId);
 
             return Ok(request);
         }

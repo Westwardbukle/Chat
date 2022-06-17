@@ -8,9 +8,9 @@ namespace Chat.Database.AbstractRepository
 {
     public interface IMessageRepository 
     {
-        public Task CreateMessage(MessageModel item);
+        public Task CreateMessageAsync(MessageModel item);
 
-        Task<PagedList<MessageModel>> FindMessagesByCondition(Expression<Func<MessageModel, bool>> expression,
+        Task<PagedList<MessageModel>> FindMessagesByConditionAsync(Expression<Func<MessageModel, bool>> expression,
             bool trackChanges, MessagesParameters messagesParameters);
     }
 }

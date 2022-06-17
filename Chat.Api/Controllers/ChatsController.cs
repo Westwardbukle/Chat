@@ -35,7 +35,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> CreateCommonChat(CreateCommonChatDto commonChatDto)
         {
-           var chat = await _chatService.CreateCommonChat(commonChatDto);
+           var chat = await _chatService.CreateCommonChatAsync(commonChatDto);
 
             return Created("", chat);
         }
@@ -53,7 +53,7 @@ namespace Chat.Controllers
         public async Task<ActionResult> InviteUserToCommonChat(Guid chatId,
             InviteUserCommonChatDto inviteUserCommonChatDto)
         {
-            var userChat = await _chatService.InviteUserToCommonChat(chatId, inviteUserCommonChatDto);
+            var userChat = await _chatService.InviteUserToCommonChatAsync(chatId, inviteUserCommonChatDto);
 
             return Created("", userChat);
         }
@@ -68,7 +68,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllUsersInChat(Guid chatId, [FromQuery] UsersParameters usersParameters)
         {
-            var result = await _chatService.GetAllUsersInChat(chatId, usersParameters);
+            var result = await _chatService.GetAllUsersInChatAsync(chatId, usersParameters);
             
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.MetaData));
             
@@ -89,7 +89,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> UpdateChat(Guid chatId, [FromBody] NewNameChatDto newNameChat)
         {
-            await _chatService.UpdateChat(chatId, newNameChat.Name);
+            await _chatService.UpdateChatAsync(chatId, newNameChat.Name);
 
             return Ok();
         }
@@ -106,7 +106,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> RemoveUserInChat(Guid remoteUserId, Guid chatId)
         {
-            await _chatService.RemoveUserInChat(remoteUserId, chatId);
+            await _chatService.RemoveUserInChatAsync(remoteUserId, chatId);
 
             return Ok();
         }
@@ -122,7 +122,7 @@ namespace Chat.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> GetAllMessageInChat(Guid chatId, [FromQuery] MessagesParameters messagesParameters)
         {
-            var messages = await _chatService.GetAllMessageInCommonChat(chatId, messagesParameters );
+            var messages = await _chatService.GetAllMessageInCommonChatAsync(chatId, messagesParameters );
             
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(messages.MetaData));
             

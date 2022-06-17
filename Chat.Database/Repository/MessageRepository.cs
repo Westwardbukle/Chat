@@ -15,10 +15,10 @@ namespace Chat.Database.Repository
         {
         }
 
-        public async Task CreateMessage(MessageModel item)
+        public async Task CreateMessageAsync(MessageModel item)
             =>  await CreateAsync(item);
 
-        public async Task<PagedList<MessageModel>> FindMessagesByCondition(
+        public async Task<PagedList<MessageModel>> FindMessagesByConditionAsync(
             Expression<Func<MessageModel, bool>> expression,
             bool trackChanges, MessagesParameters messagesParameters)
         {

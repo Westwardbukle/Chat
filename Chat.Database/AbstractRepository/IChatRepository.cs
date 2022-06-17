@@ -12,9 +12,9 @@ namespace Chat.Database.AbstractRepository
     {
         /*Task<IEnumerable<ChatModel>>GetAllChats(bool trackChanges);*/
 
-        Task<ChatModel> GetChat(Guid chatId);
+        Task<ChatModel> GetChatAsync(Guid chatId);
 
-        Task CreateChat(ChatModel item);
+        Task CreateChatAsync(ChatModel item);
 
         void UpdateChat(ChatModel item);
         
@@ -23,8 +23,8 @@ namespace Chat.Database.AbstractRepository
         /*IQueryable<ChatModel> FindChatByCondition(Expression<Func<ChatModel, bool>> expression,
             bool trackChanges);*/
 
-        Task<ChatModel> GetPersonalChat(Guid user1, Guid user2);
+        Task<ChatModel> GetPersonalChatAsync(Guid user1, Guid user2);
 
-        Task<PagedList<ChatModel>> GetAllChatsOfUser(Guid userId, ChatsParameters chatsParameters);
+        Task<PagedList<ChatModel>> GetAllChatsOfUserAsync(Guid userId, ChatsParameters chatsParameters);
     }
 }

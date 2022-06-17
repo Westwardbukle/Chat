@@ -16,15 +16,15 @@ namespace Chat.Database.Repository
         protected BaseRepository(AppDbContext appDbContext)
             => AppDbContext = appDbContext;
         
-        public async Task<TModel> GetOne(Expression<Func<TModel, bool>> predicate)
+        public async Task<TModel> GetOneAsync(Expression<Func<TModel, bool>> predicate)
             => await AppDbContext.Set<TModel>().AsNoTracking().FirstOrDefaultAsync(predicate);
 
 
-        public IQueryable<TModel> GetAllObjects(bool trackChanges)
+        /*public IQueryable<TModel> GetAllObjects(bool trackChanges)
             => !trackChanges
                 ? AppDbContext.Set<TModel>()
                     .AsNoTracking()
-                : AppDbContext.Set<TModel>();
+                : AppDbContext.Set<TModel>();*/
 
 
         public IQueryable<TModel> FindByCondition(Expression<Func<TModel, bool>> expression,
@@ -48,7 +48,7 @@ namespace Chat.Database.Repository
             return item;
         }
 
-        public async Task<TModel> GetById(Guid id)
+        public async Task<TModel> GetByIdAsync(Guid id)
             => await AppDbContext.Set<TModel>().FindAsync(id);
 
         public void Delete(TModel item) => AppDbContext.Set<TModel>().Remove(item);

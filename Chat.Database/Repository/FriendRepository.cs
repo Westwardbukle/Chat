@@ -16,12 +16,12 @@ namespace Chat.Database.Repository
         {
         }
 
-        public async Task CreateFriendRequest(FriendModel friend)
+        public async Task CreateFriendRequestAsync(FriendModel friend)
             => await CreateAsync(friend);
 
 
-        public async Task<FriendModel>  GetRequest(Expression<Func<FriendModel, bool>> predicate)
-            => await GetOne(predicate);
+        public async Task<FriendModel>  GetRequestAsync(Expression<Func<FriendModel, bool>> predicate)
+            => await GetOneAsync(predicate);
 
         public void DeleteRequest(FriendModel friend)
             => Delete(friend);
@@ -29,7 +29,7 @@ namespace Chat.Database.Repository
         public void UpdateRequest(FriendModel friend)
             => Update(friend);
 
-        public async Task<PagedList<FriendModel>> GetAllFriends(Guid userId, bool trackChanges,
+        public async Task<PagedList<FriendModel>> GetAllFriendsAsync(Guid userId, bool trackChanges,
             FriendParameters friendParameters)
         {
             if (friendParameters.ActiveTerm.HasValue)

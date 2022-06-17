@@ -8,8 +8,8 @@ namespace Chat.Database.AbstractRepository
 {
     public interface IUserChatRepository
     {
-        Task<UserChatModel> GetOneUserChat(Expression<Func<UserChatModel, bool>> expression);
-        Task CreateUserChat(UserChatModel item);
+        Task<UserChatModel> GetOneUserChatAsync(Expression<Func<UserChatModel, bool>> expression);
+        Task CreateUserChatAsync(UserChatModel item);
         void DeleteUserChat(UserChatModel item);
 
         /*IQueryable<UserChatModel> FindUserChatByCondition(Expression<Func<UserChatModel, bool>> expression,

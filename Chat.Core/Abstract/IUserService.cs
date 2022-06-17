@@ -9,13 +9,13 @@ namespace Chat.Core.Abstract
 {
     public interface IUserService
     {
-        Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId,
+        Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChatAsync(Guid chatId,
             UsersParameters usersParameters);
 
-        Task UpdateUser(string nickname, string newNick);
+        Task UpdateUserAsync(string nickname, string newNick);
 
-        Task<GetAllUsersDto> GetOneUser(string nickName);
+        Task<GetAllUsersDto> GetOneUserAsync(string nickName);
 
-        Task<FriendResponseDto> SendFriendRequest(Guid recipientId);
+        Task<FriendResponseDto> SendFriendRequestAsync(Guid recipientId);
     }
 }

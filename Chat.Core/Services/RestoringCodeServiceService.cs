@@ -6,8 +6,6 @@ using Chat.Common.Exceptions;
 using Chat.Core.Abstract;
 using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Core.Services
 {
@@ -33,16 +31,16 @@ namespace Chat.Core.Services
         }
 
 
-        public async Task SendRestoringCode(Guid userId)
+        public async Task SendRestoringCodeAsync(Guid userId)
         {
-            var user = await _repository.User.GetUser(u => u.Id == userId);
+            var user = await _repository.User.GetUserAsync(u => u.Id == userId);
 
             if (user == null)
             {
                 throw new UserNotFoundException();
             }
 
-            var lastCode = await _repository.Code.GetCode(c => c.Id == user.Id);
+            var lastCode = await _repository.Code.GetCodeAsync(c => c.Id == user.Id);
 
             if (lastCode is null)
             {
@@ -60,7 +58,7 @@ namespace Chat.Core.Services
                     UserId = user.Id
                 };
 
-                await _repository.Code.CreateCode(newCode);
+                await _repository.Code.CreateCodeAsync(newCode);
             }
 
             _repository.Code.DeleteCode(lastCode);
@@ -79,19 +77,19 @@ namespace Chat.Core.Services
                 UserId = user.Id
             };
 
-            await _repository.Code.CreateCode(code);
+            await _repository.Code.CreateCodeAsync(code);
         }
 
-        public async Task ConfirmEmailCode(CodeDto codeDto)
+        public async Task ConfirmEmailCodeAsync(CodeDto codeDto)
         {
-            var user = await _repository.User.GetUser(u => u.Id == _tokenService.GetCurrentUserId());
+            var user = await _repository.User.GetUserAsync(u => u.Id == _tokenService.GetCurrentUserId());
 
             if (user is null)
             {
                 throw new UserNotFoundException();
             }
 
-            var code = await _repository.Code.GetCode(c => c.UserId == user.Id);
+            var code = await _repository.Code.GetCodeAsync(c => c.UserId == user.Id);
 
             if (code is null) throw new ActivationСodeТotFoundException();
 
@@ -105,13 +103,13 @@ namespace Chat.Core.Services
                 throw new EmailCodeNotValidException();
             }
 
-            await ActivateEmailUser(user);
+            await ActivateEmailUserAsync(user);
 
             _repository.Code.DeleteCode(code);
             await _repository.SaveAsync();
         }
 
-        public async Task ActivateEmailUser(UserModel user)
+        public async Task ActivateEmailUserAsync(UserModel user)
         {
             user.Active = true;
             user.DateTimeActivation = DateTime.Now;

@@ -25,28 +25,28 @@ namespace Chat.Core.Services
             _tokenService = tokenService;
         }
 
-        public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
+        public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChatAsync(Guid chatId, UsersParameters usersParameters)
         {
-            if (_repositoryManager.Chat.GetChat( chatId) is null)
+            if (_repositoryManager.Chat.GetChatAsync( chatId) is null)
             {
                 throw new ChatNotFoundException();
             }
             
-            var users = await _repositoryManager.User.GetAllUsersInChat(chatId, usersParameters);
+            var users = await _repositoryManager.User.GetAllUsersInChatAsync(chatId, usersParameters);
             
             var usersDto = _mapper.Map<List<GetAllUsersDto>>(users);
 
             return (usersDto, users.MetaData);
         }
         
-        public async Task UpdateUser(string nickname, string newNick)
+        public async Task UpdateUserAsync(string nickname, string newNick)
         {
-            if (_repositoryManager.User.GetUser(u => u.Nickname == nickname) is null)
+            if (_repositoryManager.User.GetUserAsync(u => u.Nickname == nickname) is null)
             {
                 throw new UserNotFoundException();
             }
             
-            var user = await _repositoryManager.User.GetUser(u => u.Nickname == nickname);
+            var user = await _repositoryManager.User.GetUserAsync(u => u.Nickname == nickname);
 
             user.Nickname = newNick;
             
@@ -55,9 +55,9 @@ namespace Chat.Core.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task<GetAllUsersDto> GetOneUser(string nickName)
+        public async Task<GetAllUsersDto> GetOneUserAsync(string nickName)
         {
-            var user = await _repositoryManager.User.GetUser(u => u.Nickname == nickName);
+            var user = await _repositoryManager.User.GetUserAsync(u => u.Nickname == nickName);
 
             if (user is null)
             {
@@ -67,7 +67,7 @@ namespace Chat.Core.Services
             return _mapper.Map<GetAllUsersDto>(user);
         }
         
-        public async Task<FriendResponseDto> SendFriendRequest(Guid recipientId)
+        public async Task<FriendResponseDto> SendFriendRequestAsync(Guid recipientId)
         {
             var senderId = _tokenService.GetCurrentUserId();
             
@@ -78,7 +78,7 @@ namespace Chat.Core.Services
                 Confirmed = false,
             };
 
-            await _repositoryManager.Friend.CreateFriendRequest(friendRequest);
+            await _repositoryManager.Friend.CreateFriendRequestAsync(friendRequest);
             await _repositoryManager.SaveAsync();
             
             return _mapper.Map<FriendResponseDto>(friendRequest);

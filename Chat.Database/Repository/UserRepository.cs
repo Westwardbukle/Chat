@@ -17,7 +17,7 @@ namespace Chat.Database.Repository
         {
         }
         
-        public async Task<PagedList<UserModel>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters)
+        public async Task<PagedList<UserModel>> GetAllUsersInChatAsync(Guid chatId, UsersParameters usersParameters)
         {
             var users = await AppDbContext
                 .UserModels
@@ -44,10 +44,10 @@ namespace Chat.Database.Repository
             return users;
         }
 
-        public async Task<UserModel>  GetUser(Expression <Func<UserModel, bool>> predicate)
-            => await GetOne(predicate);
+        public async Task<UserModel>  GetUserAsync(Expression <Func<UserModel, bool>> predicate)
+            => await GetOneAsync(predicate);
 
-        public async Task CreateUser(UserModel item)
+        public async Task CreateUserAsync(UserModel item)
             => await CreateAsync(item);
 
         public  void UpdateUser(UserModel item)

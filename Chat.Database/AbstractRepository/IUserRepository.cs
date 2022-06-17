@@ -10,13 +10,13 @@ namespace Chat.Database.AbstractRepository
 {
     public interface IUserRepository
     {
-        Task<PagedList<UserModel>> GetAllUsersInChat(Guid chatId, UsersParameters usersParameters);
+        Task<PagedList<UserModel>> GetAllUsersInChatAsync(Guid chatId, UsersParameters usersParameters);
 
         Task<List<Guid>> GetAllUsersIdsInChatForNotify(Guid chatId);
         
-        Task<UserModel>  GetUser(Expression <Func<UserModel, bool>> predicate);
+        Task<UserModel>  GetUserAsync(Expression <Func<UserModel, bool>> predicate);
 
-        Task CreateUser(UserModel item);
+        Task CreateUserAsync(UserModel item);
 
         void UpdateUser(UserModel item);
         

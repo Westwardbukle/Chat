@@ -33,11 +33,11 @@ namespace Chat.Core.Services
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<UserRegisterResponseDto> Registration(RegisterUserDto registerUserDto)
+        public async Task<UserRegisterResponseDto> RegistrationAsync(RegisterUserDto registerUserDto)
         {
             var id = Guid.NewGuid();
 
-            if ( _repositoryManager.User.GetUser(u => u.Nickname == registerUserDto.Nickname) is not null)
+            if ( _repositoryManager.User.GetUserAsync(u => u.Nickname == registerUserDto.Nickname) is not null)
             {
                 throw new UserExistException();
             }
@@ -54,7 +54,7 @@ namespace Chat.Core.Services
                 DateTimeActivation = null,
             };
 
-            await _repositoryManager.User.CreateUser(user);
+            await _repositoryManager.User.CreateUserAsync(user);
             await _repositoryManager.SaveAsync();
 
             var returnUser = _mapper.Map<UserRegisterResponseDto>(user);
@@ -63,9 +63,9 @@ namespace Chat.Core.Services
         }
 
 
-        public async Task<TokenModel> Login(LoginUserDto loginUserDto)
+        public async Task<TokenModel> LoginAsync(LoginUserDto loginUserDto)
         {
-            var trueUser = await _repositoryManager.User.GetUser(u => u.Nickname == loginUserDto.Nickname);
+            var trueUser = await _repositoryManager.User.GetUserAsync(u => u.Nickname == loginUserDto.Nickname);
 
             if (trueUser is null)
             {

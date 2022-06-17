@@ -8,15 +8,14 @@ namespace Chat.Database.Repository
 {
     public class CodeRepository : BaseRepository<CodeModel>, ICodeRepository
     {
-        public CodeRepository(AppDbContext context) : base(context)
-        {
-        }
+        public CodeRepository(AppDbContext context) : base(context) {}
 
-        public async Task<CodeModel>  GetCode(Expression<Func<CodeModel, bool>> predicate)
-            => await GetOne(predicate);
+        public async Task<CodeModel> GetCodeAsync(Expression<Func<CodeModel, bool>> expression)
+            => await GetOneAsync(expression);
 
-        public async Task CreateCode(CodeModel item)
+        public async Task CreateCodeAsync(CodeModel item)
             => await CreateAsync(item);
+        
         
         public void DeleteCode(CodeModel item)
             => Delete(item);

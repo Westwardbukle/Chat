@@ -11,23 +11,23 @@ namespace Chat.Core.Abstract
 {
     public interface IChatService
     {
-        Task CreatePersonalChat(Guid user1, Guid user2);
+        Task CreatePersonalChatAsync(Guid user1, Guid user2);
 
-        Task<ChatResponseDto> CreateCommonChat(CreateCommonChatDto commonChatDto);
+        Task<ChatResponseDto> CreateCommonChatAsync(CreateCommonChatDto commonChatDto);
 
-        Task<List<UserChatResponseDto>> InviteUserToCommonChat(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto);
+        Task<List<UserChatResponseDto>> InviteUserToCommonChatAsync(Guid chatId, InviteUserCommonChatDto inviteUserCommonChatDto);
 
-        Task<(List<ChatResponseDto> Data, MetaData MetaData)> GetAllCommonChatsOfUser(Guid userId,
+        Task<(List<ChatResponseDto> Data, MetaData MetaData)> GetAllCommonChatsOfUserAsync(Guid userId,
             ChatsParameters chatsParameters);
 
-        Task UpdateChat(Guid id, string name);
+        Task UpdateChatAsync(Guid id, string name);
 
-        Task RemoveUserInChat(Guid remoteUserId, Guid chatId);
+        Task RemoveUserInChatAsync(Guid remoteUserId, Guid chatId);
         
-        Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChat(Guid chatId,
+        Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChatAsync(Guid chatId,
             MessagesParameters messagesParameters);
 
-        Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChat(Guid chatId,
+        Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChatAsync(Guid chatId,
             UsersParameters usersParameters);
     }
 }

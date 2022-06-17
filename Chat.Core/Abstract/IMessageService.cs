@@ -9,12 +9,12 @@ namespace Chat.Core.Abstract
 {
     public interface IMessageService
     {
-        Task<MessagesResponseDto> SendMessage(Guid userId, Guid chatId, string text);
+        Task<MessagesResponseDto> SendMessageAsync(Guid userId, Guid chatId, string text);
 
         
-        Task<MessagesResponseDto> SendPersonalMessage(Guid senderId, Guid recipientId, string text);
+        Task<MessagesResponseDto> SendPersonalMessageAsync(Guid senderId, Guid recipientId, string text);
 
-        Task<(List<MessagesResponseDto> Data, MetaData MetaData )> GetAllMessagesFromUserToUser(Guid userId,
+        Task<(List<MessagesResponseDto> Data, MetaData MetaData )> GetAllMessagesFromUserToUserAsync(Guid userId,
             Guid senderId, MessagesParameters messagesParameters);
     }
 }

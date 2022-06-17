@@ -14,7 +14,7 @@ namespace Chat.Database.Repository
     {
         public ChatRepository(AppDbContext context) : base(context) {}
         
-        public async Task<ChatModel> GetPersonalChat(Guid user1, Guid user2)
+        public async Task<ChatModel> GetPersonalChatAsync(Guid user1, Guid user2)
         {
             var chat = await AppDbContext.ChatModels
                 .Include(x => x.UserChats)
@@ -23,16 +23,16 @@ namespace Chat.Database.Repository
             return chat;
         }
 
-        public async Task<ChatModel> GetChat(Guid chatId)
+        public async Task<ChatModel> GetChatAsync(Guid chatId)
             => await AppDbContext.ChatModels.FirstOrDefaultAsync(x => x.Id == chatId);
 
-        public async Task CreateChat(ChatModel item)
+        public async Task CreateChatAsync(ChatModel item)
             => await CreateAsync(item);
 
         public void UpdateChat(ChatModel item)
             => Update(item);
 
-        public async Task<PagedList<ChatModel>> GetAllChatsOfUser(Guid userId, ChatsParameters chatsParameters)
+        public async Task<PagedList<ChatModel>> GetAllChatsOfUserAsync(Guid userId, ChatsParameters chatsParameters)
         {
             var chats = await AppDbContext
                 .ChatModels
