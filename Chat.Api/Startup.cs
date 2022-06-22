@@ -1,6 +1,8 @@
 using System.Text;
 using AutoMapper;
 using Chat.Core.Abstract;
+using Chat.Core.ExternalSources;
+using Chat.Core.ExternalSources.Abstract;
 using Chat.Core.Hubs;
 using Chat.Core.Options;
 using Chat.Core.ProFiles;
@@ -8,6 +10,7 @@ using Chat.Core.Services;
 using Chat.Database;
 using Chat.Extentions;
 using Chat.Validation;
+using ChatQuartz.Jobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +22,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Quartz;
 
 namespace Chat
 {
@@ -37,13 +41,13 @@ namespace Chat
             services.Configure<AppOptions>(Configuration.GetSection(AppOptions.App));
             var appOptions = Configuration.GetSection(AppOptions.App).Get<AppOptions>();
             services.AddSingleton(appOptions);
-
+            
             services.ConfigureAuthentication(Configuration);
 
             services.ConfigureSwagger();
 
             services.ConfigureFilters();
-
+            
             services.ConfigureRepositoryManager();
             
             services.ConfigureServices();
@@ -63,6 +67,29 @@ namespace Chat
             services.AddHttpContextAccessor();
             
             services.ConfigureCors();
+
+            services.AddHttpClient();
+            
+            services.AddTransient<IUserApi, FakeApi>();
+            services.AddTransient<IUserApi, FakerApi>();
+            services.AddTransient<IUserApi, DummyJsonApi>();
+            
+            services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
+                
+                var jobkey = new JobKey("UsersJob");
+
+                q.AddJob<UsersJob>(options => options.WithIdentity(jobkey));
+                
+                q.AddTrigger(options => options
+                    .ForJob(jobkey)
+                    .WithIdentity("UsersJob-trigger)")
+                    .WithCronSchedule("0/5 * * * * ?"));
+            });
+
+            services.AddQuartzHostedService(
+                q => q.WaitForJobsToComplete = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

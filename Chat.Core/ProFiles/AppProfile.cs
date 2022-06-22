@@ -6,6 +6,7 @@ using Chat.Common.Dto.Friend;
 using Chat.Common.Dto.Message;
 using Chat.Common.Dto.User;
 using Chat.Common.Dto.UserChat;
+using Chat.Core.ExternalSources.Dto;
 using Chat.Database.Model;
 
 namespace Chat.Core.ProFiles
@@ -40,6 +41,15 @@ namespace Chat.Core.ProFiles
 
             // Return list users, in AuthService, GetAllUsers method 
             CreateMap<UserModel, GetAllUsersDto>();
+            
+            
+            CreateMap<UserModel, UserFakeApi>()
+                .ForMember(x => x.Username,
+                    x => x.MapFrom(y => y.Nickname));
+            
+            
+            CreateMap<UserModel, FakerApiUser>();
+            CreateMap<UserModel, DummyUser>();
         }
     }
 }

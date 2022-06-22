@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat.Core", "Chat.Core\Chat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat.Database", "Chat.Database\Chat.Database.csproj", "{C35840B3-BC2E-48FB-A771-091B8AA5D404}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat.Quartz", "Chat.Quartz\Chat.Quartz.csproj", "{16E9AC31-CBBF-4FE7-B936-FCE9275E4F86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{C35840B3-BC2E-48FB-A771-091B8AA5D404}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C35840B3-BC2E-48FB-A771-091B8AA5D404}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C35840B3-BC2E-48FB-A771-091B8AA5D404}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16E9AC31-CBBF-4FE7-B936-FCE9275E4F86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16E9AC31-CBBF-4FE7-B936-FCE9275E4F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16E9AC31-CBBF-4FE7-B936-FCE9275E4F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16E9AC31-CBBF-4FE7-B936-FCE9275E4F86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

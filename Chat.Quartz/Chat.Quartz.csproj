@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>ChatQuartz</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Quartz.AspNetCore" Version="3.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Chat.Common\Chat.Common.csproj" />
+      <ProjectReference Include="..\Chat.Core\Chat.Core.csproj" />
+    </ItemGroup>
+
+</Project>
