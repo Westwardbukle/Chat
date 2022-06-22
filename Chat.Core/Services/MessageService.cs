@@ -35,9 +35,9 @@ namespace Chat.Core.Services
 
         public async Task<MessagesResponseDto> SendMessageAsync(Guid userId, Guid chatId, string text)
         {
-            var checkUser = await _repository.User.GetUserAsync(u => u.Id == userId) is not null;
+            var checkUser =  _repository.User.GetUserAsync(u => u.Id == userId) is not null;
 
-            var checkChat = await _repository.Chat.GetChatAsync(chatId) is not null;
+            var checkChat =  _repository.Chat.GetChatAsync(chatId) is not null;
 
             if (!checkUser) throw new UserNotFoundException();
             
