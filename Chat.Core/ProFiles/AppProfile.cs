@@ -16,7 +16,7 @@ namespace Chat.Core.ProFiles
         public AppProfile()
         {
             CreateMap<UserModel, UserResponseDto>();
-            
+
             CreateMap<UserModel, UserModelDto>();
 
             CreateMap<UserModel, UserRegisterResponseDto>();
@@ -25,31 +25,34 @@ namespace Chat.Core.ProFiles
             CreateMap<UserChatModel, UserChatResponseDto>();
 
 
-            
-            
             CreateMap<FriendModel, FriendResponseDto>();
             CreateMap<FriendModel, List<FriendResponseDto>>();
-            
-            
+
+
             // Return list chats, in ChatService, GetAllChats method
             CreateMap<ChatModel, ChatResponseDto>();
             CreateMap<ChatModel, List<ChatResponseDto>>();
-            
+
             // Return List messages, in MessageService, GetAllMessageInChat method
             CreateMap<MessageModel, MessagesResponseDto>();
             CreateMap<MessageModel, List<MessagesResponseDto>>();
 
             // Return list users, in AuthService, GetAllUsers method 
             CreateMap<UserModel, GetAllUsersDto>();
-            
+
             
             CreateMap<UserModel, UserFakeApi>()
-                .ForMember(x => x.Username,
-                    x => x.MapFrom(y => y.Nickname));
-            
-            
-            CreateMap<UserModel, FakerApiUser>();
-            CreateMap<UserModel, DummyUser>();
+                .ForMember("Username", opt => opt.MapFrom(u => u.Nickname))
+                .ForMember("LastName", opt => opt.MapFrom(p => p.Password))
+                .ReverseMap();
+
+
+            CreateMap<UserModel, FakerApiUser>()
+                .ForMember("Firstname", opt => opt.MapFrom(u => u.Nickname))
+                .ReverseMap();
+            CreateMap<UserModel, DummyUser>()
+                .ForMember("Username", opt => opt.MapFrom(u => u.Nickname))
+                .ReverseMap();
         }
     }
 }

@@ -3,6 +3,7 @@ using AutoMapper;
 using Chat.Core.Abstract;
 using Chat.Core.ExternalSources;
 using Chat.Core.ExternalSources.Abstract;
+using Chat.Core.ExternalSources.Services;
 using Chat.Core.Hubs;
 using Chat.Core.Options;
 using Chat.Core.ProFiles;
@@ -65,6 +66,8 @@ namespace Chat
             services.AddControllers(options =>
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             services.AddHttpContextAccessor();
+
+            services.AddScoped<IUserJobService, UserJobService>();
             
             services.ConfigureCors();
 
@@ -74,18 +77,28 @@ namespace Chat
             services.AddTransient<IUserApi, FakerApi>();
             services.AddTransient<IUserApi, DummyJsonApi>();
             
+            
             services.AddQuartz(q =>
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();
                 
                 var jobkey = new JobKey("UsersJob");
 
+                var emailKey = new JobKey("EmailNotifications");
+
                 q.AddJob<UsersJob>(options => options.WithIdentity(jobkey));
+
+                q.AddJob<EmailNotifications>(opt => opt.WithIdentity(emailKey));
                 
                 q.AddTrigger(options => options
                     .ForJob(jobkey)
                     .WithIdentity("UsersJob-trigger)")
-                    .WithCronSchedule("0/5 * * * * ?"));
+                    .WithCronSchedule("0 0/1 * ? * * *"));
+                //0 0/1 * ? * * *
+                q.AddTrigger(opt => opt
+                    .ForJob(emailKey)
+                    .WithIdentity("EmailNotifications-trigger")
+                    .WithCronSchedule("0 0 0 ? * * *"));
             });
 
             services.AddQuartzHostedService(

@@ -5,17 +5,19 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Chat.Core.ExternalSources.Abstract;
+using Chat.Database.AbstractRepository;
 using Chat.Database.Model;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Chat.Core.ExternalSources.Services
 {
-    public class UserService
+    public class UserJobService : IUserJobService
     {
 
         private readonly IEnumerable<IUserApi> _userApis;
+        
 
-        public UserService(IServiceProvider serviceProvider)
+        public UserJobService(IServiceProvider serviceProvider)
         {
             _userApis = serviceProvider.GetServices(typeof(IUserApi)).Cast<IUserApi>();
         }
@@ -39,9 +41,10 @@ namespace Chat.Core.ExternalSources.Services
             
                 result.AddRange(users);
             }
-        
+            
+            
+            
             return result;
-
         }
     }
 }

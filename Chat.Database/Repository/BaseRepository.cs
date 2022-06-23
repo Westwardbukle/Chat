@@ -15,7 +15,7 @@ namespace Chat.Database.Repository
 
         protected BaseRepository(AppDbContext appDbContext)
             => AppDbContext = appDbContext;
-        
+
         public async Task<TModel> GetOneAsync(Expression<Func<TModel, bool>> predicate)
             => await AppDbContext.Set<TModel>().AsNoTracking().FirstOrDefaultAsync(predicate);
 
@@ -38,6 +38,9 @@ namespace Chat.Database.Repository
 
 
         public async Task CreateAsync(TModel item) => await AppDbContext.Set<TModel>().AddAsync(item);
+
+        public async Task CreateRangeAsync(IEnumerable<TModel> items) =>
+            await AppDbContext.Set<TModel>().AddRangeAsync(items);
 
         public void Update(TModel item) => AppDbContext.Set<TModel>().Update(item);
 

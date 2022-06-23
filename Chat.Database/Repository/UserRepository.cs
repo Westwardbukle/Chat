@@ -32,6 +32,11 @@ namespace Chat.Database.Repository
                 .ToPagedList(users, usersParameters.PageNumber, usersParameters.PageSize);
         }
 
+
+        public async Task<IQueryable<UserModel>> GetAllUsersbyCondition(Expression<Func<UserModel, bool>> expression,
+            bool trackChanges)
+            => FindByCondition(expression, false);
+
         public async Task<List<Guid>>  GetAllUsersIdsInChatForNotify(Guid chatId)
         {
             var users = await AppDbContext
@@ -49,6 +54,9 @@ namespace Chat.Database.Repository
 
         public async Task CreateUserAsync(UserModel item)
             => await CreateAsync(item);
+
+        public async Task CreateUserRangeAsync(List<UserModel> users)
+            => await CreateRangeAsync(users);
 
         public  void UpdateUser(UserModel item)
             =>  Update(item);

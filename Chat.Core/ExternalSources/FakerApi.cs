@@ -26,18 +26,14 @@ namespace Chat.Core.ExternalSources
         {
             var httpClient = _httpClientFactory.CreateClient();
             
-            var response = await httpClient.GetAsync("https://fakerapi.it/api/v1/users?_quantity=1000");
+            var response = await httpClient.GetAsync("https://fakerapi.it/api/v1/users?_quantity=100");
 
             response.EnsureSuccessStatusCode();
 
-            var users = await response.Content.ReadFromJsonAsync<List<FakerApiUser>>();
+            var users = await response.Content.ReadFromJsonAsync<FakerApiResponse>();
             
-            var result = users.Select(x => _mapper.Map<UserModel>(x)).ToList();
+            var result = users.Data.Select(x => _mapper.Map<UserModel>(x)).ToList();
             
-            //var result = _mapper.Map<List<UserModel> >(responseBody);
-        
-            //Console.WriteLine(responseBody);
-        
             return result;
         }
     }

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using AutoMapper;
-using Chat.Common.Dto.User;
 using Chat.Core.ExternalSources.Abstract;
 using Chat.Core.ExternalSources.Dto;
 using Chat.Database.Model;
@@ -31,13 +31,9 @@ namespace Chat.Core.ExternalSources
             response.EnsureSuccessStatusCode();
 
             var users = await response.Content.ReadFromJsonAsync<List<UserFakeApi>>();
-
+            
             var result = users.Select(x => _mapper.Map<UserModel>(x)).ToList();
             
-            //var result = _mapper.Map<List<UserModel> >(responseBody);
-            
-            //Console.WriteLine(responseBody);
-        
             return result;
         }
     }

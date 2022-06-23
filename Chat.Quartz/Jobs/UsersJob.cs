@@ -1,36 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Chat.Core.Abstract;
 using Chat.Core.ExternalSources.Abstract;
-using Chat.Core.ExternalSources.Services;
-using Microsoft.AspNetCore.SignalR;
+using Chat.Database.AbstractRepository;
 using Quartz;
 
 namespace ChatQuartz.Jobs
 {
-    //[DisallowConcurrentExecution]
+    [DisallowConcurrentExecution]
     public class UsersJob : IJob
     {
+        private readonly IRepositoryManager _repository;
 
-        private readonly IUserService _userService;
+        private readonly IUserJobService _userJobService;
 
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ISmtpService _smtpService;
 
-        public UsersJob(IUserService userService, IServiceProvider serviceProvider)
+        public UsersJob(IRepositoryManager repository, IUserJobService userJobService, ISmtpService smtpService)
         {
-            _userService = userService;
-            _serviceProvider = serviceProvider;
+            _repository = repository;
+            _userJobService = userJobService;
+            _smtpService = smtpService;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var userService = new UserService(_serviceProvider);
-
-            var result = await userService.LoadFromAPIs();
+            var users = await _userJobService.LoadFromAPIs();
             
+            await _repository.User.CreateUserRangeAsync(users);
+
+
+            foreach (var user in users)
+            {
+                await _smtpService.SendEmailAsync(user.Email, "Вы были добавлены в наш суперский чат, смените пароль");
+            }
+
+            await _repository.SaveAsync();
         }
+        
     }
 }

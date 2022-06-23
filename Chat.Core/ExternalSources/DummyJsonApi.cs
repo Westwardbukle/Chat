@@ -30,12 +30,10 @@ namespace Chat.Core.ExternalSources
 
             response.EnsureSuccessStatusCode();
 
-            var users = await response.Content.ReadFromJsonAsync<List<DummyUser>>();
+            var users = await response.Content.ReadFromJsonAsync<Users>();
             
-            var result = users.Select(x => _mapper.Map<UserModel>(x)).ToList();
-        
-            //Console.WriteLine(responseBody);
-            
+            var result = users.users.Select(x => _mapper.Map<UserModel>(x)).ToList();
+
             return result;
         }
     }
