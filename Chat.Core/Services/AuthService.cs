@@ -37,7 +37,7 @@ namespace Chat.Core.Services
         {
             var id = Guid.NewGuid();
 
-            if ( _repositoryManager.User.GetUserAsync(u => u.Nickname == registerUserDto.Nickname) is not null)
+            if ( await _repositoryManager.User.GetUserAsync(u => u.Nickname == registerUserDto.Nickname) is not null)
             {
                 throw new UserExistException();
             }

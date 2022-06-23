@@ -1,29 +1,14 @@
-using System.Text;
-using AutoMapper;
-using Chat.Core.Abstract;
-using Chat.Core.ExternalSources;
-using Chat.Core.ExternalSources.Abstract;
-using Chat.Core.ExternalSources.Services;
 using Chat.Core.Hubs;
 using Chat.Core.Options;
-using Chat.Core.ProFiles;
-using Chat.Core.Services;
-using Chat.Database;
 using Chat.Extentions;
-using Chat.Validation;
-using ChatQuartz.Jobs;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using Quartz;
 
 namespace Chat
 {
@@ -66,43 +51,17 @@ namespace Chat
             services.AddControllers(options =>
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             services.AddHttpContextAccessor();
-
-            services.AddScoped<IUserJobService, UserJobService>();
+            
+            services.ConfigureUserJobService();
+            
             
             services.ConfigureCors();
 
             services.AddHttpClient();
-            
-            services.AddTransient<IUserApi, FakeApi>();
-            services.AddTransient<IUserApi, FakerApi>();
-            services.AddTransient<IUserApi, DummyJsonApi>();
-            
-            
-            services.AddQuartz(q =>
-            {
-                q.UseMicrosoftDependencyInjectionJobFactory();
-                
-                var jobkey = new JobKey("UsersJob");
 
-                var emailKey = new JobKey("EmailNotifications");
+            services.ConfigureUserApiServices();
 
-                q.AddJob<UsersJob>(options => options.WithIdentity(jobkey));
-
-                q.AddJob<EmailNotifications>(opt => opt.WithIdentity(emailKey));
-                
-                q.AddTrigger(options => options
-                    .ForJob(jobkey)
-                    .WithIdentity("UsersJob-trigger)")
-                    .WithCronSchedule("0 0/1 * ? * * *"));
-                //0 0/1 * ? * * *
-                q.AddTrigger(opt => opt
-                    .ForJob(emailKey)
-                    .WithIdentity("EmailNotifications-trigger")
-                    .WithCronSchedule("0 0 0 ? * * *"));
-            });
-
-            services.AddQuartzHostedService(
-                q => q.WaitForJobsToComplete = true);
+            services.ConfigureQuartz();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

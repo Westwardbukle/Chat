@@ -31,7 +31,7 @@ namespace ChatQuartz.Jobs
 
             foreach (var user in users)
             {
-                await _smtpService.SendEmailAsync(user.Email, "Вы были добавлены в наш суперский чат, смените пароль");
+                await _smtpService.SendEmailAsync(user.Email, $"Вы были добавлены в наш суперский чат, смените ваш старый пароль {user.Password} для безопасности своего аккаунта");
             }
 
             await _repository.SaveAsync();

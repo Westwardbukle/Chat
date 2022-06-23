@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using AutoMapper;
 using Chat.Core.Abstract;
+using Chat.Core.ExternalSources;
+using Chat.Core.ExternalSources.Abstract;
+using Chat.Core.ExternalSources.Services;
 using Chat.Core.Hubs;
 using Chat.Core.ProFiles;
 using Chat.Core.Services;
@@ -12,6 +14,7 @@ using Chat.Database;
 using Chat.Database.AbstractRepository;
 using Chat.Database.Repository;
 using Chat.Validation;
+using ChatQuartz.Jobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -20,12 +23,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Quartz;
 
 namespace Chat.Extentions
 {
     public static class ServiceExtentions
     {
-        
         public static void ConfigureRepositoryManager(this IServiceCollection services)
             => services.AddScoped<IRepositoryManager, RepositoryManager>();
 
@@ -173,5 +176,44 @@ namespace Chat.Extentions
 
         public static void ConfigureFriendService(this IServiceCollection services)
             => services.AddScoped<IFriendService, FriendService>();
+        
+        public static void ConfigureUserJobService(this IServiceCollection services)
+            => services.AddScoped<IUserJobService, UserJobService>();
+
+        public static void ConfigureUserApiServices(this IServiceCollection services)
+        {
+            services.AddTransient<IUserApi, FakeApi>();
+            services.AddTransient<IUserApi, FakerApi>();
+            services.AddTransient<IUserApi, DummyJsonApi>();
+        }
+
+        public static void ConfigureQuartz(this IServiceCollection services)
+        {
+            services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
+                
+                var jobkey = new JobKey("UsersJob");
+
+                var emailKey = new JobKey("EmailNotifications");
+
+                q.AddJob<UsersJob>(options => options.WithIdentity(jobkey));
+
+                q.AddJob<EmailNotifications>(opt => opt.WithIdentity(emailKey));
+                
+                q.AddTrigger(options => options
+                    .ForJob(jobkey)
+                    .WithIdentity("UsersJob-trigger)")
+                    .WithCronSchedule("0 0/1 * ? * * *"));
+                //0 0/1 * ? * * *
+                q.AddTrigger(opt => opt
+                    .ForJob(emailKey)
+                    .WithIdentity("EmailNotifications-trigger")
+                    .WithCronSchedule("0 0 0 ? * * *"));
+            });
+
+            services.AddQuartzHostedService(
+                q => q.WaitForJobsToComplete = true);
+        }
     }
 }

@@ -42,8 +42,8 @@ namespace Chat.Core.Services
 
             var userChats = new List<UserChatModel>();
 
-            if (_repository.User.GetUserAsync(u => u.Id == user1) is null ||
-                _repository.User.GetUserAsync(u => u.Id == user2) is null)
+            if (await _repository.User.GetUserAsync(u => u.Id == user1) is null ||
+                await _repository.User.GetUserAsync(u => u.Id == user2) is null)
             {
                 throw new UserNotFoundException();
             }
@@ -77,7 +77,7 @@ namespace Chat.Core.Services
 
         public async Task<ChatResponseDto> CreateCommonChatAsync(CreateCommonChatDto commonChatDto)
         {
-            if (_repository.User.GetUserAsync(u => u.Id == commonChatDto.AdminId) is null)
+            if (await _repository.User.GetUserAsync(u => u.Id == commonChatDto.AdminId) is null)
             {
                 throw new UserNotFoundException();
             }
@@ -118,8 +118,8 @@ namespace Chat.Core.Services
 
             foreach (var userId in inviteUserCommonChatDto.UserIds)
             {
-                var isUserExistsDb = _repository.User.GetUserAsync(u => u.Id == userId) is not null;
-                var isUsersExistsInChat = _repository.UserChat.GetOneUserChatAsync(u => u.ChatId == chatId) is null;
+                var isUserExistsDb = await _repository.User.GetUserAsync(u => u.Id == userId) is not null;
+                var isUsersExistsInChat = await _repository.UserChat.GetOneUserChatAsync(u => u.ChatId == chatId) is null;
 
                 if (isUserExistsDb && !isUsersExistsInChat)
                 {
@@ -198,9 +198,10 @@ namespace Chat.Core.Services
             var userId = _tokenService.GetCurrentUserId();
 
             var remoteUserChat =
-               await _repository.UserChat.GetOneUserChatAsync(u => u.UserId == remoteUserId && u.ChatId == chatId);
+                await _repository.UserChat.GetOneUserChatAsync(u => u.UserId == remoteUserId && u.ChatId == chatId);
 
-            var userChat = await _repository.UserChat.GetOneUserChatAsync(u => u.UserId == userId && u.ChatId == chatId);
+            var userChat =
+                await _repository.UserChat.GetOneUserChatAsync(u => u.UserId == userId && u.ChatId == chatId);
 
             if (remoteUserChat is null || userChat is null)
             {
@@ -232,7 +233,8 @@ namespace Chat.Core.Services
             await _notificationService.NotifyChat(chatId, _mapper.Map<MessagesResponseDto>(message));
         }
 
-        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChatAsync(Guid chatId,
+        public async Task<(List<MessagesResponseDto> Data, MetaData MetaData)> GetAllMessageInCommonChatAsync(
+            Guid chatId,
             MessagesParameters messagesParameters)
         {
             var chatIsReal = await _repository.Chat.GetChatAsync(chatId) is null;
@@ -250,7 +252,7 @@ namespace Chat.Core.Services
         public async Task<(List<GetAllUsersDto> Data, MetaData MetaData)> GetAllUsersInChatAsync(Guid chatId,
             UsersParameters usersParameters)
         {
-            if ( await _repository.Chat.GetChatAsync(chatId) is null)
+            if (await _repository.Chat.GetChatAsync(chatId) is null)
             {
                 throw new ChatNotFoundException();
             }
