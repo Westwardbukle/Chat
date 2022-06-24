@@ -186,7 +186,9 @@ namespace Chat.Extentions
             services.AddTransient<IUserApi, FakerApi>();
             services.AddTransient<IUserApi, DummyJsonApi>();
         }
-
+        
+        
+        //Для рассылки уведомлений необходим специальный сервис
         public static void ConfigureQuartz(this IServiceCollection services)
         {
             services.AddQuartz(q =>
@@ -195,21 +197,21 @@ namespace Chat.Extentions
                 
                 var jobkey = new JobKey("UsersJob");
 
-                var emailKey = new JobKey("EmailNotifications");
+                //var emailKey = new JobKey("EmailNotifications");
 
                 q.AddJob<UsersJob>(options => options.WithIdentity(jobkey));
 
-                q.AddJob<EmailNotifications>(opt => opt.WithIdentity(emailKey));
+                //q.AddJob<EmailNotifications>(opt => opt.WithIdentity(emailKey));
                 
                 q.AddTrigger(options => options
                     .ForJob(jobkey)
                     .WithIdentity("UsersJob-trigger)")
-                    .WithCronSchedule("0 0/1 * ? * * *"));
+                    .WithCronSchedule("0 0 0 ? * * *"));
                 //0 0/1 * ? * * *
-                q.AddTrigger(opt => opt
+                /*q.AddTrigger(opt => opt
                     .ForJob(emailKey)
                     .WithIdentity("EmailNotifications-trigger")
-                    .WithCronSchedule("0 0 0 ? * * *"));
+                    .WithCronSchedule("0 0 0 ? * * *"));*/
             });
 
             services.AddQuartzHostedService(

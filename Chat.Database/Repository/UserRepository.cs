@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Chat.Common.RequestFeatures;
@@ -11,12 +12,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Database.Repository
 {
-    public class UserRepository: BaseRepository<UserModel>, IUserRepository
+    public class UserRepository : BaseRepository<UserModel>, IUserRepository
     {
         public UserRepository(AppDbContext context) : base(context)
         {
         }
-        
+
         public async Task<PagedList<UserModel>> GetAllUsersInChatAsync(Guid chatId, UsersParameters usersParameters)
         {
             var users = await AppDbContext
@@ -33,11 +34,11 @@ namespace Chat.Database.Repository
         }
 
 
-        public async Task<IQueryable<UserModel>> GetAllUsersbyCondition(Expression<Func<UserModel, bool>> expression,
+        public async Task<List<string>> GetAllUsersEmailsByCondition(Expression<Func<UserModel, bool>> expression,
             bool trackChanges)
-            => FindByCondition(expression, false);
+            => await FindByCondition(expression, false).Select(u => u.Email).ToListAsync();
 
-        public async Task<List<Guid>>  GetAllUsersIdsInChatForNotify(Guid chatId)
+        public async Task<List<Guid>> GetAllUsersIdsInChatForNotify(Guid chatId)
         {
             var users = await AppDbContext
                 .UserModels
@@ -49,7 +50,7 @@ namespace Chat.Database.Repository
             return users;
         }
 
-        public async Task<UserModel>  GetUserAsync(Expression <Func<UserModel, bool>> predicate)
+        public async Task<UserModel> GetUserAsync(Expression<Func<UserModel, bool>> predicate)
             => await GetOneAsync(predicate);
 
         public async Task CreateUserAsync(UserModel item)
@@ -58,7 +59,7 @@ namespace Chat.Database.Repository
         public async Task CreateUserRangeAsync(List<UserModel> users)
             => await CreateRangeAsync(users);
 
-        public  void UpdateUser(UserModel item)
-            =>  Update(item);
+        public void UpdateUser(UserModel item)
+            => Update(item);
     }
 }

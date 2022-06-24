@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Chat.Common.Validating;
 using Chat.Core.Abstract;
 using MailKit.Net.Smtp;
@@ -39,6 +41,32 @@ namespace Chat.Core.Services
             await client.ConnectAsync(_configurationSmtp, _configurationPort, true);
             await client.AuthenticateAsync(_configurationEmail, _configurationPassword);
             await client.SendAsync(emailMessage);
+            await client.DisconnectAsync(true);
+        }
+
+        public async Task SendRangeEmailAsync(List<string> emails, string message)
+        {
+            var emailMessage = new MimeMessage();
+            
+            emailMessage.From.Add(new MailboxAddress("Chat",_configurationEmail));
+            
+            using var client = new SmtpClient();
+            
+            await client.ConnectAsync(_configurationSmtp, _configurationPort, true);
+            await client.AuthenticateAsync(_configurationEmail, _configurationPassword);
+            
+            foreach (var email in emails)
+            {
+                emailMessage.To.Add(new MailboxAddress("" , email ));
+                emailMessage.Subject = Consts.Subject;
+                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                {
+                    Text = message
+                };
+                
+                await client.SendAsync(emailMessage);
+            }
+            
             await client.DisconnectAsync(true);
         }
         

@@ -12,7 +12,7 @@ namespace Chat.Database.AbstractRepository
     {
         Task<PagedList<UserModel>> GetAllUsersInChatAsync(Guid chatId, UsersParameters usersParameters);
 
-        Task<IQueryable<UserModel>> GetAllUsersbyCondition(Expression<Func<UserModel, bool>> expression,
+        Task<List<string>> GetAllUsersEmailsByCondition(Expression<Func<UserModel, bool>> expression,
             bool trackChanges);
 
         Task<List<Guid>> GetAllUsersIdsInChatForNotify(Guid chatId);
