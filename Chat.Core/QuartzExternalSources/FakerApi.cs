@@ -4,14 +4,13 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using AutoMapper;
-using Chat.Common.Dto.User;
 using Chat.Core.ExternalSources.Abstract;
 using Chat.Core.ExternalSources.Dto;
 using Chat.Database.Model;
 
-namespace Chat.Core.ExternalSources
+namespace Chat.Core.QuartzExternalSources
 {
-    public class FakerApi : IUserApi
+    public class FakerApi :IUserApi
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;

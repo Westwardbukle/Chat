@@ -6,9 +6,11 @@ using AutoMapper;
 using Chat.Core.Abstract;
 using Chat.Core.ExternalSources;
 using Chat.Core.ExternalSources.Abstract;
-using Chat.Core.ExternalSources.Services;
 using Chat.Core.Hubs;
 using Chat.Core.ProFiles;
+using Chat.Core.QuartzExternalSources;
+using Chat.Core.QuartzExternalSources.Abstract;
+using Chat.Core.QuartzExternalSources.Services;
 using Chat.Core.Services;
 using Chat.Database;
 using Chat.Database.AbstractRepository;
@@ -178,7 +180,7 @@ namespace Chat.Extentions
             => services.AddScoped<IFriendService, FriendService>();
         
         public static void ConfigureUserJobService(this IServiceCollection services)
-            => services.AddScoped<IUserJobService, UserJobService>();
+            => services.AddScoped<IUserSynchronizer, UserSynchronizer>();
 
         public static void ConfigureUserApiServices(this IServiceCollection services)
         {

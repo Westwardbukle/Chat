@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Chat.Core.Abstract;
 using Chat.Core.ExternalSources.Abstract;
 using Chat.Database.AbstractRepository;
@@ -29,10 +28,11 @@ namespace ChatQuartz.Jobs
             
             await _repository.User.CreateUserRangeAsync(users);
 
-            //var emails = users.Select(u => u.Email).ToList();
-            
             
             //Пример отправки уведомлений пользователям, необходим только специальный сервис для реализации
+            
+            //var emails = users.Select(u => u.Email).ToList();
+            
             /*await _smtpService.SendRangeEmailAsync(emails,
                 $"Вы были добавлены в наш суперский чат, смените ваш старый пароль для безопасности своего аккаунта");*/
             

@@ -56,7 +56,7 @@ namespace Chat.Database.Repository
         public async Task CreateUserAsync(UserModel item)
             => await CreateAsync(item);
 
-        public async Task CreateUserRangeAsync(List<UserModel> users)
+        public async Task CreateUserRangeAsync(IEnumerable<UserModel> users)
             => await CreateRangeAsync(users);
 
         public void UpdateUser(UserModel item)
