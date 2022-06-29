@@ -7,13 +7,13 @@ using Chat.Core.QuartzExternalSources.Abstract;
 using Chat.Database.Model;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Chat.Core.QuartzExternalSources.Services
+namespace Chat.Core.QuartzExternalSources.ServicesApi
 {
-    public class ConsistencyUserLoader : IUserLoader
+    public class AllSourceUserLoader : IUserLoader
     {
         private readonly IEnumerable<IUserApi> _userApis;
 
-        public ConsistencyUserLoader(IServiceProvider serviceProvider)
+        public AllSourceUserLoader(IServiceProvider serviceProvider)
         {
             _userApis = serviceProvider.GetServices(typeof(IUserApi)).Cast<IUserApi>();
         }
@@ -22,21 +22,24 @@ namespace Chat.Core.QuartzExternalSources.Services
         {
             var result = new List<UserModel>();
 
+            var loadTasks = new List<Task<IEnumerable<UserModel>>>();
+
             foreach (var userApi in _userApis)
             {
-                try
-                {
-                    var request = await userApi.SendRequest();
-                    
-                    result.AddRange(request);
-                }
-                catch (Exception e)
-                {
-                    break;
-                }
+                var request =  userApi.SendRequest();
+
+                loadTasks.Add(request);
+            }
+
+            foreach (var task in loadTasks)
+            {
+                var users = await task;
+                
+                result.AddRange(users);
             }
 
             return result;
         }
+        
     }
 }

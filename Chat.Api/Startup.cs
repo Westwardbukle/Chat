@@ -1,5 +1,7 @@
 using Chat.Core.Hubs;
 using Chat.Core.Options;
+using Chat.Core.QuartzExternalSources.Abstract;
+using Chat.Core.QuartzExternalSources.ServicesApi;
 using Chat.Extentions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,6 +55,10 @@ namespace Chat
             services.AddHttpContextAccessor();
             
             services.ConfigureUserJobService();
+
+            services.AddScoped<IUserSynchronizer, UserSynchronizer>();
+            services.AddScoped<IUserLoader, ConsistencyUserLoader>();
+            services.AddScoped<IUserLoader, AllSourceUserLoader>();
             
             
             services.ConfigureCors();

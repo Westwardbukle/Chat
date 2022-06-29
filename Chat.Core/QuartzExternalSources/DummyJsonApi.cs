@@ -7,6 +7,7 @@ using AutoMapper;
 using Chat.Core.ExternalSources.Abstract;
 using Chat.Core.ExternalSources.Dto;
 using Chat.Database.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace Chat.Core.QuartzExternalSources
 {
@@ -14,24 +15,26 @@ namespace Chat.Core.QuartzExternalSources
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
+        private readonly string _dummyApi;
 
-        public DummyJsonApi(IMapper mapper, IHttpClientFactory httpClientFactory)
+        public DummyJsonApi(IMapper mapper, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
+            _dummyApi = configuration.GetValue<string>("Dummy");
             _mapper = mapper;
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<List<UserModel>> SendRequest()
+        public async Task<IEnumerable<UserModel>> SendRequest()
         {
             var httpClient = _httpClientFactory.CreateClient();
 
-            var response = await httpClient.GetAsync("https://dummyjson.com/users");
+            var response = await httpClient.GetAsync(_dummyApi);
 
             response.EnsureSuccessStatusCode();
 
             var users = await response.Content.ReadFromJsonAsync<Users>();
 
-            var result = users.users.Select(x => _mapper.Map<UserModel>(x)).ToList();
+            var result = users.users.Select(x => _mapper.Map<UserModel>(x));
 
             return result;
         }

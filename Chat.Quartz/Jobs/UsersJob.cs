@@ -15,7 +15,7 @@ namespace ChatQuartz.Jobs
 
         private readonly ISmtpService _smtpService;
 
-        public UsersJob(IRepositoryManager repository,  ISmtpService smtpService, IUserSynchronizer synchronizer)
+        public UsersJob(IRepositoryManager repository, ISmtpService smtpService, IUserSynchronizer synchronizer)
         {
             _repository = repository;
             _smtpService = smtpService;
@@ -24,7 +24,16 @@ namespace ChatQuartz.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var users = _synchronizer.Sync();
+            
+            
+            
+            
+            await _synchronizer.Sync();
+            
+            
+            
+            
+            
             
             //Пример отправки уведомлений пользователям, необходим только специальный сервис для реализации
 
@@ -32,8 +41,6 @@ namespace ChatQuartz.Jobs
 
             /*await _smtpService.SendRangeEmailAsync(emails,
                 $"Вы были добавлены в наш суперский чат, смените ваш старый пароль для безопасности своего аккаунта");*/
-
         }
-        
     }
 }

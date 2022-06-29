@@ -9,6 +9,8 @@ namespace Chat.Database.TablesConfiguration
         public void Configure(EntityTypeBuilder<UserModel> builder)
         {
             builder.Property(p => p.DateCreated).HasColumnType("timestamp without time zone").IsRequired();
+            builder.HasIndex(x => x.Email).IsUnique();
+            builder.HasIndex(x => x.Nickname).IsUnique();
         }
     }
 }

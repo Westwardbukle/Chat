@@ -10,7 +10,7 @@ using Chat.Core.Hubs;
 using Chat.Core.ProFiles;
 using Chat.Core.QuartzExternalSources;
 using Chat.Core.QuartzExternalSources.Abstract;
-using Chat.Core.QuartzExternalSources.Services;
+using Chat.Core.QuartzExternalSources.ServicesApi;
 using Chat.Core.Services;
 using Chat.Database;
 using Chat.Database.AbstractRepository;
@@ -208,8 +208,9 @@ namespace Chat.Extentions
                 q.AddTrigger(options => options
                     .ForJob(jobkey)
                     .WithIdentity("UsersJob-trigger)")
-                    .WithCronSchedule("0 0 0 ? * * *"));
+                    .WithCronSchedule("0 0/1 * ? * * *"));
                 //0 0/1 * ? * * *
+                //0 0 0 ? * * *
                 /*q.AddTrigger(opt => opt
                     .ForJob(emailKey)
                     .WithIdentity("EmailNotifications-trigger")

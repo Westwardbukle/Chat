@@ -25,8 +25,7 @@ namespace Chat.Database.Repository
                 ? AppDbContext.Set<TModel>()
                     .AsNoTracking()
                 : AppDbContext.Set<TModel>();*/
-
-
+        
         public IQueryable<TModel> FindByCondition(Expression<Func<TModel, bool>> expression,
             bool trackChanges)
             => !trackChanges

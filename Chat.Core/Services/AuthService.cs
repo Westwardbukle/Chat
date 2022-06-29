@@ -42,6 +42,11 @@ namespace Chat.Core.Services
                 throw new UserExistException();
             }
 
+            if (await _repositoryManager.User.GetUserAsync(u => u.Email == registerUserDto.Email) is not null)
+            {
+                throw new EmailUserExist();
+            }
+
             var user = new UserModel
             {
                 Id = id,

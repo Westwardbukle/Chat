@@ -4,8 +4,8 @@ using Chat.Database.Model;
 
 namespace Chat.Core.QuartzExternalSources.Abstract
 {
-    public interface IUserSynchronizer
+    public interface IUserStorageLoader
     {
-        Task Sync();
+        Task<IEnumerable<UserModel>> GetUsers();
     }
 }
