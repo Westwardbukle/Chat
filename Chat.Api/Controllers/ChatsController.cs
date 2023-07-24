@@ -111,7 +111,7 @@ namespace Chat.Controllers
             return Ok();
         }
         
-        /// <summary>
+        /*/// <summary>
         /// Get all messages in chat
         /// </summary>
         /// <param name="chat id"></param>
@@ -127,6 +127,6 @@ namespace Chat.Controllers
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(messages.MetaData));
             
             return Ok(messages.Data);
-        }
+        }*/
     }
 }
